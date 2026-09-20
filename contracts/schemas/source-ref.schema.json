@@ -77,5 +77,51 @@
 			"$ref": "common.schema.json#/$defs/Sha256",
 			"description": "sha256 of exactly the bytes in byteRange."
 		}
+	},
+	"if": {
+		"type": "object",
+		"required": ["hashAlgorithm"],
+		"properties": {
+			"hashAlgorithm": {
+				"const": "sha1"
+			}
+		}
+	},
+	"then": {
+		"type": "object",
+		"properties": {
+			"commit": {
+				"type": "string",
+				"pattern": "^[0-9a-f]{40}$"
+			},
+			"blobId": {
+				"type": "string",
+				"pattern": "^[0-9a-f]{40}$"
+			}
+		}
+	},
+	"else": {
+		"if": {
+			"type": "object",
+			"required": ["hashAlgorithm"],
+			"properties": {
+				"hashAlgorithm": {
+					"const": "sha256"
+				}
+			}
+		},
+		"then": {
+			"type": "object",
+			"properties": {
+				"commit": {
+					"type": "string",
+					"pattern": "^[0-9a-f]{64}$"
+				},
+				"blobId": {
+					"type": "string",
+					"pattern": "^[0-9a-f]{64}$"
+				}
+			}
+		}
 	}
 }
