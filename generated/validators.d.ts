@@ -23,6 +23,7 @@ export declare const ReadHandoffRequest: Validator;
 export declare const ReadHistoryRequest: Validator;
 export declare const ReadInvestigationRequest: Validator;
 export declare const ReadSourceRequest: Validator;
+export declare const Recipe: Validator;
 export declare const RecordDecisionRequest: Validator;
 export declare const RequestAnalysisRequest: Validator;
 export declare const ResultEnvelope: Validator;

@@ -117,6 +117,7 @@ export const OPERATIONS = [
 		"request": "requests.schema.json#/$defs/ReadGuidanceRequest",
 		"response": "envelope.schema.json",
 		"envelopeKind": "guidance",
+		"entries": "recipe.schema.json",
 		"effect": "read",
 		"exposure": [
 			"http",
@@ -127,7 +128,7 @@ export const OPERATIONS = [
 		"ticket": "T07",
 		"requestType": "ReadGuidanceRequest",
 		"responseType": "ResultEnvelope",
-		"entriesType": null
+		"entriesType": "Recipe"
 	},
 	{
 		"operationId": "openInvestigation",
