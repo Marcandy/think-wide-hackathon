@@ -1,0 +1,1604 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Think-wide: plan in a box</title><style>
+:root{--ink:#17313b;--muted:#536773;--accent:#066d69;--nav:#102e39;--bg:#f2f6f7;--line:#d7e3e7;--paper:#fff;--warn:#775420}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:22px}body{margin:0;color:var(--ink);background:var(--bg);font:16px/1.7 system-ui,-apple-system,"Segoe UI",sans-serif}a{color:var(--accent);text-underline-offset:3px;overflow-wrap:anywhere}a:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #b7770a;outline-offset:4px}.skip{position:fixed;top:-80px;left:15px;z-index:9;background:white;padding:12px}.skip:focus{top:12px}aside{position:fixed;inset:0 auto 0 0;width:250px;background:var(--nav);color:white;padding:30px 22px;overflow:auto}aside small{color:#9cd5cc;letter-spacing:.1em;font-size:11px}aside h2{margin:10px 0 25px;font-size:25px;line-height:1.25}nav a{display:block;padding:8px 4px;color:#dbeaed;text-decoration:none;font-size:13px;border-bottom:1px solid #ffffff16}nav a:hover{color:white;background:#ffffff0c}.side-note{font-size:12px;color:#a8c1ca;margin-top:25px}main{margin-left:250px;padding:35px 42px 80px;max-width:1510px}.hero{background:var(--paper);border-top:6px solid var(--accent);border-radius:9px;padding:28px 36px;margin-bottom:26px}.kicker{font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:750}.hero h1{font-size:clamp(28px,3.8vw,43px);line-height:1.14;letter-spacing:-.025em;margin:12px 0}.hero p{max-width:790px}.badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;border:1px solid #d5c39d;border-radius:5px;padding:5px 10px;color:var(--warn);background:#faf5ea}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.quick a{display:block;border:1px solid var(--line);border-radius:6px;text-decoration:none;padding:13px 16px;background:#edf5f4;font-weight:700}.quick span{display:block;font-size:12px;font-weight:450;color:var(--muted)}.chapter{background:white;border:1px solid var(--line);border-radius:9px;padding:28px 36px;margin:22px 0;min-width:0}.chapter h1{font-size:29px;line-height:1.25;letter-spacing:-.02em;margin:0 0 20px}.chapter h2{font-size:22px;line-height:1.35;margin:32px 0 13px;padding-top:18px;border-top:1px solid var(--line);color:#155b5c}.chapter h3{font-size:17px;line-height:1.4;margin:24px 0 10px}.chapter p,.ticket p{margin:12px 0}li{margin:7px 0}ul,ol{padding-left:24px}code{font:0.88em/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf3f4;border-radius:3px;padding:2px 4px;overflow-wrap:anywhere}pre{background:#15343f;color:#e5f3f4;border-radius:6px;padding:18px;overflow:auto;font-size:13px;line-height:1.65}pre code{padding:0;background:none;color:inherit;overflow-wrap:normal}.table-scroll{overflow-x:auto;margin:19px 0 23px;border:1px solid var(--line);border-radius:5px}table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.55;min-width:570px}th,td{padding:11px 12px;vertical-align:top;text-align:left;border-bottom:1px solid var(--line)}th{background:#e9f2f2;font-weight:750}td:first-child{font-weight:550}tbody tr:nth-child(even){background:#fafcfc}tr:last-child td{border-bottom:0}blockquote{border-left:4px solid #abd0c9;margin:18px 0;padding:4px 18px;background:#f4f9f8}.source-ref{font-size:.86em;white-space:nowrap}.ticket{background:white;border:1px solid var(--line);border-radius:6px;margin:10px 0}.ticket summary{cursor:pointer;padding:15px 18px;font-size:14px;font-weight:600}.ticket summary b{color:var(--accent);margin-right:7px}.ticket summary span{display:block;color:var(--muted);font-size:12px;font-weight:450;padding-left:25px}.ticket-body{padding:5px 28px 25px}.ticket-body h1{font-size:23px;line-height:1.3}.ticket-body h2{font-size:18px;margin-top:24px}.footer{color:var(--muted);font-size:12px;margin:24px 0}strong{font-weight:700}
+@media(max-width:1100px){aside{width:220px;padding:24px 16px}main{margin-left:220px;padding:24px}.chapter,.hero{padding:25px}.quick{gap:8px}.quick a{padding:11px}}@media(max-width:780px){aside{position:relative;width:auto;padding:22px}aside h2{margin:8px 0 14px}nav{display:grid;grid-template-columns:1fr 1fr;gap:0 15px}.side-note{display:none}main{margin:0;padding:15px}.hero,.chapter{padding:21px}.quick{grid-template-columns:1fr}.chapter h1{font-size:26px}table{min-width:580px}.ticket-body{padding:5px 18px 20px}}
+@media print{aside,.skip,.quick{display:none}main{margin:0;padding:0;max-width:none}body{background:white;font-size:10pt;line-height:1.5}.hero,.chapter{border:0;box-shadow:none;padding:0;margin:20px 0}.chapter{break-before:page}.chapter h1{font-size:22pt}.chapter h2{font-size:15pt;break-after:avoid}.table-scroll{overflow:visible;border:0}table{min-width:0;font-size:8pt}th,td{padding:6px}tr{break-inside:avoid}pre{white-space:pre-wrap;background:#f1f5f5;color:var(--ink);font-size:8pt}.ticket{break-inside:avoid}.ticket:not([open]) .ticket-body{display:block}.ticket summary{font-size:11pt}a{color:inherit}}
+</style></head><body><a class="skip" href="#main">Skip to guide</a><aside><small>PLAN IN A BOX</small><h2>Think-wide<br>Build day</h2><nav><a href="#00-start-here">Start here</a><a href="#pm-boot">Claude Code PM boot</a><a href="#01-phase0-and-clock">Phase 0 + clock</a><a href="#02-product-and-architecture">Product + architecture</a><a href="#03-tools-and-map">Tools + portfolio map</a><a href="#04-build-contract">Contract + Convex + UI</a><a href="#05-security-and-ci">Security + CI</a><a href="#06-demo-and-handoff">Demo + work handoff</a><a href="#07-tickets">Ticket queue</a><a href="#role-eassa">Eassa handoff</a><a href="#role-marc">Marc handoff</a><a href="#role-andrew">Andrew handoff</a><a href="#08-sources">Source register</a><a href="#09-package-qa">Package verification</a></nav><p class="side-note">One product. Three people. One writer per task.<br><br>Model proposes. Code enforces. Git preserves evidence. People decide what to do next.</p></aside><main id="main"><header class="hero"><div class="kicker">THINK-WIDE / THREE-PERSON BUILD PLAN</div><h1>Give agents the portfolio.<br>Leave the coding to coding agents.</h1><p>A documentation-only plan for Eassa, Marc, and Andrew: one shared contract, a small pull queue, exact evidence, and hard integration checkpoints.</p><span class="badge">PLANNING ONLY · NO APPLICATION SCAFFOLD</span><div class="quick"><a href="#pm-boot">Start the PM session<span>Foreground coordination using Git + Issues</span></a><a href="#07-tickets">Claim the next task<span>19 seeds; instantiate only the ready wave</span></a><a href="#03-tools-and-map">Inspect the product boundary<span>Read tools, exact sources, durable decisions</span></a></div><p style="font-size:13px;color:var(--muted)">September 20, 2026 · America/New_York · Application, account, host and deployment checks remain NOT RUN. Prior planning remains disclosable prior work.</p></header><section class="chapter" id="00-start-here"><h1 id="00-start-here-plan-in-a-box">Think-wide: plan in a box</h1>
+<h2 id="00-start-here-documentation-only-build-brief-september-20-2026">Documentation-only build brief | September 20, 2026</h2>
+<p><strong>Product:</strong> Think-wide supplies context-efficient evidence, relationships, decisions, and implementation handoffs across repositories. Claude Code, Codex, and other coding agents remain the implementation specialists.</p>
+<p><strong>Team:</strong> Eassa is integration captain; Marc owns product behavior across backend and UI; Andrew owns security fixtures, adversarial verification, and evidence. These are specialties, not exclusive lanes.</p>
+<p><strong>Status:</strong> This box is planning material, not application code. It contains no application scaffold, executable tests, package manifest, lockfile, workflow YAML, Docker configuration, generated client, or executable initialization script. All Think-wide application and host checks remain NOT RUN.</p>
+<h2 id="00-start-here-start-here-not-with-the-old-zip">Start here, not with the old ZIP</h2>
+<p>Give <a href="#pm-boot">PM_BOOT.md</a> to one designated Claude Code session on Eassa's laptop. That session coordinates the build using the actual Git repository and a small GitHub Issues board. It does not become a hosted PM service or a new feature of Think-wide.</p>
+<p>Each teammate reads their own portable brief and takes one accepted ticket. Full reference sections are just-in-time reading, not required reading before contributing.</p>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Reader</th>
+<th>Read first</th>
+<th>Then</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Eassa / PM session</td>
+<td>PM_BOOT.md, 01_PHASE0_AND_CLOCK.md</td>
+<td>First READY ticket and relevant spec section</td>
+</tr>
+<tr>
+<td>Marc</td>
+<td>roles/MARC.md</td>
+<td>UI and product tickets</td>
+</tr>
+<tr>
+<td>Andrew</td>
+<td>roles/ANDREW.md</td>
+<td>Fixture, scanner, and boundary tickets</td>
+</tr>
+<tr>
+<td>Any fresh coding session</td>
+<td>Its complete issued ticket</td>
+<td>Inspect actual branch, contract, prerequisites, and installed APIs</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="00-start-here-the-complete-loop">The complete loop</h2>
+<p>Authorized repositories → global question → bounded discovery → exact evidence → tentative connection → human correction → durable decision → changed result → implementation brief → specialist coding agent.</p>
+<p>PR/commit re-ingestion is a subsequent supported direction. It must not be fabricated into the first demo if unfinished.</p>
+<p>The first demonstration needs two genuinely readable Git snapshots, at least one live reasoning path, a human intervention that changes the accepted result, reopening without loss of the decision, and a usable implementation brief. Prefer one authenticated remote MCP host as well. A local-only result does not establish ChatGPT or Claude.ai connectivity.</p>
+<h2 id="00-start-here-what-changed-from-the-previous-plans">What changed from the previous plans</h2>
+<ul>
+<li>Remove repair execution, target-repository package installs, arbitrary shell, target-project tests, branch/PR creation, merge, deploy, and coding-agent dispatch from Think-wide's product tools.</li>
+<li>Keep trusted bounded Git inspection, literal and structural search, JIT guidance, exact evidence, reasoning, decisions, handoff export, optional approved issue creation, and later outcome ingestion.</li>
+<li>Replace the prebuilt starter with event-day initialization instructions and acceptance specifications. Do not copy application files or executable tests from the old launch kit.</li>
+<li>Replace rigid lanes with a pull queue, one active writer per person, short clocks, and explicit integration cutoffs.</li>
+<li>Keep hosted identity and remote MCP on an early integration track. Do not weaken authentication to make a public demo work.</li>
+<li>Borrow OKF's navigable metadata/index idea without adding an OKF runtime, a second database, or a document per source file.</li>
+</ul>
+<h2 id="00-start-here-the-clock">The clock</h2>
+<p>All times are <strong>September 20, 2026, America/New_York (EDT)</strong>. They are hard team checkpoints, not promises of completion.</p>
+<p>12:30 foundation. 13:30 protected evidence or explicitly isolated local mode. 14:15 two immutable repositories. 15:00 complete loop and preserved recording. 15:30 implementation brief. 16:00 feature freeze. 16:30 rehearsal. Protect the remaining time for release evidence and submission.</p>
+<h2 id="00-start-here-truth-and-authority">Truth and authority</h2>
+<p>This plan is prior design work and must be disclosed as such where required. Documentation-only does not mean zero pre-existing assets, erase earlier preparation, or establish eligibility. Existing prototypes, earlier generated scaffolds, fixtures, libraries, and this plan must be described honestly if used or relevant to the organizer's disclosure rules. See 01_PHASE0_AND_CLOCK.md and 08_SOURCES.md.</p>
+<p>No GitHub repository, issue, account configuration, deployment, or submission was created by producing this box. The PM obtains the real repository identity and permitted work window before writes. It never backdates commits or removes history to imply novelty.</p>
+<p><strong>Read a small ticket, prove a small boundary, integrate the result. The product is not the project-management system.</strong></p>
+</section><section class="chapter" id="pm-boot"><h1 id="pm-boot-pm-boot-prompt-coordinate-the-three-person-think-wide-build">PM boot prompt: coordinate the three-person Think-wide build</h1>
+<p>You are the team's foreground project coordinator in Claude Code. Use your normal tools and the repository's existing practices. You are not an architecture daemon, a fourth autonomous developer, or Think-wide's runtime agent. This prompt grants no account, spending, publication, or deployment permission by itself.</p>
+<h2 id="pm-boot-fixed-intent">Fixed intent</h2>
+<p>Think-wide reasons across projects and supplies exact, selectively retrieved context to people and coding agents. It preserves human decisions and emits implementation briefs. It does not repair source repositories, run their tests, install their dependencies, merge, deploy, or implement a coding harness. Bounded trusted Git inspection and read-only AST analysis remain in scope.</p>
+<p>The stack direction is self-hosted Convex, an owned TanStack/React interface using a tweakcn-selected shadcn theme and bounded product components, generated public contracts, managed WorkOS identity, and useful MCP tools for remote hosts. Preserve the tool interface even when a specific host is temporarily blocked. Do not replace it with a UI-only chatbot.</p>
+<p>No old application starter is an implementation source. This folder is architecture, research, acceptance specifications, and ticket seeds. Build application code during the permitted event window. Record disclosed prior design, libraries, tools, and any separately permitted input repositories. Do not claim the team has no prior work.</p>
+<h2 id="pm-boot-team-and-decision-rights">Team and decision rights</h2>
+<p>Eassa: integration captain, repo/toolchain, contract/codegen, common auth/run boundaries, CI/hosting. Marc: product-specific Convex behavior, source/discovery integration, reasoning, UI, brief generation. Andrew: fixtures, test/effect harness, structural-rule tests, security regression, evidence, paired deployment checks.</p>
+<p>A free teammate can take any READY ticket they can safely complete. Sensitive shared changes get an appropriate reviewer. Andrew is not responsible for implementing every control, and Eassa is not automatically the owner of every integration.</p>
+<p>Eassa resolves scope/trust-boundary changes. Marc reviews product contracts. Andrew reviews permission and effect changes. Ask the appropriate human only for a real authority or design decision, not for routine already-authorized ticket work.</p>
+<h2 id="pm-boot-first-foreground-turn">First foreground turn</h2>
+<ol>
+<li>Read 00_START_HERE.md, 01_PHASE0_AND_CLOCK.md, and 07_TICKETS.md. Confirm the real current local date/time, selected track, organizer's allowed build start, repository path/URL, and your available tools. Never assume 10:00 submission opening means coding is allowed then.</li>
+<li>Inspect the selected checkout, Git status, current branch, existing instructions, remotes, and any existing work. No reset, clean, overwrite, import of the old starter, or new competing repository. If no repo exists, initialize only after event and owner authorization.</li>
+<li>Record the actual trunk SHA, current configuration mode, chosen track, and the smallest missing prerequisites. Use one concise checkpoint comment in GitHub; before GitHub is available use one temporary local BOARD.md, owned only by this coordinator.</li>
+<li>Instantiate only the first ready wave of ticket seeds. Do not open all stretch tickets or build a board generator. GitHub Issues is the operational queue; the seed files are a design backlog, not a second live board.</li>
+<li>Issue one full ticket to each free person. Copy its goal, relevant invariants, dependencies, acceptance, paths, timebox, stop/fallback, and handoff into the issue so the recipient can start in a fresh session.</li>
+<li>Output current trunk, active claims, next checkpoint, and the next action for each person. Keep this status under about 15 lines.</li>
+</ol>
+<h2 id="pm-boot-tiny-board-one-coordinator">Tiny board, one coordinator</h2>
+<p>Use one issue per accepted work item, one assignee, and a single status label. Statuses are WAITING, READY, CLAIMED, BLOCKED, REVIEW, DONE, CUT. WAITING means unmet prerequisites; BLOCKED means attempted work encountered a specific blocker. Close DONE and CUT with the reason retained. Additional labels only for core, integration, security, or optional when they help filtering. No lane labels or project boards are required.</p>
+<p>Only this PM session serializes claims and board transitions. Teammates send completion/blocker information or request a claim; they do not run three competing schedulers. Before and after assigning, re-read the issue and active claims. If a human claims directly and there is a conflict, stop the duplicate writer and resolve with Eassa. GitHub assignment is coordination, not an atomic distributed lock.</p>
+<p>If GitHub is unavailable, use one local BOARD.md until it returns. Migrate once, link the issue IDs, archive the local file as superseded, and stop maintaining two live state systems. Do not add a sync daemon.</p>
+<h2 id="pm-boot-what-you-may-be-asked">What you may be asked</h2>
+<p>These are plain-language messages, not installed CLI commands:</p>
+<ul>
+<li>"Start the build": perform the first-turn checks and issue the first ready work.</li>
+<li>"Next for Marc": re-read Git and issues, choose the highest-value ready task whose hard stop has not passed, and issue it with a claim.</li>
+<li>"Done T06 at &lt;commit&gt;, evidence &lt;path&gt;": verify the actual diff, ancestry, acceptance output, and review state; do not trust the message alone.</li>
+<li>"Blocked T08: &lt;fact&gt;": retain the work, record missing evidence and stop time, choose its documented fallback, free the person for other ready work.</li>
+<li>"Checkpoint": reconcile merged code, tests, deployment identity, live/stubbed capabilities, time, and cuts.</li>
+</ul>
+<p>Run this reconciliation when invoked or after an observed completion in the active foreground session. Do not promise automatic future task delivery, invisible monitoring, or checks after the session ends. Each person sets ordinary local timers for their ticket/checkpoint.</p>
+<h2 id="pm-boot-ticket-issuance-rules">Ticket issuance rules</h2>
+<p>Every meaningful ticket has: ID, goal, current owner, suggested specialty, prerequisite commits/artifacts, timebox, hard stop, writable paths, acceptance evidence, stop condition, fallback, review partner, handoff, and capability claims it can enable. Fill actual dependency SHAs when issuing; a seed naming another ticket is not proof that its artifact exists.</p>
+<p>One active implementation ticket per human; one writer per worktree and file area. The PM may do bounded review while that person's coding agent works, but not start a second competing implementation. If Eassa codes, the PM still counts under Eassa's capacity, not as another engineer.</p>
+<p>A blocked approach gets one documentation/export inspection attempt. After roughly ten minutes of unproductive incompatibility investigation, record the blocker and move to READY work. Total elapsed work stops at the earlier of its timebox and hard checkpoint. A timer expiring does not silently reassign a branch while its writer still runs.</p>
+<p>A ticket is DONE only when its required acceptance has evidence, the reviewer accepts it, and its commit is integrated into trunk. REVIEW is not DONE. Private/local evidence is not a deployment or host pass. If checks only cover part, split the unfinished capability or leave it blocked; do not relabel a required check N/A to close it.</p>
+<p>Reconcile against actual Git/PR/check state. Confirm a referenced commit belongs to the intended repo and is in trunk; after integration run the affected regressions. Never promote old branch test output to proof of the merged build.</p>
+<h2 id="pm-boot-shared-surfaces-and-change-control">Shared surfaces and change control</h2>
+<p>Coordinate root manifests/lockfile, canonical contract, generator, schema composition, auth profiles, CI permissions, and infrastructure settings. Ordinary feature code does not require Eassa to review every line. Use another suitable teammate as reviewer and keep reviews small.</p>
+<p>A requested architecture change is a brief issue/comment: problem, evidence, smallest change, compatibility impact, owner, deadline. Humans approve changes to policy, product boundary, public contract meaning, new services, or paid budget. Routine parameterization and additive implementation details remain within the accepted ticket.</p>
+<h2 id="pm-boot-required-cuts">Required cuts</h2>
+<p>At 12:30 remove unready remote infrastructure from the product critical path, not self-hosted Convex from the design. At 13:30 an auth-blocked demo can run only on an explicit loopback/stdio local profile with permitted public/synthetic data; no internet/LAN tunnel. Remote MCP remains incomplete, not silently passed. At 15:00 preserve the first complete recording with commit/config identity. At 16:00 stop features; only fixes, integration, evidence, deployment of already tested features, and submission remain.</p>
+<p>At a late start, immediately apply elapsed cuts. Never restart the original schedule or quietly extend its deadlines. Escalate the product gap rather than claiming a static mock fulfills live reasoning or connected-host acceptance.</p>
+<h2 id="pm-boot-handoff-format">Handoff format</h2>
+<p>Require: commit and branch; behavior changed; actual commands and results; live/local/mock status; contract/config version; remaining failures; next useful action. No tokens, private source, browser sessions, or raw provider payloads in public issue comments.</p>
+<h2 id="pm-boot-final-discipline">Final discipline</h2>
+<p>Do not implement repair, a PM bot, ticket-sync software, a graph platform, full LSP support, or an OKF engine to complete this plan. Preserve thin adapters, small domain rules, exact references, current permissions, and a useful connected tool surface. Spend coordination effort only when it unblocks implementation or prevents a demonstrated failure.</p>
+</section><section class="chapter" id="01-phase0-and-clock"><h1 id="01-phase0-and-clock-phase-0-initialization-and-the-clock">Phase 0, initialization, and the clock</h1>
+<h2 id="01-phase0-and-clock-rules-before-repository-writes">Rules before repository writes</h2>
+<p>Research checked September 20, 2026. The organizer overview places the build block at 11:10–18:00 EDT. Structured submission dates are 10:00–18:00 EDT. Treat the later advertised build start as the conservative implementation start unless organizers explicitly authorize otherwise. Source: Devpost overview and key-dates actions; official page in <a href="#08-sources">S01</a>.</p>
+<p>The Code Registry floor includes this rule: <strong>"Live in a new public GitHub repository created on 20 September, with hackathon in the repository name"</strong>. The remaining eligibility checks include a working application, the specified README coverage, at least 1,500 source lines in at least ten source files, at least three declared dependencies, and event-window implementation. Its specific instructions reserve the last half-hour for submission/sync and require sync before 18:00; analysis can finish later. The headline about a completed analysis and these specific instructions are not perfectly aligned. Confirm the chosen interpretation with the organizer. Do not pad lines or assume generated/test/vendor line eligibility. <a class="source-ref" href="#source-S01">[S01]</a></p>
+<p>Bring Your Own Project requires disclosure of pre-existing work and focuses judging on event progress. This documentation is prior design material, even without code. The earlier starter exists; do not copy it or claim it never existed. Record actual use or non-use and any required disclosure. This is a conservative build protocol, not an organizer ruling. <a class="source-ref" href="#source-S01">[S01]</a></p>
+<h2 id="01-phase0-and-clock-before-implementation">Before implementation</h2>
+<p>Eassa confirms event authority and the real repo location. Marc and Andrew join the same repository, using their own identities. No private source or credentials are needed in the public hackathon repo. Record permitted demonstration repositories, source provenance, team names, and which model/provider budget is approved. Use an existing personal Git login; never share a personal token in chat.</p>
+<p>Agree one sentence of acceptance: <strong>two immutable repos, one cross-project discovery, one exact evidence expansion, one retained correction that changes reasoning, one reopened investigation, and one useful implementation brief</strong>. Authenticate one real remote MCP host if its gate passes; do not redefine a local demo as that result.</p>
+<h2 id="01-phase0-and-clock-initialization-order">Initialization order</h2>
+<ol>
+<li><strong>Create one checkout and one dependency owner.</strong> Eassa initializes the application during the allowed window. Use one root dependency graph and one lockfile initially. Create only directories being implemented: contracts, core, convex, src/server, src/components, tests, scripts, docs, infra. The diagram is guidance, not a required empty tree.</li>
+<li><strong>Emit the first stable interface early.</strong> As part of T01/T02, agree the operation families and core field meanings from 03_TOOLS_AND_MAP.md. Publish that design and the root skeleton promptly, so Marc can theme/render and Andrew can build fixtures. They do not need hosted GitHub or WorkOS to begin.</li>
+<li><strong>Resolve and pin real dependencies once.</strong> Bun 1.4.2 and TS7 are candidates requested by the team, not proof all libraries interoperate. Resolve actual packages, check engine/peer constraints, commit the real lock, and require frozen subsequent installs. Do not run three simultaneous lockfile edits. Preserve a compatible checker/compiler-API version where a generator needs it. <a class="source-ref" href="#source-S18">[S18]</a> <a class="source-ref" href="#source-S19">[S19]</a></li>
+<li><strong>Use official framework initialization during the event.</strong> Prefer TanStack Start/Router plus React; TanStack Form for human input; shadcn primitives and a tweakcn-selected theme. No parallel frontend framework or duplicate application-state cache. Pin/review the registry output and theme export, including any external font requests. <a class="source-ref" href="#source-S13">[S13]</a> <a class="source-ref" href="#source-S14">[S14]</a></li>
+<li><strong>Generate the mechanical boundary.</strong> Produce public TS shapes and Ajv validators from the authored OpenAPI/schema profile. Curate MCP exposure explicitly. Keep generated clients/descriptor bindings thin; do not build a general code-generation framework. Convex generates its own internal API/data types. See 04_BUILD_CONTRACT.md.</li>
+<li><strong>Start local self-hosted Convex.</strong> Use the selected official Docker release, private listeners/volumes, and synthetic data. This remains self-hosting. Do not swap to a different database or to Convex Cloud as an unannounced fix. <a class="source-ref" href="#source-S07">[S07]</a></li>
+<li><strong>Add first checks and shared branch protection.</strong> Contract drift, types, real-handler tests, and a UI render smoke test. Eassa wires runners; Andrew supplies security assertions; Marc supplies functional tests. If Blacksmith is not connected, use already available GitHub-hosted CI temporarily, recording the runner. Never hold code integration hostage to a runner logo. <a class="source-ref" href="#source-S16">[S16]</a> <a class="source-ref" href="#source-S17">[S17]</a></li>
+<li><strong>Prove the risk boundaries early.</strong> A tiny installed-package import probe and a real round trip for MCP, renderer, and WorkOS→Convex. Documentation, package export, compile success, local protocol success, and actual host success are separate evidence levels.</li>
+</ol>
+<h2 id="01-phase0-and-clock-fixed-checkpoints">Fixed checkpoints</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Required observable result</th>
+<th>Cut/fallback if missed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12:30</td>
+<td>Shared repo/lock, codegen, local Convex, render/theme baseline, CI entry</td>
+<td>Remote deployment leaves critical path. Keep the local state and selected contract. Drop extra packages, not access checks.</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>Exact source read through real domain authorization; hosted identity if proven</td>
+<td>Use a separately gated loopback/stdio local demo with owner-selected public/synthetic sources. Hosted identity remains NOT RUN. No anonymous public endpoint.</td>
+</tr>
+<tr>
+<td>14:15</td>
+<td>Two actual immutable Git snapshots and at least one working search mode</td>
+<td>Freeze a blocked live GitHub connector. Use permissioned local Git snapshots; retain exact bytes, not an invented code fixture presented as history.</td>
+</tr>
+<tr>
+<td>15:00</td>
+<td>Question → evidence → correction → changed result → reopen</td>
+<td>Preserve first working recording and commit/config. If unavailable, stop optional integrations and concentrate on the missing core link. A mock does not pass this gate.</td>
+</tr>
+<tr>
+<td>15:30</td>
+<td>Downloadable/copyable implementation brief with exact references</td>
+<td>If issue POST is unready, export its exact reviewed body. No claim that an issue was created.</td>
+</tr>
+<tr>
+<td>16:00</td>
+<td>Feature freeze</td>
+<td>No new dependencies, host types, schemas, UI primitives, or optional modes. Fix and integrate existing behavior only.</td>
+</tr>
+<tr>
+<td>16:20</td>
+<td>Updated recording if better</td>
+<td>Keep the 15:00 recording untouched. Record changed commit/config/modes.</td>
+</tr>
+<tr>
+<td>16:30</td>
+<td>Full rehearsal of the selected final path</td>
+<td>Disable broken optional capabilities and disclose the deployed/local/recorded status.</td>
+</tr>
+<tr>
+<td>17:00</td>
+<td>README, credits, evidence, demo, submission readiness</td>
+<td>Stop optional polish; verify the submitted commit and selected track requirements.</td>
+</tr>
+<tr>
+<td>17:30</td>
+<td>Code Registry build stop if entering that track</td>
+<td>No further implementation. Begin final sync/submission operations.</td>
+</tr>
+<tr>
+<td>Before 18:00</td>
+<td>Required submission and TCR sync started if applicable</td>
+<td>Record actual result/time. No fabricated acceptance or backdating.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The 12:30, 13:30, 14:15, 15:00, 15:30, 16:00, 16:20, 16:30, and 17:00 checkpoints are team policy. The event-window and TCR constraints are organizer material. Do not blur the two.</p>
+<h2 id="01-phase0-and-clock-three-person-capacity">Three-person capacity</h2>
+<p>Timeboxes in 07_TICKETS.md bound an attempt; they are not estimates guaranteed to succeed. Core ticket allocations total less than the available three-person build window, but reviews, integrations, PM attention, breaks, and environment failures consume the remainder. Optional integration tickets compete for that remainder. Never schedule every optional ticket as though a fourth engineer exists.</p>
+<p>Use parallel artifact handoffs, not all-or-nothing phase completion: publish the root skeleton, then the contract/fixtures, then the protected read. No person waits for a finished complete backend. A READY ticket must identify its actual usable prerequisite, even if another part of the preceding phase is incomplete.</p>
+<h2 id="01-phase0-and-clock-real-package-api-proof">Real package/API proof</h2>
+<p>Record package version/integrity, official reference, inspected export, smallest relevant compile/runtime check, and pass/fail. For MCP, include chosen protocol profile and actual host. For A2UI, include catalog renderer/profile. For Convex, include the genuine accepted token's issuer/audience mapping, without recording the token. After one failed documented route, stop and use its bounded fallback instead of repeated speculative imports.</p>
+<p>A compatible subset is better than invented support. Node can remain the gateway runtime while Bun handles installation/build scripts. TS7 checking does not require every generator to adopt a nonexistent or incompatible compiler API.</p>
+</section><section class="chapter" id="02-product-and-architecture"><h1 id="02-product-and-architecture-product-and-architecture">Product and architecture</h1>
+<h2 id="02-product-and-architecture-what-think-wide-is">What Think-wide is</h2>
+<p>A scoped repository portfolio workbench and MCP tool service. It lets a person or capable host agent discover prior work, inspect exact evidence, compare applicability, preserve decisions, and hand bounded work to a coding specialist. Its first user is a builder with several repositories, not an operator seeking an autonomous maintenance bot.</p>
+<p>Use <strong>Think-wide reasons across projects; coding agents implement inside projects</strong> as the positioning, not a factual claim that coding agents can never navigate multiple repositories. The product value must be demonstrated by better evidence selection, preserved decisions, and useful handoff, not by claiming exclusive reasoning ability.</p>
+<h2 id="02-product-and-architecture-remove-the-repair-branch-not-the-useful-tools">Remove the repair branch, not the useful tools</h2>
+<p>Product operations may inspect authorized Git objects and history, analyze immutable source with trusted bounded parsers/search tools, preserve private application state, export a work brief, and optionally create an approved GitHub issue. They may not execute a caller-supplied shell command, package install, target test script, build script, repository hook, generated plugin, or code edit. No branch/PR creation, merge, deploy, OS administration, or autonomous coding-agent dispatch is in this profile.</p>
+<p>Building and testing <strong>Think-wide's own application</strong> is different: the three teammates and their local coding tools must install reviewed app dependencies, run Think-wide tests, commit, review, and deploy under their granted development authority. Cutting product repair does not prohibit ordinary development of Think-wide.</p>
+<h2 id="02-product-and-architecture-one-small-deployment">One small deployment</h2>
+<pre><code class="language-text">Owned web                         ChatGPT / Claude.ai / other MCP hosts
+    |                                               |
+    +------------------- HTTPS ---------------------+
+                            |
+                       Caddy edge
+                            |
+                One trusted Node application
+                HTTP / MCP / AG-UI adapters
+                WorkOS session/token verification
+                source/provider broker
+                bounded read-only analysis
+                            |
+                Self-hosted Convex, private
+                domain queries and mutations
+                internal provider/model actions
+                application state and indexes
+                optional exact-byte cache
+
+External services: WorkOS; selected Git provider;
+                   model API only for admitted backend reasoning.
+Operator-only: SSH, dashboard, deploy/backup credentials.
+Coding agents: outside this runtime, receive a brief and own their work.
+</code></pre>
+<p>The read-only analyzer can be a constrained child process or short-lived worker with a read-only selection of source and no provider secrets. It is not a general repair executor. Native analysis still parses untrusted bytes, so resource limits and confinement remain important.</p>
+<p>The first-party interface and server routes may share the same application deployment. Do not create separate microservices for MCP, the Git connector, every search mode, or the PM. Convex is the only application-state database. No extra graph/vector database or event bus is required.</p>
+<h2 id="02-product-and-architecture-one-policy-path">One policy path</h2>
+<p>HTTP, MCP, and any CLI call the same operation handler and authorization rules. Convex verifies the configured caller profile; domain functions derive principal from verified identity and check current resource grants and revisions. A gateway-only network plan is not a substitute for those checks.</p>
+<p>Use request-scoped user clients. No global mutable authenticated client and no deployment admin key for ordinary user requests. The gateway and Convex must deliberately agree on the protected-resource/token profile; native AuthKit and Connect tokens are not interchangeable by assumption. See 05_SECURITY_AND_CI.md.</p>
+<h2 id="02-product-and-architecture-two-valid-reasoning-drivers-never-two-competing-writers">Two valid reasoning drivers, never two competing writers</h2>
+<p><strong>Host-directed:</strong> a capable MCP host selects sources and calls Think-wide tools, submits a tentative evidence-backed comparison, and proposes a valid display. The user-facing host supplies the model. No automatic second model call is necessary.</p>
+<p><strong>Backend-directed:</strong> an admitted bounded run invokes one configured model using the same tools/operations and evidence rules; useful for the owned web. Its permissions and spend are explicit. A hidden second layout/planning model is not part of the design.</p>
+<p>An investigation revision admits one current writer/run for a proposal. Human corrections advance revision and fence stale publications. Another agent can read or start a separate investigation; it cannot overwrite a competing accepted result silently. Catalog UI can be rendered in the owned web and a tested MCP App shell; a host with only tools still gets structured results and ordinary text.</p>
+<h2 id="02-product-and-architecture-data-not-a-framework-for-every-noun">Data, not a framework for every noun</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Stored family</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identities/connections/grants</td>
+<td>Verified subjects, selected provider access, current permission/revocation state</td>
+</tr>
+<tr>
+<td>Repositories/snapshots/entries</td>
+<td>Navigable metadata over exact Git tree identities</td>
+</tr>
+<tr>
+<td>Findings</td>
+<td>Observed structural facts, source-reported claims, tentative relations and provenance</td>
+</tr>
+<tr>
+<td>Investigations/decisions</td>
+<td>Scope, current question/revision, explicit human constraints and prior rejections</td>
+</tr>
+<tr>
+<td>Runs/receipts</td>
+<td>Admitted work, current epoch/revision, sanitized outcomes, duplicate-effect controls</td>
+</tr>
+<tr>
+<td>Handoffs</td>
+<td>Immutable reviewed brief revision, intended destination/audience, publication status and receipt</td>
+</tr>
+</tbody>
+</table></div>
+<p>These are logical record families, not a requirement for six packages or an exact table count. Keep deterministic policy helpers in core; Convex handlers own transactions; server modules own external calls and read-only tools; UI components own rendering and drafts.</p>
+<h2 id="02-product-and-architecture-where-raw-source-lives">Where raw source lives</h2>
+<p>Git and provider records remain the primary artifacts. An authorized read may retain exact immutable bytes in a bounded cache, including Convex File Storage, keyed by repository/snapshot/blob identity and integrity hash. That is not an independently edited second codebase. Do not duplicate every source file into Markdown or let generated prose replace an exact source reference.</p>
+<p>Retention roots are active investigations, retained decisions, and approved handoffs. Derived indexes/views can be evicted or rebuilt; human decisions are not expired merely because a display is regenerated. Revocation fences every derivative regardless of pins. If source is no longer accessible or retained, report source_unavailable, never reconstruct a quotation from a summary.</p>
+<h2 id="02-product-and-architecture-completion-and-honest-limitations">Completion and honest limitations</h2>
+<p>A useful first build has real repositories, exact reads, at least literal and structural discovery where supported, durable decisions, live reasoning, and brief export. At least one remote authenticated MCP round trip is a high-priority integration goal. If only local tools work, report that gap prominently. Semantic embeddings, compiler-backed type queries, native MCP Apps rendering, issue POST, and outcome ingestion have separate capabilities and evidence; do not advertise them because folders or labels exist.</p>
+</section><section class="chapter" id="03-tools-and-map"><h1 id="03-tools-and-map-agent-facing-tools-and-the-portfolio-map">Agent-facing tools and the portfolio map</h1>
+<h2 id="03-tools-and-map-decision-on-google-s-okf">Decision on Google's OKF</h2>
+<p>The inspected GoogleCloudPlatform specification calls itself <strong>Open Knowledge Format v0.2</strong>, not a runtime package called 0.2.0. It describes Markdown concepts with YAML metadata, optional directory indexes, and cross-links. It explicitly does not prescribe storage/query infrastructure or replace domain schemas. Its optional computation/attestation material does not execute code or furnish an execution sandbox. <a class="source-ref" href="#source-S02">[S02]</a></p>
+<p><strong>Adopt the navigation idea, not a dependency.</strong> Use typed Convex records as the working index, generate bounded index-like views on demand, and optionally export a compatible knowledge bundle later. An OKF export is not required for the hackathon and must not silently become a second authoritative store. Do not call the internal wire format OKF-compliant until an actual export is checked.</p>
+<p>Do not turn imported <code>verified</code>, <code>human:</code> actor labels, or Markdown links into authorization or trusted attestations. Those are source assertions. Think-wide's actual caller identity and evidence verification remain server-derived.</p>
+<h2 id="03-tools-and-map-a-virtual-tree-not-a-mounted-mega-filesystem">A virtual tree, not a mounted mega-filesystem</h2>
+<p>A proposed navigation view:</p>
+<pre><code class="language-text">portfolio/
+  repositories/
+    project-a/
+      overview
+      snapshots/&lt;commit&gt;/
+        tree/src/...                 metadata and exact source handles
+        history                     bounded commit records
+      decisions                     authorized durable constraints
+    project-b/
+      overview
+      snapshots/&lt;commit&gt;/tree/...
+  investigations/&lt;id&gt;/
+    question
+    evidence
+    alternatives
+    decisions
+    handoff
+</code></pre>
+<p>These are display/navigation concepts, not host paths, HTTP endpoints to expose verbatim, or mandatory physical files. One directory-style operation should list immediate children plus compact metadata. Agents can expand an identified node, traverse relationships, or request exact source without reading the entire tree.</p>
+<p>Git already gives us tree objects and blobs. Our new work is the authorized portfolio map and the relationships/decisions that Git alone does not express. Use Git tree enumeration or equivalent provider object APIs; do not ask the model to synthesize a tree. <a class="source-ref" href="#source-S03">[S03]</a> <a class="source-ref" href="#source-S04">[S04]</a></p>
+<h2 id="03-tools-and-map-minimal-indexed-representation">Minimal indexed representation</h2>
+<p>A repository has a provider identity, display name, connection/grant reference, selected snapshots, and current sync status. A snapshot has repository ID, full commit object ID plus hash algorithm, root tree ID, indexed-at time, and coverage state.</p>
+<p>An entry has snapshot ID, parent identity, path identity, kind/mode, blob or tree ID, size if known, language if identified, and parse/index status. Use an index beginning with repository/snapshot and parent for direct children. Add a snapshot+path lookup for exact references. Access scope precedes pagination and ranking; do not retrieve global candidates and leak their names/counts before checking grants. <a class="source-ref" href="#source-S09">[S09]</a></p>
+<p>For the first small snapshots, materialize bounded entry metadata and extract richer facts only when useful. Cache extraction by blob identity, parser version, and rule version. Reuse unchanged blobs within an authorized cache; map findings back to the exact path/snapshot. Do not globally expose deduplication or cache-hit information across users.</p>
+<p>Path identity must not be a normalized display string. Use an opaque source/entry ID that maps to the verified Git entry. If a path cannot be represented safely in the supported UTF-8 profile, explicitly mark it unsupported rather than aliasing it. Reject traversal, NULs, unvalidated symlinks, automatic submodule/LFS retrieval, and arbitrary paths supplied to the server.</p>
+<p>Findings carry evidence class, source references, extractor/model identity, observation time, applicability notes, and verification status. A structural match is a finding; a claim that two systems are interchangeable is a hypothesis. A user's rejection is a decision with its own identity and revision.</p>
+<h2 id="03-tools-and-map-exact-source-reference">Exact source reference</h2>
+<p>A source reference identifies repository, full snapshot commit, blob, path/entry ID, byte range [start,end), and a digest of the returned exact bytes. History references add the selected commit range. Provider issue/PR/doc references carry provider ID, captured update identity/time, retrieved-at time, and body digest where possible.</p>
+<p>Resolve branch names once when selecting a snapshot. Do not retarget a running investigation whenever main moves. On refresh create a new snapshot and mark affected derived conclusions for reconsideration; retain historical evidence as historical.</p>
+<p>Exact reads return exact bytes or a labeled encoding, with original range/length and a next-range hint. Human line numbers are an additional presentation. A UTF-8 text read must not silently split/rewrite a character or normalize newlines; either adjust and report the actual range or reject it. No silent ellipses inside an alleged exact quote.</p>
+<h2 id="03-tools-and-map-tool-surface-build-a-useful-subset-keep-the-contract-extensible">Tool surface: build a useful subset, keep the contract extensible</h2>
+<p>Names below are proposed operation IDs, not provider SDK methods. Group related reads with a bounded discriminated mode; do not create a universal execute/query tool. Reads, saved decisions, and external effects remain distinct.</p>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Inputs and result</th>
+<th>First profile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getCapabilities</code></td>
+<td>Actual enabled modes, limits, contract/catalog versions, auth profile, integration status</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>listProjects</code></td>
+<td>Authorized workspace filter and cursor; compact project/snapshot/coverage records</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>browseSnapshot</code></td>
+<td>Repo/snapshot/node and cursor; direct children, metadata, exact source handles</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>readSource</code></td>
+<td>Authorized source ref, byte/line request and cap; exact evidence with range/hash</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>searchSources</code></td>
+<td>Fixed snapshot set, mode, query/rule, filters, budget, cursor; scored or ordered matches with provenance and coverage</td>
+<td>Literal and reviewed structural modes required; semantic/type modes conditional</td>
+</tr>
+<tr>
+<td><code>readHistory</code></td>
+<td>Repo/snapshot, optional verified path, bounded commit count/cursor; commits/diffs with scope</td>
+<td>Bounded history required; deep history optional</td>
+</tr>
+<tr>
+<td><code>readGuidance</code></td>
+<td>Trusted recipe/release ID; concise Skill and relevant rule/reference material</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>openInvestigation</code></td>
+<td>Question and authorized snapshot selection; durable investigation/revision</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>readInvestigation</code></td>
+<td>ID and detail level/cursor; accepted findings, decisions, revision, run status</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>recordDecision</code></td>
+<td>ID, expected revision, typed correction/constraint/rejection and request key</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>submitProposal</code></td>
+<td>Investigation/run, base revision, evidence refs, tentative claims/relations and optional catalog composition</td>
+<td>Required for host-driven reasoning</td>
+</tr>
+<tr>
+<td><code>requestAnalysis</code></td>
+<td>ID/revision/driver/purpose/budget; admitted run ID</td>
+<td>Backend run only when configured</td>
+</tr>
+<tr>
+<td><code>getRun</code> / <code>cancelRun</code></td>
+<td>Run ID; current authorized status or cancellation fence</td>
+<td>Required when runs exist</td>
+</tr>
+<tr>
+<td><code>prepareHandoff</code></td>
+<td>Current investigation/revision and destination/audience intent; frozen brief revision and hash</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>readHandoff</code></td>
+<td>ID/revision and pagination; exact reviewed brief text plus structured references</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>publishIssue</code></td>
+<td>Frozen handoff/destination and current human approval binding; receipt or unknown outcome</td>
+<td>Optional external effect</td>
+</tr>
+<tr>
+<td><code>refreshOutcome</code></td>
+<td>Handoff ID and allowed provider commit/PR reference; read-only outcome ingestion</td>
+<td>Follow-on</td>
+</tr>
+</tbody>
+</table></div>
+<p>Connect/disconnect and repository registration have separate owner-controlled UI or operator setup. Do not expose arbitrary installation IDs or local paths as authorization. Do not require every client to understand MCP resources: exact source, guidance, and handoff are available through tools as well. Native UI is an enhancement to an independently useful tool result.</p>
+<h2 id="03-tools-and-map-context-efficient-result-envelope">Context-efficient result envelope</h2>
+<p>Every discovery response identifies the fixed scope/snapshot set, result kind, entries, coverage, stable next cursor, freshness, and truncation/reason. Include source refs first and short snippets only when useful. Default to compact metadata; detail is explicitly requested.</p>
+<p>Initial <strong>proposed application limits</strong>, to implement and measure: 20 search hits per page, 100 direct tree children per page, 16 KiB total tool-result text, and a 16 KiB exact text window. Per-hit snippets and exact windows are limited by the overall serialized response cap, including metadata and any encoding overhead. Reduce the returned window and report its actual range when necessary. Choose smaller values when the host requires it. A request to expand does not bypass authorization or return all the remaining repo.</p>
+<p>For bounded analysis initially cap a search job to 2 small demo repositories, 200 selected text files, 20 MiB of scanned source, and 5 seconds of parser/search CPU-wall budget with a kill/reap path. Larger scopes require explicit continuation or a new admitted bounded job, not a hidden unbounded scan. A broader inventory can exist without claiming every file was scanned.</p>
+<p>Caps are initial policy, not benchmark results or permanent product limits. Continuation must be stable: cursor is bound to user/grant scope, snapshots, query/rule/options, and ordering. Reauthorize every page. If a stateless search cannot resume safely, retain a bounded result set or return an explicit narrower-scope request; don't fake pagination.</p>
+<p>Never infer total matches from a capped page. Mark not-indexed, unsupported-language, parse-failed, byte-limited, time-limited, and excluded content separately. A negative result means nothing found in this completed scope, not proof of global absence.</p>
+<p>Convex text search tokenizes content. It must not be relabeled exact code matching. For literal code questions, use a fixed-string or explicitly defined bounded pattern search over the selected immutable bytes. <a class="source-ref" href="#source-S10">[S10]</a></p>
+<h2 id="03-tools-and-map-jit-structural-analysis">JIT structural analysis</h2>
+<p>Keep a compact catalog of trusted recipe metadata. Load full guidance only for the selected structural question. A recipe says when to use it, language/parser profile, allowed inputs, matching and nonmatching examples, output interpretation, limits, and when literal/type-aware inspection is necessary. Agent Skills support a progressively loaded instruction/reference structure; actual host-native installation remains a separate integration. <a class="source-ref" href="#source-S12">[S12]</a></p>
+<p>An agent can select a reviewed rule or propose a declarative rule in a small allowlisted grammar. The latter is still untrusted input: validate its structure and complexity, run bounded rule fixtures, then scan selected immutable bytes. Do not require all useful queries to be prewritten recipes, but no dynamic executable plugins, custom grammar binaries, external config includes, or rewrite fields are admitted.</p>
+<p>ast-grep provides structured results and rule-test facilities; record UTF-8 ranges, rule hash, parser/tool version, and scan coverage. Its syntax evidence does not resolve bindings or prove behavior. <a class="source-ref" href="#source-S11">[S11]</a></p>
+<p>Target-repository Skills, AGENTS files, scanner configs, package scripts, and hooks are content, not authority. Use a trusted tool binary, reviewed arguments, clean environment, no shell interpolation, no rewrite/update flags, and no target-supplied configuration discovery. Native parser processes get no GitHub/model/WorkOS tokens and no writable source mount.</p>
+<p>Symbol definitions inferred from syntax are labeled syntactic. Binding/type queries need a verified compiler index with compiler/options/dependency provenance; never quietly install a target project to obtain one. Importing specialist-generated index/CI results later is permitted if provenance is retained. Tests run by a specialist or CI are reported evidence, not tests Think-wide claims to have run.</p>
+<h2 id="03-tools-and-map-worked-agent-walk">Worked agent walk</h2>
+<p>Ask which projects contain durable command handling. List project metadata. Narrow to two snapshots. Inspect their manifests and directories. Run literal search and then a matching structural recipe. Read the exact candidate spans. Compare retry/cancellation assumptions, stating unknowns. Record the user's "contract only; no persistent worker" correction. Re-query relevant sources and submit a revised hypothesis. Prepare a brief with evidence links, constraints, rejected choices, likely files, and acceptance conditions.</p>
+<p>A new agent resumes from the investigation ID and selectively expands the same exact evidence. It receives current state and references, not the old conversation transcript or every repository file.</p>
+</section><section class="chapter" id="04-build-contract"><h1 id="04-build-contract-contract-convex-and-generated-ui">Contract, Convex, and generated UI</h1>
+<h2 id="04-build-contract-canonical-inputs-and-generated-outputs">Canonical inputs and generated outputs</h2>
+<p>Author public operations and JSON schemas during the event. Use the previously selected OpenAPI 3.1 tooling profile unless actual installed tools require a reviewed adjustment. Keep schemas local and explicit. Public contract and internal persistence schema serve different purposes; one does not need to expose every field of the other. <a class="source-ref" href="#source-S20">[S20]</a></p>
+<p>Generate TS public types, Ajv standalone validators, and straightforward operation descriptors/tool schema bindings. Prefer maintained generators and a small explicit operation registry to an elaborate first-party compiler. The same canonical validator governs HTTP, MCP, and domain boundary payloads. The registry identifies handler, exposure, effect class, approval requirement, and projection. New operations are not agent-exposed automatically. <a class="source-ref" href="#source-S21">[S21]</a></p>
+<p>Generate schema-library bindings only if required by the actual installed renderer/SDK; support a documented subset and fail on unsupported constructs. Do not independently hand-maintain the same nested contract in JSON Schema, Zod, TS, MCP, and UI. Generated TS types do not validate runtime input, and a renderer's reduced schema helper is not necessarily an equivalent validator.</p>
+<p>Build checks must catch omitted handler/renderer bindings, unknown tagged actions, mismatched operation IDs, unsupported schema constraints, and output drift. Generate into a clean directory twice and compare; inspect untracked files as well. No model call belongs in this deterministic generation pipeline. Generated expected-output fixtures supplement, not replace, independently authored adversarial cases.</p>
+<h2 id="04-build-contract-handwritten-semantic-core">Handwritten semantic core</h2>
+<p>Keep only the rules requiring judgment in code: trusted principal/grant derivation, object authorization, exact-source identity, command/revision semantics, decision preservation, run/publication admission, downstream audience checks, and effect reconciliation. Do not abstract every function into a new layer.</p>
+<p>Domain checks use verified identity, not request owner/role fields. Validate all referenced objects, not just the outer investigation. A generated view conservatively depends on every private input consumed by the run; it cannot launder a private source by omitting a citation.</p>
+<p>A command receipt binds actor, operation, resource, request key, and canonical argument digest. Same key/same payload returns current authorized result identifiers. Same key/changed arguments conflicts. Receipt replay cannot return a cached private body after revocation.</p>
+<h2 id="04-build-contract-proper-convex-responsibilities">Proper Convex responsibilities</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Function kind</th>
+<th>Think-wide responsibility</th>
+<th>Not allowed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Query</td>
+<td>Authorized project/tree/investigation/decision/status projections, indexed scope lookup</td>
+<td>External network calls, model inference, hidden writes</td>
+</tr>
+<tr>
+<td>Mutation</td>
+<td>Validate/authorize, compare revision, preserve decision, reserve run/effect, update lifecycle, record receipt, atomically schedule</td>
+<td>Provider calls, target repo execution, partial out-of-transaction state</td>
+</tr>
+<tr>
+<td>Internal action</td>
+<td>Bounded provider/model work for an admitted job; load current state through internal queries; finalize through mutation</td>
+<td>Direct ctx.db use, assuming scheduler retained user identity, unbounded retries</td>
+</tr>
+<tr>
+<td>Internal publication mutation</td>
+<td>Check current run/epoch/revision and input grants, validate proposal, publish accepted projection</td>
+<td>Trusting model success claims or stale approval</td>
+</tr>
+<tr>
+<td>Server read-only analyzer</td>
+<td>Native Git/text/AST inspection of selected immutable bytes, with current caller/job scope</td>
+<td>Arbitrary target scripts or broad provider credentials in the parser</td>
+</tr>
+</tbody>
+</table></div>
+<p>Convex actions access database state through queries/mutations; scheduling from a mutation is atomic with that mutation. Scheduled authentication is not inherited, and cancellation does not undo an external effect already dispatched. Verify exact runtime behavior on the chosen self-hosted backend. <a class="source-ref" href="#source-S05">[S05]</a> <a class="source-ref" href="#source-S06">[S06]</a></p>
+<p>Pass opaque job IDs to scheduled work, not secrets or full source/prompt payloads. Load job owner, permitted source set, approved budget, current grant epoch, and expected revision from trusted records. Service calls use their own deliberately scoped identity, never a deploy admin key or caller-supplied actor string. Internal function names alone are not a security boundary if exposed callers can invoke them indiscriminately.</p>
+<p>Keep queries/mutations outside files marked for Node-only actions. Native Git/ast-grep belongs in the application analyzer, not a guessed browser or Convex-query API. Source results can be retained as exact bytes for later admitted model actions; the app controls the cache and its access. Avoid a cross-service callback mechanism unless actual analysis needs it.</p>
+<h2 id="04-build-contract-reasoning-state-transition">Reasoning state transition</h2>
+<p>Admit a run against investigation revision N and source/grant epochs. The host driver submits its proposal, or one backend action calls the selected provider. Human correction creates N+1 immediately, without a model. Any result for N is superseded unless explicitly re-evaluated under N+1. Store the correction separately from the generated display.</p>
+<p>An accepted proposal means its shape, references, and authority were validated, not that its reasoning is mathematically proven. Keep hypotheses marked as such. Tests and actual source observations retain their own evidence classes.</p>
+<p>A provider timeout after dispatch is external_outcome_unknown. Reconcile if possible; do not automatically submit another costly or state-changing request. A malformed completed model response can be rejected with a useful error or one admitted bounded correction attempt, never an infinite repair loop.</p>
+<h2 id="04-build-contract-theme-and-semantic-catalog">Theme and semantic catalog</h2>
+<p>Marc chooses a tweakcn theme with Eassa, reviews the exported light/dark tokens, and commits them to one theme file. Keep mappings/globals separate so changing tokens does not overwrite behavior. shadcn's semantic variables give the component styling boundary; the chosen export still needs keyboard, contrast, focus, and small-screen checks. <a class="source-ref" href="#source-S13">[S13]</a></p>
+<p>Use TanStack Start/Router for the shell and TanStack Form for explicit human input. If Start integration fails its early probe, a documented React/Router shell can be the cut without changing the domain contract. Do not add Query/DB/Store as parallel owners of Convex state. Extra TanStack packages must remove actual work. <a class="source-ref" href="#source-S14">[S14]</a></p>
+<p>First catalog: EvidencePair, ConnectionCard, ConstraintEditor, HandoffPreview, with bounded Stack/Section composition. Portfolio filters, source identity, auth indicators, and approval controls remain stable shell features. Model output references source/evidence IDs, not executable JSX, arbitrary CSS, new event handlers, unbounded URLs, or hidden tool authority.</p>
+<p>CopilotKit/A2UI can connect an authored catalog to owned React renderers. Pin the actually compatible renderer/wire profile; documentation snippets from differing versions are not interchangeable. AG-UI is an event/interaction adapter, not another database. MCP Apps provides an embedded-host shell; it is not proof that an arbitrary host can render this catalog. <a class="source-ref" href="#source-S15">[S15]</a> <a class="source-ref" href="#source-S23">[S23]</a> <a class="source-ref" href="#source-S24">[S24]</a></p>
+<p>Validating a composition must check allowed components, closed props, references, revision, total size/depth, and action bindings. Initially bound to 16 nodes, depth 4, and 32 KiB serialized composition; limit further if required. Preserve source display and drafts if rejected. Basic navigation, expanding evidence, saving a constraint, and exporting an already prepared brief do not need an LLM round trip.</p>
+<h2 id="04-build-contract-contract-freezing-without-paralysis">Contract freezing without paralysis</h2>
+<p>Freeze the first handoff shape before parallel implementation, not every future feature. Each additive schema change has a short ticket/comment, owner, compatibility note, generator update, and affected tests. Coordinated shared changes are faster than three local interface variants. Do not add a general schema migration engine to solve one day's coordination.</p>
+<h2 id="04-build-contract-application-file-shape-created-during-the-event">Application file shape, created during the event</h2>
+<pre><code class="language-text">think-wide-hackathon/
+  contracts/       public schemas, exposure/effect metadata
+  generated/       public types and validators
+  core/            policy, revisions, evidence and handoff semantics
+  convex/          schema, queries, mutations, actions, _generated
+  src/server/      auth, MCP/HTTP, providers, bounded analyzer
+  src/components/  semantic catalog and shadcn primitives
+  src/routes/      owned workbench and required callbacks
+  src/styles/      reviewed theme and mappings
+  tests/           fixtures, domain, adapter, browser, boundary checks
+  scripts/         small build/codegen/check commands only
+  infra/           reviewed local/deploy configuration
+  docs/            current short contracts, decisions, sanitized evidence
+  .github/         minimal CI and ownership controls
+</code></pre>
+<p>This box contains none of those application files. Generate and implement them only in the authorized build checkout, with actual installed APIs.</p>
+</section><section class="chapter" id="05-security-and-ci"><h1 id="05-security-and-ci-security-tests-and-ci-that-fit-the-build">Security, tests, and CI that fit the build</h1>
+<h2 id="05-security-and-ci-non-negotiable-boundary-decisions">Non-negotiable boundary decisions</h2>
+<p><strong>Privacy:</strong> private by default; explicit shared grants; no automatic admin read of private content. Upstream public source does not make a user's private question/decision public. Service operators retain powerful host/database access; this is not end-to-end encryption against them.</p>
+<p><strong>Identity:</strong> WorkOS login establishes the product principal, not GitHub installation rights. Deliberately configure the MCP resource/audience, trusted issuer/JWKS, and each browser/CLI/MCP flow. The gateway and private Convex backend must validate their intended profile; do not omit audience checking, turn on test auth publicly, or substitute an admin key to rescue integration. <a class="source-ref" href="#source-S08">[S08]</a> <a class="source-ref" href="#source-S22">[S22]</a></p>
+<p><strong>Authorization:</strong> operation permission AND every referenced object's grants. Include project metadata, counts, pagination, cached snippets, findings, decisions, status, cancellation, and actual file bytes. Grant IDs/cursors/paths are addresses, not permission.</p>
+<p><strong>Audience:</strong> a brief for repo A may include repo B's private evidence. Issue destination visibility and actual readers must be compatible with all consumed sources and private decisions. When that cannot be established, export privately or draft a deliberately redacted version and review it. Same organization is not proof of same readers. Public issue creation remains disabled for private-derived output without a separate explicit authorized publication decision.</p>
+<p><strong>Issue effects:</strong> separate prepare, human-confirm, publish, and receipt. Approval binds destination repo, frozen title/body hash, handoff revision, principal, current source grants, authorization epoch, and expiry. A changed body needs renewed approval. Agent <code>approved:true</code> never suffices. Creating an issue can notify people and disclose information; it is not a harmless read. The provider endpoint supports issue creation, but application exactly-once semantics are ours to establish. <a class="source-ref" href="#source-S26">[S26]</a></p>
+<p>Use a transactional effect reservation and a deterministic marker in the issue body. After an ambiguous response, mark outcome unknown and reconcile by authoritative receipt/observed provider object; no blind retry. A search that has not yet indexed the marker is not proof the first issue was never created.</p>
+<h2 id="05-security-and-ci-revocation-and-modes">Revocation and modes</h2>
+<p>Current-session logout closes that session and fences its interactive runs under the chosen session policy. Global sign-out, resource revocation, and GitHub disconnection are different actions; test each implemented scope. Recheck grants before source reads, result publication, issue POST, and stream emissions/reconnects. Clear user-scoped UI caches on account change.</p>
+<p>Mirror authoritative membership/revocation changes and use a short bounded freshness policy; the initial target is no more than 60 seconds for upstream changes, with fresh checks for consequential issue publication. This is a target to measure, not a guarantee that JWT expiration or webhooks alone provide instant revocation. Fail closed when a required fresh check cannot be obtained. Already delivered copies in hosts, browsers, exports, or GitHub cannot be recalled by deleting a Convex record.</p>
+<h3 id="05-security-and-ci-isolated-fallback-is-not-weakened-production">Isolated fallback is not weakened production</h3>
+<p>Two configurations must be visibly different:</p>
+<ul>
+<li><strong>Connected mode:</strong> real token verification, current source grants, tested remote HTTP/MCP, protected byte delivery, bounded external provider calls.</li>
+<li><strong>Local demonstration mode:</strong> loopback-only owned web or a locally launched stdio client, operator-selected public/synthetic data, fixed local authority derived from the trusted process, no internet/LAN tunnel, no remote issue publishing, no claims of multiuser hosted verification. Real-handler A/B tests use isolated fixtures, not arbitrary public identity headers.</li>
+</ul>
+<p>A fixture-auth bypass must not exist in a publicly served path. Production startup should refuse local-demo settings. A remote browser-based MCP client cannot connect to an unexposed local process; this fallback does not complete the external-host requirement. <a class="source-ref" href="#source-S24">[S24]</a></p>
+<h2 id="05-security-and-ci-git-connector-and-analysis-controls">Git connector and analysis controls</h2>
+<p>Prefer a selected-repository GitHub App. Read-only contents/metadata for source access; request Issues write only for the optional issue publisher. No contents-write or Actions permissions for this profile. Installation tokens can be repository/permission scoped and short-lived; keep provider credentials at the trusted broker. Verify the acting user's entitlement to that installation/repo separately. <a class="source-ref" href="#source-S25">[S25]</a></p>
+<p>The bounded native analyzer gets only selected immutable source, approved rule definitions, time/memory/output limits, and no application/provider/SSH credentials. No Docker socket, host home, SSH agent, repo hooks/config includes, arbitrary remote URLs, or shell interpolation. Treat third-party issue bodies and source files as untrusted data. A denied model proposal and a model refusing injection are different test observations.</p>
+<h2 id="05-security-and-ci-andrew-s-first-work-does-not-wait-for-hosted-auth">Andrew's first work does not wait for hosted auth</h2>
+<p>Start with A/B fixture identities, independent permission expectations, synthetic source markers, and observable database/job/provider effects. Test actual handlers. Do not mock authorization to return deny. Use the supplied readiness notes as workstation context, not as application evidence: they report 28 local checks, but hosted integration and deployment were explicitly NOT RUN. [F01, F02 in 08_SOURCES.md]</p>
+<h2 id="05-security-and-ci-acceptance-suite-to-implement-during-the-event">Acceptance suite to implement during the event</h2>
+<p>All cases below begin NOT RUN. Tests use owned, disposable environments. Negative tests never target WorkOS, model providers, venue networks, or unrelated GitHub organizations.</p>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Test specification</th>
+<th>Evidence required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q01</td>
+<td>A reads A, B reads B, B substitutes A's source/investigation ID</td>
+<td>Allowed controls, denied bytes, unchanged business state and no unauthorized job/provider dispatch</td>
+</tr>
+<tr>
+<td>Q02</td>
+<td>Missing/expired/wrong-issuer and validly signed wrong-audience tokens</td>
+<td>Independent verifier cases plus real accepted login when available</td>
+</tr>
+<tr>
+<td>Q03</td>
+<td>Nested references, tree counts, cursor replay, changed query/snapshot, revoked cached result</td>
+<td>No foreign metadata; cursor conflict/denial; current scope honored</td>
+</tr>
+<tr>
+<td>Q04</td>
+<td>Exact byte window, Unicode/newlines, stale branch, missing blob, symlink/path injection</td>
+<td>Matching hashes/ranges or explicit unsupported/unavailable response</td>
+</tr>
+<tr>
+<td>Q05</td>
+<td>Literal and structural fixtures, misleading same-name syntax, parse failure, scan caps</td>
+<td>Positive/negative matches, evidence-class label, exact refs, complete coverage status</td>
+</tr>
+<tr>
+<td>Q06</td>
+<td>Late proposal at N after human correction at N+1</td>
+<td>Human decision retained, obsolete publication rejected, reopened view correct</td>
+</tr>
+<tr>
+<td>Q07</td>
+<td>Duplicate command then same key with changed arguments</td>
+<td>One admitted business transition, explicit conflict for changed payload</td>
+</tr>
+<tr>
+<td>Q08</td>
+<td>Wrong/unknown catalog component/action, oversize/deep composition, inert script-like text</td>
+<td>No unsafe render/fetch/effect, preserved input and useful fallback display</td>
+</tr>
+<tr>
+<td>Q09</td>
+<td>Logout/revoke/disconnect during stream and queued work</td>
+<td>Measured future-read/emission/dispatch fencing; no claimed recall of delivered copies</td>
+</tr>
+<tr>
+<td>Q10</td>
+<td>Source/issue text requests other-user data or raw shell</td>
+<td>Direct forbidden tool attempt denied even if model would comply; normal read still works</td>
+</tr>
+<tr>
+<td>Q11</td>
+<td>Export containing mixed-private evidence to wider issue audience</td>
+<td>Audience denial/redaction workflow; no publication until a permitted frozen brief is approved</td>
+</tr>
+<tr>
+<td>Q12</td>
+<td>Approved issue then replay/change/timeout after dispatch</td>
+<td>Binding checks, one effect or explicit unknown, provider-side observation not just UI status</td>
+</tr>
+<tr>
+<td>Q13</td>
+<td>Native analyzer tries forbidden file/network/write in controlled harness</td>
+<td>No secret/operator access; time/output limit and cleanup behavior; source remains unchanged</td>
+</tr>
+<tr>
+<td>Q14</td>
+<td>Gateway, direct Convex handlers, MCP, CLI, framework routes expose same operation</td>
+<td>Same policy and validation; inventory includes routes outside OpenAPI</td>
+</tr>
+<tr>
+<td>Q15</td>
+<td>Two public/synthetic Git repos → live question → correction → changed result → reopen → brief</td>
+<td>End-to-end recorded commit/config, actual source refs, real reasoning driver</td>
+</tr>
+<tr>
+<td>Q16</td>
+<td>Chosen remote host performs login, tree, search, exact read, decision and brief calls</td>
+<td>Host/build/protocol identity, actual results, disconnect/reconnect behavior; UI rendering separately marked</td>
+</tr>
+<tr>
+<td>Q17</td>
+<td>Actual deployment listeners, restart, admin/file access, local-demo refusal</td>
+<td>Public HTTPS only, private Convex/dashboard, restricted SSH, persistent data, configuration evidence</td>
+</tr>
+<tr>
+<td>Q18</td>
+<td>Clean install/build/codegen twice, hidden transitive dependency, secret scan, stale evidence</td>
+<td>Reproducible artifacts, actual checks/coverage, no imaginary lockfile or fabricated pass</td>
+</tr>
+</tbody>
+</table></div>
+<p>Unit tests, mocks, real self-hosted integration, live provider/host checks, and actual deployment are separate rows in the evidence matrix. A required unrun case blocks that capability. N/A needs an explicit removed feature, not an unavailable credential.</p>
+<h2 id="05-security-and-ci-ci-and-frequent-integration">CI and frequent integration</h2>
+<p>Use the same checked-in verification entry point locally and on CI. Eassa wires Blacksmith if authorized; another available runner is an explicit temporary substitute. Use a clean/frozen install, codegen diff, typecheck, small deterministic tests, real-handler Convex tests, then browser and one live smoke when credentials are appropriately isolated. Do not make all optional scanners prerequisites for the first useful commit. <a class="source-ref" href="#source-S16">[S16]</a></p>
+<p>Pin reviewed actions by full commit SHA, keep token permissions minimal, and don't combine untrusted PR code with deploy/provider secrets. Avoid privileged pull_request_target execution of submitted code. Cache keys include OS/runtime/lock identity; untrusted caches must not feed a privileged promotion path. <a class="source-ref" href="#source-S17">[S17]</a></p>
+<p>The application build can test its own code in CI; it must not install or run ingested source projects as part of a product request. Test local fixtures and independent expectations. Review scanners for actual language/lock coverage: unsupported files are NOT ASSESSED, not clean.</p>
+<p>Use short task branches and coherent commits. One writer per area/worktree. A commit includes task ID, behavior, validation evidence, limitations, and next handoff. Required checks and appropriate review protect main. Ordinary changes need not all queue behind Eassa, but auth/contract/workflow/deploy changes receive their designated reviewer.</p>
+<p>Promote the tested commit/image by immutable identity. No runtime git pull, mutable latest tags, or production dependency installation. Document actual public ports, Docker publishing, IPv4/IPv6, volume permissions, and SSH recovery before claiming deployment. If a restore is claimed, test it on a disposable instance and reapply revocations before reopening; otherwise mark it NOT RUN.</p>
+<h2 id="05-security-and-ci-minimal-evidence-receipt">Minimal evidence receipt</h2>
+<p>Record task/case, tester, commit/config/image when applicable, layer (unit/local/live/deployed), expected and observed effects, actual command, status, sanitized artifact location, and next action. Preserve the unmodified first demo recording. Keep source text, tokens, cookies, sensitive query strings, and raw trace dumps out of public issues and the public repository.</p>
+</section><section class="chapter" id="06-demo-and-handoff"><h1 id="06-demo-and-handoff-demo-work-brief-and-post-work-learning">Demo, work brief, and post-work learning</h1>
+<h2 id="06-demo-and-handoff-show-the-context-boundary-not-another-code-editor">Show the context boundary, not another code editor</h2>
+<p>The live question must require comparing at least two repositories. Use real permitted snapshots, possibly newly created during the event and clearly labeled as demonstration repositories. Synthetic data is fine when disclosed. Do not claim fabricated files are from the user's historical projects.</p>
+<p>Suggested narrative: two repositories contain superficially similar command handling. One has a reusable contract; the other depends on a permanent worker. Ask whether a third planned project can reuse the contract without adopting the runtime. Inspect the actual evidence. Correct the agent's initial applicability assumption. Reopen the saved investigation, then generate the brief.</p>
+<p>A meaningful correction changes the accepted comparison or plan. Changing only a badge/title is not sufficient. A canned "no worker" branch without live reasoning is not an agentic result. The demo can be rehearsed; the underlying source and driver status must remain honest.</p>
+<h2 id="06-demo-and-handoff-three-minute-recording-shape">Three-minute recording shape</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Segment</th>
+<th>Show</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Opening</td>
+<td>The global question and selected repositories/snapshots</td>
+</tr>
+<tr>
+<td>Discovery</td>
+<td>A compact map/search result, then an exact cited implementation span</td>
+</tr>
+<tr>
+<td>Intervention</td>
+<td>Human says to reuse contract only and rejects the runtime assumption</td>
+</tr>
+<tr>
+<td>Adaptation</td>
+<td>The decision persists and the agent changes its comparison/brief</td>
+</tr>
+<tr>
+<td>Continuity</td>
+<td>Reopen or use a second tested client to retrieve the same decision/evidence</td>
+</tr>
+<tr>
+<td>Handoff</td>
+<td>Export the implementation brief, or show its real approved GitHub issue receipt</td>
+</tr>
+</tbody>
+</table></div>
+<p>At 15:00 preserve the first complete recording, source commit, config/auth/data mode, actual host/provider, and which capabilities were disabled. Never overwrite that recording. Re-record at 16:20 only if better; keep both. A recording is labeled recorded, not live. If the first complete path is still absent at 15:00, stop optional work and record the actual partial state separately.</p>
+<h2 id="06-demo-and-handoff-the-implementation-brief-is-the-output-object">The implementation brief is the output object</h2>
+<p>Use a small structured record with a deterministic Markdown presentation. It is not a new task-management product. GitHub Issue and private download are representations of the same frozen brief revision.</p>
+<p>An issued brief contains:</p>
+<ul>
+<li>Objective, intended target repository, exact base commit, and desired observable result.</li>
+<li>The accepted constraints and prior rejected approaches, with their source/decision identities.</li>
+<li>Relevant cross-repo evidence with exact refs and concise applicability notes.</li>
+<li>Likely files as a suggestion, explicitly not a verified complete dependency list.</li>
+<li>Acceptance behavior and tests the specialist should run; mark which have not been run.</li>
+<li>Allowed editing scope, excluded changes, budget/approval requirements where relevant.</li>
+<li>Missing evidence, stale dependencies, and uncertainties that must be checked locally.</li>
+<li>Investigation/handoff ID, revision, prepared-at time, source snapshot identities, audience, and body hash.</li>
+</ul>
+<p>Do not export the whole chat or every repo. The specialist can call Think-wide tools to expand exact evidence. An exported reference is not a capability to access private data; the receiving agent/user must authenticate and have the relevant grants.</p>
+<p><strong>Approval for publishing an issue is not approval for the coding agent's future code changes.</strong> The specialist works under its own repository access and human instructions. Think-wide does not control the specialist's model, tools, environment, or hidden context.</p>
+<h2 id="06-demo-and-handoff-optional-github-publication">Optional GitHub publication</h2>
+<p>Before POST, show the exact destination, title, body, and source/audience implications in the owned human confirmation path. Bind approval to the frozen revision/hash and reauthorize all inputs immediately before effect. Exclude provider tokens from the brief.</p>
+<p>If provider integration is unavailable at 15:30, preserve the exact Markdown body and let an authorized human publish manually. Mark it exported, not published. A manually created issue can later be attached after its identity/body are verified; do not assert the service created it.</p>
+<h2 id="06-demo-and-handoff-read-only-outcome-ingestion">Read-only outcome ingestion</h2>
+<p>Later, a user selects the resulting commit/PR/issue. Validate that it belongs to the permitted repository and relates to the handoff. Read its actual diff and provider state. Distinguish author-reported tests, CI status, observed merged state, and Think-wide's interpretation. Closed PR does not mean merged; green CI does not prove the whole objective.</p>
+<p>Store an outcome link and a proposed learning update. Do not automatically promote "this pattern is reusable" into a universal verified fact or delete the older decision. Human correction can revise applicability. This path uses the same index/evidence machinery; no repair executor returns through the back door.</p>
+<h2 id="06-demo-and-handoff-final-claims-checklist">Final claims checklist</h2>
+<p>For each claimed capability list implemented commit, acceptance case, tested environment, and status. Hosted WorkOS, GitHub App connection, remote MCP tool use, native embedded UI, backend reasoning, issue POST, outcome ingestion, deployment, and recovery are independently marked. One real host pass does not prove all hosts.</p>
+<p>Ensure the public submission repository contains only permitted code/docs/fixtures, not imported private source or credentials. Identify event-day work versus libraries, prior design, and other prior assets. Submit only after a human reviews the actual final result and required organizer disclosures.</p>
+</section><section class="chapter" id="07-tickets"><h1 id="07-tickets-ticket-seeds-and-the-pull-queue">Ticket seeds and the pull queue</h1>
+<p>These are planning seeds, not a live board and not claims that any work has started. Instantiate only the ready first wave as GitHub Issues after the repo/build is authorized. PM_BOOT.md governs claims, evidence, and changes.</p>
+<h2 id="07-tickets-first-wave">First wave</h2>
+<p>Eassa: G0 then T01 and T02. Marc: T03 as soon as the actual root skeleton/design handoff is published. Andrew: T04 at the same point. Nobody waits for a finished hosted backend.</p>
+<p>Next, publish evidence/decision interfaces and pull T05/T06/T07 in parallel as their actual inputs are available. T07 can prepare trusted rule fixtures before T05 lands, but cannot close without the real source mapping. T08 gives agents an early useful tool surface. T09/T10 assemble the product; T11 preserves its first complete recording.</p>
+<p>I01 and I04 are high-priority connection integrations, not decorative stretch goals. One useful capacity transfer: after T07, Andrew can take the thin T08 adapter while Eassa tackles I01, with Eassa reviewing the adapter and Andrew reviewing identity. Schedule their initial checks early and reserve time; do not delay T03/T04 or the local core while they block. I02/I03/I05 are optional and only start with spare capacity before their cutoffs. Skipping I04 means remote ChatGPT/Claude.ai use remains incomplete, not silently removed from the goal.</p>
+<h2 id="07-tickets-queue">Queue</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Deliverable</th>
+<th>Suggested owner</th>
+<th>Timebox</th>
+<th>Hard stop EDT</th>
+<th>Prerequisites</th>
+<th>Class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#ticket-G0">G0</a></td>
+<td>Confirm the event boundary and first acceptance</td>
+<td>Eassa</td>
+<td>10 min</td>
+<td>11:25</td>
+<td>None</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T01">T01</a></td>
+<td>Initialize the single shared checkout</td>
+<td>Eassa</td>
+<td>20 min</td>
+<td>12:00</td>
+<td>G0</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T02">T02</a></td>
+<td>Contract generation and local Convex</td>
+<td>Eassa</td>
+<td>45 min</td>
+<td>12:30</td>
+<td>T01</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T03">T03</a></td>
+<td>Theme and the real product component workshop</td>
+<td>Marc</td>
+<td>35 min</td>
+<td>12:30</td>
+<td>T01</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T04">T04</a></td>
+<td>Fixture and effect harness, not more scanner setup</td>
+<td>Andrew</td>
+<td>40 min</td>
+<td>12:30</td>
+<td>T01</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T05">T05</a></td>
+<td>Two Git snapshots, navigable map, and exact reads</td>
+<td>Marc</td>
+<td>40 min</td>
+<td>13:30</td>
+<td>T02</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T06">T06</a></td>
+<td>Protected investigation and decision transactions</td>
+<td>Eassa</td>
+<td>35 min</td>
+<td>13:30</td>
+<td>T02, T04</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T07">T07</a></td>
+<td>Literal plus bounded structural search</td>
+<td>Andrew</td>
+<td>35 min</td>
+<td>14:15</td>
+<td>T02, T04</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T08">T08</a></td>
+<td>Useful headless MCP tools, not just a ping</td>
+<td>Eassa</td>
+<td>35 min</td>
+<td>14:00</td>
+<td>T05, T06</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T09">T09</a></td>
+<td>Persistent workbench and implementation brief</td>
+<td>Marc</td>
+<td>40 min</td>
+<td>14:15</td>
+<td>T05, T06</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T10">T10</a></td>
+<td>One live reasoning driver and a real correction</td>
+<td>Marc</td>
+<td>35 min</td>
+<td>15:00</td>
+<td>T07, T09</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-T11">T11</a></td>
+<td>First complete recording and integrated regressions</td>
+<td>Andrew</td>
+<td>30 min</td>
+<td>15:00</td>
+<td>T08, T09, T10</td>
+<td>core</td>
+</tr>
+<tr>
+<td><a href="#ticket-I01">I01</a></td>
+<td>Managed identity through the actual backend</td>
+<td>Eassa</td>
+<td>35 min</td>
+<td>14:30</td>
+<td>T06</td>
+<td>integration</td>
+</tr>
+<tr>
+<td><a href="#ticket-I02">I02</a></td>
+<td>Ergonomic selected-repository GitHub connection</td>
+<td>Marc</td>
+<td>35 min</td>
+<td>14:15</td>
+<td>T05, I01</td>
+<td>optional</td>
+</tr>
+<tr>
+<td><a href="#ticket-I03">I03</a></td>
+<td>Approved GitHub issue publication</td>
+<td>Marc</td>
+<td>25 min</td>
+<td>15:30</td>
+<td>T09, I01, I02</td>
+<td>optional</td>
+</tr>
+<tr>
+<td><a href="#ticket-I04">I04</a></td>
+<td>GalaxyGate deployment and one actual remote MCP host</td>
+<td>Eassa</td>
+<td>35 min</td>
+<td>15:30</td>
+<td>T08, I01</td>
+<td>integration</td>
+</tr>
+<tr>
+<td><a href="#ticket-I05">I05</a></td>
+<td>Read a specialist outcome back into the map</td>
+<td>Any qualified teammate</td>
+<td>25 min</td>
+<td>16:00</td>
+<td>T09, I02, T11</td>
+<td>optional</td>
+</tr>
+<tr>
+<td><a href="#ticket-F01">F01</a></td>
+<td>Feature freeze, retest, and final rehearsal</td>
+<td>Andrew</td>
+<td>40 min</td>
+<td>16:30</td>
+<td>T11</td>
+<td>release</td>
+</tr>
+<tr>
+<td><a href="#ticket-F02">F02</a></td>
+<td>Submission, disclosure, and Code Registry handoff</td>
+<td>Eassa</td>
+<td>30 min</td>
+<td>17:30</td>
+<td>F01</td>
+<td>release</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="07-tickets-no-hidden-dependency-debt">No hidden dependency debt</h2>
+<p>A prerequisite must be an actual usable artifact, not an entire person's lane. Record the exact commit and remaining limitations when releasing a dependent ticket. Early skeleton/interface commits let fixture/theme work proceed; they do not imply an unfinished backend has passed tests.</p>
+<p>A failed optional integration never makes the core ticket DONE by definition. Update its capabilities/claims explicitly. If there are more READY tasks than people, choose the task that unblocks the next clock checkpoint, then remote connectivity, then optional ergonomics.</p>
+<p>Review work is real capacity. Prefer review/merge before starting another implementation. At most one active writer per human. Pairing or a second review agent does not create an extra implementation lane.</p>
+<h2 id="07-tickets-example-issued-ticket-conversation">Example issued-ticket conversation</h2>
+<p>"Next for Marc" → PM inspects current trunk, merges/checks/claims and clock → chooses a ready ticket → records owner and exact dependencies → provides its complete task body.</p>
+<p>"Done T09 at &lt;actual SHA&gt;" → PM verifies diff, acceptance receipt and review → integrates and retests affected path → marks DONE → releases newly READY tickets.</p>
+<p>"T08 blocked on installed export" → record package/export evidence → stop guessing → keep local validated interface or explicit unsupported result → another ready ticket. No compatibility patch made of any casts.</p>
+</section><section class="chapter" id="role-eassa"><h1 id="role-eassa-eassa-portable-build-brief">Eassa: portable build brief</h1>
+<h2 id="role-eassa-your-specialty">Your specialty</h2>
+<p><strong>Integration captain and platform owner.</strong> Start order: G0 → T01 → T02, then T06/T08 and bounded I01/I04 integration. These are ownership centers, not walls; once your accepted ticket is done, request another READY task.</p>
+<p>Root/toolchain, public contract/generation, common principal/grant/revision admission, CI wiring, safe deployment and integration choices.</p>
+<p>Do not take every GitHub API call, feature Convex function, UI component, or security test. Marc owns product behavior; Andrew can implement test infrastructure and trusted scanner fixtures. Review shared seams; let others review ordinary feature changes.</p>
+<h2 id="role-eassa-the-shared-product-contract">The shared product contract</h2>
+<p>Think-wide helps people and agents navigate evidence across projects. It retains decisions and emits a scoped implementation brief. Specialist coding agents implement inside the target repository. Think-wide does not repair code, run target tests, install target dependencies, create branches/PRs, merge/deploy, or dispatch an autonomous coder. Trusted bounded Git/text/AST reads remain useful product tools.</p>
+<p>Convex owns application state. Git evidence is identified by snapshot/blob/path/range and remains exact. The metadata tree is a navigable index, not another authored source tree. Generated views can change; human decisions and exact refs survive. One operation/policy boundary is shared by owned web, MCP, and any CLI.</p>
+<p>The interface uses a reviewed tweakcn/shadcn theme, TanStack/React components and a closed semantic catalog. MCP remains a real agent-facing interface, not a future logo. A local demonstration does not prove remote ChatGPT/Claude.ai connectivity.</p>
+<h2 id="role-eassa-before-writing">Before writing</h2>
+<p>This package is documentation, not starter application code. Do not copy the old launch kit. Inspect the actual selected repository, its instructions, status, branch and installed dependencies. Wait for the permitted event window and real task authority. Do not reset or overwrite another person's work.</p>
+<p>Obtain your issued GitHub ticket with actual prerequisite commits, contract version, writable areas, timebox, hard stop, reviewer and acceptance. Use one branch/worktree and one active writer. Root manifests/lockfile, canonical contract, auth profiles, schema composition and CI/deploy permissions are coordinated surfaces.</p>
+<h2 id="role-eassa-what-matters-most-in-your-lane">What matters most in your lane</h2>
+<p>At each checkpoint inspect actual trunk, blocked core edge, available next task, current auth/source/host mode, and the recording. A folder or package export is not live integration. Hosted WorkOS/Convex settings remain unverified until tested.</p>
+<h2 id="role-eassa-clock-and-fallback">Clock and fallback</h2>
+<p>September 20, 2026, America/New_York: 12:30 shared local foundation; 13:30 protected evidence or isolated local mode; 14:15 two immutable repos; 15:00 complete loop + preserved recording; 15:30 brief; 16:00 feature freeze; 16:30 rehearsal. Follow the actual organizer build window and the chosen track's final deadlines. Do not silently extend a clock when starting late.</p>
+<p>If authentication is blocking, fallback is loopback/stdio with operator-selected public/synthetic source only, no tunnel and no issue publishing. Never deploy a fixture principal or remove audience checks. Cutting a failed integration from today's critical path does not mark it implemented.</p>
+<h2 id="role-eassa-complete-the-ticket-then-pull-another">Complete the ticket, then pull another</h2>
+<p>Send the coordinator commit/branch, changed behavior, actual checks/results, live/local/mock status, known gaps, and next useful action. A completion message is not evidence. REVIEW becomes DONE only after accepted integration into trunk and affected regression checks.</p>
+<p>After roughly ten minutes of speculative API failure, stop, record the installed package/export and official source, and request READY work. Don't hide incompatibility behind <code>any</code>, disabled validation or parallel interfaces.</p>
+<p>Ask the PM in ordinary language: "Next for Eassa", "Blocked &lt;ticket&gt;: &lt;fact&gt;", or "Done &lt;ticket&gt; at &lt;SHA&gt;, evidence &lt;path&gt;". These are messages, not installed commands. The coordinator reconciles on request; it is not an unattended scheduler.</p>
+<h2 id="role-eassa-relevant-task-seeds">Relevant task seeds</h2>
+<p><a href="#ticket-T01">T01</a>, <a href="#ticket-T02">T02</a>, <a href="#ticket-T06">T06</a>, <a href="#ticket-T08">T08</a>, <a href="#ticket-I01">I01</a>, <a href="#ticket-I04">I04</a></p>
+<p>Full detail is available just in time in <a href="#03-tools-and-map">Tools/map</a>, <a href="#04-build-contract">Contract/Convex/UI</a>, <a href="#05-security-and-ci">Security/CI</a>, and <a href="#01-phase0-and-clock">Clock</a>. The issued ticket should include every important requirement needed for that slice rather than relying on an old chat.</p>
+</section><section class="chapter" id="role-marc"><h1 id="role-marc-marc-portable-build-brief">Marc: portable build brief</h1>
+<h2 id="role-marc-your-specialty">Your specialty</h2>
+<p><strong>End-to-end product behavior.</strong> Start order: T03 → T05 → T09 → T10; pair on T11; optional I02/I03 only when ready before cutoff. These are ownership centers, not walls; once your accepted ticket is done, request another READY task.</p>
+<p>Theme/catalog/workbench, source adapter behavior, feature-specific Convex projections/decisions, discovery/reasoning and implementation brief.</p>
+<p>Do not build a second backend inside UI routes or invent another ownership model. Use common verified principal/command operations. Do not wait for every remote integration before building real local persistence. Synthetic UI is clearly synthetic until wired.</p>
+<h2 id="role-marc-the-shared-product-contract">The shared product contract</h2>
+<p>Think-wide helps people and agents navigate evidence across projects. It retains decisions and emits a scoped implementation brief. Specialist coding agents implement inside the target repository. Think-wide does not repair code, run target tests, install target dependencies, create branches/PRs, merge/deploy, or dispatch an autonomous coder. Trusted bounded Git/text/AST reads remain useful product tools.</p>
+<p>Convex owns application state. Git evidence is identified by snapshot/blob/path/range and remains exact. The metadata tree is a navigable index, not another authored source tree. Generated views can change; human decisions and exact refs survive. One operation/policy boundary is shared by owned web, MCP, and any CLI.</p>
+<p>The interface uses a reviewed tweakcn/shadcn theme, TanStack/React components and a closed semantic catalog. MCP remains a real agent-facing interface, not a future logo. A local demonstration does not prove remote ChatGPT/Claude.ai connectivity.</p>
+<h2 id="role-marc-before-writing">Before writing</h2>
+<p>This package is documentation, not starter application code. Do not copy the old launch kit. Inspect the actual selected repository, its instructions, status, branch and installed dependencies. Wait for the permitted event window and real task authority. Do not reset or overwrite another person's work.</p>
+<p>Obtain your issued GitHub ticket with actual prerequisite commits, contract version, writable areas, timebox, hard stop, reviewer and acceptance. Use one branch/worktree and one active writer. Root manifests/lockfile, canonical contract, auth profiles, schema composition and CI/deploy permissions are coordinated surfaces.</p>
+<h2 id="role-marc-what-matters-most-in-your-lane">What matters most in your lane</h2>
+<p>Get the real theme/token baseline first; persist correction independently from the generated view; ensure exact evidence and decisions survive reopening. Keep issue POST separate from producing the brief. Record the first complete loop with Andrew at 15:00.</p>
+<h2 id="role-marc-clock-and-fallback">Clock and fallback</h2>
+<p>September 20, 2026, America/New_York: 12:30 shared local foundation; 13:30 protected evidence or isolated local mode; 14:15 two immutable repos; 15:00 complete loop + preserved recording; 15:30 brief; 16:00 feature freeze; 16:30 rehearsal. Follow the actual organizer build window and the chosen track's final deadlines. Do not silently extend a clock when starting late.</p>
+<p>If authentication is blocking, fallback is loopback/stdio with operator-selected public/synthetic source only, no tunnel and no issue publishing. Never deploy a fixture principal or remove audience checks. Cutting a failed integration from today's critical path does not mark it implemented.</p>
+<h2 id="role-marc-complete-the-ticket-then-pull-another">Complete the ticket, then pull another</h2>
+<p>Send the coordinator commit/branch, changed behavior, actual checks/results, live/local/mock status, known gaps, and next useful action. A completion message is not evidence. REVIEW becomes DONE only after accepted integration into trunk and affected regression checks.</p>
+<p>After roughly ten minutes of speculative API failure, stop, record the installed package/export and official source, and request READY work. Don't hide incompatibility behind <code>any</code>, disabled validation or parallel interfaces.</p>
+<p>Ask the PM in ordinary language: "Next for Marc", "Blocked &lt;ticket&gt;: &lt;fact&gt;", or "Done &lt;ticket&gt; at &lt;SHA&gt;, evidence &lt;path&gt;". These are messages, not installed commands. The coordinator reconciles on request; it is not an unattended scheduler.</p>
+<h2 id="role-marc-relevant-task-seeds">Relevant task seeds</h2>
+<p><a href="#ticket-T03">T03</a>, <a href="#ticket-T05">T05</a>, <a href="#ticket-T09">T09</a>, <a href="#ticket-T10">T10</a>, <a href="#ticket-I02">I02</a>, <a href="#ticket-I03">I03</a></p>
+<p>Full detail is available just in time in <a href="#03-tools-and-map">Tools/map</a>, <a href="#04-build-contract">Contract/Convex/UI</a>, <a href="#05-security-and-ci">Security/CI</a>, and <a href="#01-phase0-and-clock">Clock</a>. The issued ticket should include every important requirement needed for that slice rather than relying on an old chat.</p>
+</section><section class="chapter" id="role-andrew"><h1 id="role-andrew-andrew-portable-build-brief">Andrew: portable build brief</h1>
+<h2 id="role-andrew-your-specialty">Your specialty</h2>
+<p><strong>Security verification and evidence.</strong> Start order: T04 → T07 where ready; test T06/T08 as they land; T11 → F01. These are ownership centers, not walls; once your accepted ticket is done, request another READY task.</p>
+<p>Independent fixtures, permissions/effect harness, trusted structural-rule tests, adversarial cases, adapter/host verification and sanitized release evidence.</p>
+<p>Do not wait for WorkOS to begin, reinstall every scanner, or become owner of all auth implementation. The implementer fixes their boundary; you reproduce, pair, and verify. Your earlier local readiness checks are not Think-wide application passes.</p>
+<h2 id="role-andrew-the-shared-product-contract">The shared product contract</h2>
+<p>Think-wide helps people and agents navigate evidence across projects. It retains decisions and emits a scoped implementation brief. Specialist coding agents implement inside the target repository. Think-wide does not repair code, run target tests, install target dependencies, create branches/PRs, merge/deploy, or dispatch an autonomous coder. Trusted bounded Git/text/AST reads remain useful product tools.</p>
+<p>Convex owns application state. Git evidence is identified by snapshot/blob/path/range and remains exact. The metadata tree is a navigable index, not another authored source tree. Generated views can change; human decisions and exact refs survive. One operation/policy boundary is shared by owned web, MCP, and any CLI.</p>
+<p>The interface uses a reviewed tweakcn/shadcn theme, TanStack/React components and a closed semantic catalog. MCP remains a real agent-facing interface, not a future logo. A local demonstration does not prove remote ChatGPT/Claude.ai connectivity.</p>
+<h2 id="role-andrew-before-writing">Before writing</h2>
+<p>This package is documentation, not starter application code. Do not copy the old launch kit. Inspect the actual selected repository, its instructions, status, branch and installed dependencies. Wait for the permitted event window and real task authority. Do not reset or overwrite another person's work.</p>
+<p>Obtain your issued GitHub ticket with actual prerequisite commits, contract version, writable areas, timebox, hard stop, reviewer and acceptance. Use one branch/worktree and one active writer. Root manifests/lockfile, canonical contract, auth profiles, schema composition and CI/deploy permissions are coordinated surfaces.</p>
+<h2 id="role-andrew-what-matters-most-in-your-lane">What matters most in your lane</h2>
+<p>Prove A and B's positive controls first, then foreign IDs and changed state. Check returned bytes AND business state/jobs/provider dispatch. Maintain unit/local/live/deployed distinctions; verify the merged build. Treat an unsupported mode as missing, not a passing scan.</p>
+<h2 id="role-andrew-clock-and-fallback">Clock and fallback</h2>
+<p>September 20, 2026, America/New_York: 12:30 shared local foundation; 13:30 protected evidence or isolated local mode; 14:15 two immutable repos; 15:00 complete loop + preserved recording; 15:30 brief; 16:00 feature freeze; 16:30 rehearsal. Follow the actual organizer build window and the chosen track's final deadlines. Do not silently extend a clock when starting late.</p>
+<p>If authentication is blocking, fallback is loopback/stdio with operator-selected public/synthetic source only, no tunnel and no issue publishing. Never deploy a fixture principal or remove audience checks. Cutting a failed integration from today's critical path does not mark it implemented.</p>
+<h2 id="role-andrew-complete-the-ticket-then-pull-another">Complete the ticket, then pull another</h2>
+<p>Send the coordinator commit/branch, changed behavior, actual checks/results, live/local/mock status, known gaps, and next useful action. A completion message is not evidence. REVIEW becomes DONE only after accepted integration into trunk and affected regression checks.</p>
+<p>After roughly ten minutes of speculative API failure, stop, record the installed package/export and official source, and request READY work. Don't hide incompatibility behind <code>any</code>, disabled validation or parallel interfaces.</p>
+<p>Ask the PM in ordinary language: "Next for Andrew", "Blocked &lt;ticket&gt;: &lt;fact&gt;", or "Done &lt;ticket&gt; at &lt;SHA&gt;, evidence &lt;path&gt;". These are messages, not installed commands. The coordinator reconciles on request; it is not an unattended scheduler.</p>
+<h2 id="role-andrew-relevant-task-seeds">Relevant task seeds</h2>
+<p><a href="#ticket-T04">T04</a>, <a href="#ticket-T07">T07</a>, <a href="#ticket-T11">T11</a>, <a href="#ticket-F01">F01</a>, <a href="#05-security-and-ci">Security specifications</a></p>
+<p>Full detail is available just in time in <a href="#03-tools-and-map">Tools/map</a>, <a href="#04-build-contract">Contract/Convex/UI</a>, <a href="#05-security-and-ci">Security/CI</a>, and <a href="#01-phase0-and-clock">Clock</a>. The issued ticket should include every important requirement needed for that slice rather than relying on an old chat.</p>
+</section><details class="ticket" id="ticket-G0"><summary><b>G0</b> Confirm the event boundary and first acceptance <span>10 min · stop 11:25 EDT</span></summary><div class="ticket-body"><h1 id="ticket-G0-g0-confirm-the-event-boundary-and-first-acceptance">G0 | Confirm the event boundary and first acceptance</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-G0-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>10 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 11:25 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: None. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: Planning/disclosure note and board only. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-G0-goal">Goal</h2>
+<p>Confirm actual clock, permitted build start, track, repo identity, available authority, allowed source data, and the first complete product loop. No setup from the old starter.</p>
+<h2 id="ticket-G0-done-means">Done means</h2>
+<p>One short source-linked event/mode/disclosure record; Eassa/Marc/Andrew know their first tasks; unverified account facts remain explicit.</p>
+<h2 id="ticket-G0-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Before coding is permitted, remain documentation-only. If starting late, apply elapsed cuts instead of resetting the clock.</p>
+<h2 id="ticket-G0-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Marc + Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>The three people participate briefly; this is not an additional PM engineer. The 11:25 target assumes the conservative 11:10 build start.</p>
+<h2 id="ticket-G0-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T01"><summary><b>T01</b> Initialize the single shared checkout <span>20 min · stop 12:00 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T01-t01-initialize-the-single-shared-checkout">T01 | Initialize the single shared checkout</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T01-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>20 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 12:00 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: G0. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: Root manifest/lock/toolchain, instructions, .github initial check, directory skeleton. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T01-goal">Goal</h2>
+<p>Initialize during the allowed window, resolve the first framework/tooling baseline, and expose a shared branch plus operation design draft so both other people can begin.</p>
+<h2 id="ticket-T01-done-means">Done means</h2>
+<p>Real shared repo; actual initial package resolution or explicit blocked dependency; baseline commit; agreed field/operation meanings; everyone can obtain the same checkout. No imported app starter or fake lockfile.</p>
+<h2 id="ticket-T01-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Keep a minimal supported root project and official scaffold route. Drop optional tooling rather than creating parallel scaffolds or bypassing review.</p>
+<h2 id="ticket-T01-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Marc. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Publish the root skeleton and contract-design note as an early commit; T02 continues generation/local state. Other owners can start from that actual commit.</p>
+<h2 id="ticket-T01-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T02"><summary><b>T02</b> Contract generation and local Convex <span>45 min · stop 12:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T02-t02-contract-generation-and-local-convex">T02 | Contract generation and local Convex</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T02-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>45 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 12:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: contracts/, generated/, scripts/ build checks, convex/schema.ts and auth scaffold, infra/local configuration. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T02-goal">Goal</h2>
+<p>Author the first public contract during the event, generate public types/runtime validators, and prove a local self-hosted Convex write/read using disposable data.</p>
+<h2 id="ticket-T02-done-means">Done means</h2>
+<p>Committed real lockfile; repeatable generation; nested invalid payload rejected; local Convex alive with persistent volume; no deploy admin credential in app clients. Record exact installed packages and actual calls.</p>
+<h2 id="ticket-T02-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Unready remote hosting leaves the critical path. Use the proven local backend. For generator incompatibility pin its supported compiler/API or reduce the supported schema subset; no runtime any-shaped bypass.</p>
+<h2 id="ticket-T02-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Only the required operations and explicit handler registry. Do not generate a universal MCP/CLI platform. Publish the schema/fixture interface before waiting for all integration checks.</p>
+<h2 id="ticket-T02-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T03"><summary><b>T03</b> Theme and the real product component workshop <span>35 min · stop 12:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T03-t03-theme-and-the-real-product-component-workshop">T03 | Theme and the real product component workshop</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T03-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 12:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/components/, src/routes/ workshop and shell, src/styles/. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T03-goal">Goal</h2>
+<p>Choose the tweakcn theme with Eassa and implement EvidencePair, ConnectionCard, ConstraintEditor, HandoffPreview and bounded composition against the reviewed contract design.</p>
+<h2 id="ticket-T03-done-means">Done means</h2>
+<p>Installed imports/build checked; theme in one reviewed token file; keyboard-usable correction input; synthetic workshop clearly labeled; no network/provider claim or arbitrary HTML/CSS from the model.</p>
+<h2 id="ticket-T03-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>If Start/A2UI wiring fails its probe, retain the same React/Router shell and deterministic catalog. Mark the specific protocol unimplemented; do not add a second UI stack.</p>
+<h2 id="ticket-T03-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Do not wait for hosted WorkOS/GitHub. The workshop is not the product completion gate. Shared dependency additions go through the lock owner.</p>
+<h2 id="ticket-T03-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T04"><summary><b>T04</b> Fixture and effect harness, not more scanner setup <span>40 min · stop 12:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T04-t04-fixture-and-effect-harness-not-more-scanner-setup">T04 | Fixture and effect harness, not more scanner setup</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T04-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Andrew</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>40 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 12:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: tests/fixtures/, tests/helpers/, test configuration; CI test steps in coordination with Eassa. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T04-goal">Goal</h2>
+<p>Define independent A/B fixtures, exact byte/path cases, delayed provider responses, and state/job/provider counters. Adapt existing installed tools to the actual app.</p>
+<h2 id="ticket-T04-done-means">Done means</h2>
+<p>Runnable harness or clearly scoped tests against the first actual functions; positive and negative expectations; synthetic source metadata; provider stubs with observable effects. No mock that replaces the policy with an assumed deny.</p>
+<h2 id="ticket-T04-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Use the existing app runner and small direct harness. Do not block on extra scanners or hosted credentials; mark hosted verification NOT RUN.</p>
+<h2 id="ticket-T04-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Eassa. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Contract prose is enough to prepare independent cases. Integrate actual handlers after T02/T06 before claiming application-policy passes. The shared root install is owned by T01/T02.</p>
+<h2 id="ticket-T04-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T05"><summary><b>T05</b> Two Git snapshots, navigable map, and exact reads <span>40 min · stop 13:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T05-t05-two-git-snapshots-navigable-map-and-exact-reads">T05 | Two Git snapshots, navigable map, and exact reads</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T05-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>40 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 13:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T02. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/sources/, convex/repositories and entries, exact-reference core helpers. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T05-goal">Goal</h2>
+<p>Load two permitted local Git snapshots or an already authorized provider source. Build bounded tree metadata and exact source retrieval without executing target code.</p>
+<h2 id="ticket-T05-done-means">Done means</h2>
+<p>Two actual commit/tree identities; browse immediate children; exact ranges/digests match original bytes; coverage and missing-source states work; source refs reach the shared domain boundary.</p>
+<h2 id="ticket-T05-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Freeze a blocked live provider connector. Use selected immutable local Git snapshots with truthful provenance, not invented historical evidence.</p>
+<h2 id="ticket-T05-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Use safe Git object reading or equivalent provider APIs, not target hooks, submodules, filters, or package installs. Coordinate reference shape changes with T02.</p>
+<h2 id="ticket-T05-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T06"><summary><b>T06</b> Protected investigation and decision transactions <span>35 min · stop 13:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T06-t06-protected-investigation-and-decision-transactions">T06 | Protected investigation and decision transactions</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T06-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 13:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T02, T04. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: core/authorization and commands, convex/investigations, decisions, runs, scoped query helpers. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T06-goal">Goal</h2>
+<p>Implement current object grants, persistent investigations/decisions, revision fencing, duplicate-command receipts, and admitted run state. This is the shared boundary Marc consumes.</p>
+<h2 id="ticket-T06-done-means">Done means</h2>
+<p>A/B own reads work and cross-owner operations fail in real handlers; correction persists; duplicate and changed-key cases behave correctly; jobs cannot publish under stale/revoked state.</p>
+<h2 id="ticket-T06-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Hosted identity can remain a separate I01 integration. Keep isolated fixture-identity tests or loopback demo authority; do not expose test principals publicly or use admin credentials.</p>
+<h2 id="ticket-T06-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>T05 actual sources can be attached as they land. Real JWT verification is separately required before connected-mode claims. Feature-specific UI behavior remains Marc-owned.</p>
+<h2 id="ticket-T06-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T07"><summary><b>T07</b> Literal plus bounded structural search <span>35 min · stop 14:15 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T07-t07-literal-plus-bounded-structural-search">T07 | Literal plus bounded structural search</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T07-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Andrew</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 14:15 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T02, T04. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/analysis/, skills/ trusted recipe content, tests/structural/. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T07-goal">Goal</h2>
+<p>Implement or pair on a fixed-string search and a small ast-grep recipe path. Treat matches as structural evidence, not proven semantics.</p>
+<h2 id="ticket-T07-done-means">Done means</h2>
+<p>Known matching/nonmatching snippets; JSON ranges map to exact source refs; limits and parse failures visible; no rewrite/plugin/shell input; final scan runs on T05 snapshots before completion.</p>
+<h2 id="ticket-T07-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Keep literal search complete and explicitly mark AST unsupported if its binary/profile cannot be proven. Do not quietly relabel text search structural. Record the missing structural capability.</p>
+<h2 id="ticket-T07-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Marc. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Can start on trusted rule fixtures before T05 finishes. Closure additionally needs T05 source refs and actual snapshot scan. Free Marc/Eassa may implement the adapter while Andrew owns its independent rule/effect tests.</p>
+<h2 id="ticket-T07-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T08"><summary><b>T08</b> Useful headless MCP tools, not just a ping <span>35 min · stop 14:00 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T08-t08-useful-headless-mcp-tools-not-just-a-ping">T08 | Useful headless MCP tools, not just a ping</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T08-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 14:00 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T05, T06. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/mcp/, thin HTTP/tool adapters, actual installed-SDK compatibility test. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T08-goal">Goal</h2>
+<p>Expose the same scope/browse/search/read/decision/handoff contract through MCP using the installed supported SDK profile. Keep exact-read and guidance tools even without embedded UI.</p>
+<h2 id="ticket-T08-done-means">Done means</h2>
+<p>A real local MCP client lists and invokes scoped tree and exact read; at least one saved decision operation uses the shared handler; invalid/foreign refs denied; chosen protocol and output caps recorded.</p>
+<h2 id="ticket-T08-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Use a supported local stdio or loopback transport with the same domain rules. Mark remote ChatGPT/Claude.ai support incomplete; never publish an anonymous test endpoint.</p>
+<h2 id="ticket-T08-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew or Eassa if Andrew implements. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Andrew can claim this thin adapter after T07 while Eassa handles I01, using his existing MCP tooling and the frozen contract. One import/export probe, one documented interoperability attempt. Do not invent a handler API. Remote identity/deployment and host use are I01/I04, not inferred from Inspector.</p>
+<h2 id="ticket-T08-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T09"><summary><b>T09</b> Persistent workbench and implementation brief <span>40 min · stop 14:15 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T09-t09-persistent-workbench-and-implementation-brief">T09 | Persistent workbench and implementation brief</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T09-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>40 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 14:15 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T05, T06. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/routes/investigation, src/components/behavior, convex/feature projections, handoff core. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T09-goal">Goal</h2>
+<p>Replace workshop memory with actual persisted investigation/decision commands. Generate a deterministic Markdown work brief from the accepted revision and exact evidence.</p>
+<h2 id="ticket-T09-done-means">Done means</h2>
+<p>Correction and prior rejection survive reload; no LLM required to save them; brief contains base commit, constraints, refs, uncertainties, acceptance, scope and hash; unsupported issue publication visibly disabled.</p>
+<h2 id="ticket-T09-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Use a simpler stable workbench and downloadable/copyable brief. Keep persistence, exact evidence and human intervention; remove animation or optional compositions, not the core loop.</p>
+<h2 id="ticket-T09-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Brief export does not wait for GitHub Issues write access. Handoff body must obey the audience of all consumed evidence, including private decisions.</p>
+<h2 id="ticket-T09-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T10"><summary><b>T10</b> One live reasoning driver and a real correction <span>35 min · stop 15:00 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T10-t10-one-live-reasoning-driver-and-a-real-correction">T10 | One live reasoning driver and a real correction</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T10-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 15:00 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T07, T09. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/reasoning or convex/internalActions, proposal validation, catalog composition. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T10-goal">Goal</h2>
+<p>Connect one real model path, either a working MCP host or admitted backend provider. Use bounded evidence instead of full repos, and change the conclusion after a human correction.</p>
+<h2 id="ticket-T10-done-means">Done means</h2>
+<p>Actual reasoning/tool round trip; tentative claim tied to refs; correction changes accepted comparison/brief; stale proposal rejected; model/source/coverage and live/mock state recorded.</p>
+<h2 id="ticket-T10-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Use the other already available approved driver, not another new orchestration library. If no live model is available, label the limitation and do not close the complete-agentic-loop gate.</p>
+<h2 id="ticket-T10-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Eassa + Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Single driver per run. No hidden second layout model. T07 fallback may allow a literal-only degraded demo, but structural search remains an explicit missing capability.</p>
+<h2 id="ticket-T10-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-T11"><summary><b>T11</b> First complete recording and integrated regressions <span>30 min · stop 15:00 EDT</span></summary><div class="ticket-body"><h1 id="ticket-T11-t11-first-complete-recording-and-integrated-regressions">T11 | First complete recording and integrated regressions</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-T11-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Andrew</strong>. Actual owner: unclaimed until the PM assigns. Class: core.</p>
+<p>Attempt timebox: <strong>30 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 15:00 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T08, T09, T10. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: tests/integration/, tests/e2e/, sanitized evidence and recording manifest. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-T11-goal">Goal</h2>
+<p>Drive the whole question/evidence/correction/reopen/brief flow on the combined commit and preserve a best-known-good recording. Pair with Marc for capture.</p>
+<h2 id="ticket-T11-done-means">Done means</h2>
+<p>Q01, Q04, Q06, Q07, Q15 relevant checks; recorded commit/config/data/driver; original recording preserved; current missing host/deploy/issue capabilities stated.</p>
+<h2 id="ticket-T11-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>If the full loop fails, stop optional integrations and assign the smallest missing link. Save partial evidence without labeling it the completed loop.</p>
+<h2 id="ticket-T11-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Marc. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Record by 15:00 whenever a complete path exists, even if this ticket has not finished all regression reporting. No dependency excuses for losing the first good recording.</p>
+<h2 id="ticket-T11-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-I01"><summary><b>I01</b> Managed identity through the actual backend <span>35 min · stop 14:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-I01-i01-managed-identity-through-the-actual-backend">I01 | Managed identity through the actual backend</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-I01-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: integration.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 14:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T06. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/auth/, convex/auth.config and principal mapping, non-secret integration receipts. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-I01-goal">Goal</h2>
+<p>Configure the authorized WorkOS environment, confirm accepted resource/audience and issuer/JWKS, and prove a real user identity at the protected Convex handler.</p>
+<h2 id="ticket-I01-done-means">Done means</h2>
+<p>Real login/accepted principal; wrong-profile/expired cases rejected; no global cross-user client; session/logout policy tested; configured values recorded without secrets.</p>
+<h2 id="ticket-I01-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>After its bounded attempt, remain loopback/stdio on permitted public/synthetic sources. Multiuser and remote-host claims stay disabled. No auth weakening or public fixture mode.</p>
+<h2 id="ticket-I01-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Start the metadata/export compatibility probe early during foundation. It must not block T03/T04/T05. Actual remote host login is completed in I04 after a safe endpoint exists.</p>
+<h2 id="ticket-I01-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-I02"><summary><b>I02</b> Ergonomic selected-repository GitHub connection <span>35 min · stop 14:15 EDT</span></summary><div class="ticket-body"><h1 id="ticket-I02-i02-ergonomic-selected-repository-github-connection">I02 | Ergonomic selected-repository GitHub connection</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-I02-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: optional.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 14:15 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T05, I01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/providers/github/, connector UI, grant/provenance adapter. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-I02-goal">Goal</h2>
+<p>Wire a managed selected-repository GitHub App connection to the existing source contract. Eassa supplies/reviews credential boundaries; Marc implements product-side calls.</p>
+<h2 id="ticket-I02-done-means">Done means</h2>
+<p>Connect/select/read works; installation/repo substitution denied; exact provider snapshot/byte refs; short-lived credentials not in browser, prompts or parser; disconnect stops future access.</p>
+<h2 id="ticket-I02-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>At 14:15 stop connector expansion and use T05 local immutable snapshots. Keep the connector ticket blocked/cut and publish no live-connect claim.</p>
+<h2 id="ticket-I02-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew + Eassa. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>No user PAT collection UI. User app access and GitHub installation entitlement are separate. Take only if ready before its cutoff; it is not an obligation to overbook Marc.</p>
+<h2 id="ticket-I02-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-I03"><summary><b>I03</b> Approved GitHub issue publication <span>25 min · stop 15:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-I03-i03-approved-github-issue-publication">I03 | Approved GitHub issue publication</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-I03-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Marc</strong>. Actual owner: unclaimed until the PM assigns. Class: optional.</p>
+<p>Attempt timebox: <strong>25 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 15:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T09, I01, I02. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/providers/github issue adapter, human confirmation route, effect receipts/tests. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-I03-goal">Goal</h2>
+<p>Publish the exact frozen implementation brief to an authorized compatible-audience repository, with independent human confirmation.</p>
+<h2 id="ticket-I03-done-means">Done means</h2>
+<p>Destination/body/revision bound approval; no broader-audience leak; actual provider issue receipt; duplicate/replay/changed-body/unknown-outcome tests; no contents-write access.</p>
+<h2 id="ticket-I03-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Export the same reviewed Markdown for an authorized human. Mark exported, not published. Do not blind-retry ambiguous issue creation.</p>
+<h2 id="ticket-I03-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Do not start if it cannot fit before 15:30. A private repo connection is not enough to prove destination audience compatibility.</p>
+<h2 id="ticket-I03-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-I04"><summary><b>I04</b> GalaxyGate deployment and one actual remote MCP host <span>35 min · stop 15:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-I04-i04-galaxygate-deployment-and-one-actual-remote-mcp-host">I04 | GalaxyGate deployment and one actual remote MCP host</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-I04-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: integration.</p>
+<p>Attempt timebox: <strong>35 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 15:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T08, I01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: infra/, src/server deployment-only wiring, host compatibility receipts. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-I04-goal">Goal</h2>
+<p>Deploy the already integrated application with private Convex/admin boundaries and connect one real ChatGPT or Claude.ai client. Use a standard reviewed HTTPS deployment, not a weakened tunnel to demo auth.</p>
+<h2 id="ticket-I04-done-means">Done means</h2>
+<p>HTTPS/auth works; intended private ports stay private; real host logs in then browses/searches/reads exact evidence and retrieves a decision/brief; no direct-backend bypass; host/version/profile recorded.</p>
+<h2 id="ticket-I04-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Keep local product development and recording. Mark hosted deployment and remote browser-host connection incomplete. A local MCP pass cannot substitute for this ticket.</p>
+<h2 id="ticket-I04-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Reserve an early slot; do not defer first host attempt until the last hour. Public ingress opens only with real auth. Parser and tool paths still enforce source scope. Embedded MCP App UI is an extra check, not prerequisite to plain tool use.</p>
+<h2 id="ticket-I04-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-I05"><summary><b>I05</b> Read a specialist outcome back into the map <span>25 min · stop 16:00 EDT</span></summary><div class="ticket-body"><h1 id="ticket-I05-i05-read-a-specialist-outcome-back-into-the-map">I05 | Read a specialist outcome back into the map</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-I05-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Any qualified teammate</strong>. Actual owner: unclaimed until the PM assigns. Class: optional.</p>
+<p>Attempt timebox: <strong>25 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 16:00 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T09, I02, T11. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: src/server/providers read-only outcome handling, findings/provenance, outcome tests. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-I05-goal">Goal</h2>
+<p>Attach an actual permitted commit/PR result to a handoff and show observed changes separately from author claims and proposed reusable learning.</p>
+<h2 id="ticket-I05-done-means">Done means</h2>
+<p>Correct repo/object linkage; merged vs closed distinguished; CI/test claims attributed; invalid source refs rejected; existing decisions not silently overwritten.</p>
+<h2 id="ticket-I05-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Leave outcome ingestion as a documented follow-on. It must not reintroduce a repair/execution or dispatch path.</p>
+<h2 id="ticket-I05-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Do not preempt remote MCP or core fixes. Requires spare capacity after the 15:00 recording.</p>
+<h2 id="ticket-I05-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-F01"><summary><b>F01</b> Feature freeze, retest, and final rehearsal <span>40 min · stop 16:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-F01-f01-feature-freeze-retest-and-final-rehearsal">F01 | Feature freeze, retest, and final rehearsal</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-F01-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Andrew</strong>. Actual owner: unclaimed until the PM assigns. Class: release.</p>
+<p>Attempt timebox: <strong>40 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 16:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: T11. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: Regression fixes in assigned areas, sanitized release evidence and recording manifest. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-F01-goal">Goal</h2>
+<p>At 16:00 freeze features and dependencies, test the final integrated path and any enabled optional capability, and rehearse at 16:30.</p>
+<h2 id="ticket-F01-done-means">Done means</h2>
+<p>Current commit/image/config matches claims; required positive/negative cases recorded; optional broken modes disabled; preserved earlier recording; later recording separately identified.</p>
+<h2 id="ticket-F01-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Use the best known good commit/config/recording with truthful labeling. A broken live optional feature is disabled rather than patched by weakening a guard.</p>
+<h2 id="ticket-F01-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Eassa + Marc. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Clock gate applies even if dependencies are incomplete: enter freeze and fix the missing core, not keep adding features. Timebox is coordination/test work; each repair gets its own bounded owner.</p>
+<h2 id="ticket-F01-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><details class="ticket" id="ticket-F02"><summary><b>F02</b> Submission, disclosure, and Code Registry handoff <span>30 min · stop 17:30 EDT</span></summary><div class="ticket-body"><h1 id="ticket-F02-f02-submission-disclosure-and-code-registry-handoff">F02 | Submission, disclosure, and Code Registry handoff</h1>
+<p><strong>Product invariant:</strong> Think-wide supplies cross-project evidence/decisions/briefs. It does not repair or execute source projects. Trusted bounded read-only analysis remains allowed. Exact references and current authorization govern every surface.</p>
+<p><strong>Evidence rule:</strong> Documentation/fixtures, installed APIs, local real handlers, live provider/host, and deployment are separate statuses. No pass without an actual result at the identified commit/config.</p>
+<h2 id="ticket-F02-issuance">Issuance</h2>
+<p>Suggested specialty: <strong>Eassa</strong>. Actual owner: unclaimed until the PM assigns. Class: release.</p>
+<p>Attempt timebox: <strong>30 minutes</strong>, including the first compatibility probe. Hard stop: <strong>September 20, 2026, 17:30 EDT</strong>, or earlier relevant feature cutoff. These bound effort; they are not promised completion times.</p>
+<p>Prerequisite seed IDs: F01. Before READY, replace these with actual integrated commits/artifacts and record the contract version. No stale issue label is sufficient.</p>
+<p>Writable areas: README, disclosure/technology/team list, demo and submission metadata. Confirm actual paths against the new checkout. Shared contract/lock/auth/infra changes need the designated owner and reviewer.</p>
+<h2 id="ticket-F02-goal">Goal</h2>
+<p>Reconcile final artifacts and organizer requirements; prepare submission with the actual permitted repository, video and progress evidence.</p>
+<h2 id="ticket-F02-done-means">Done means</h2>
+<p>Human-reviewed submission package; prior work disclosed; source/dependency floor honestly checked if TCR; build stops at 17:30; actual sync/submission result recorded before deadline.</p>
+<h2 id="ticket-F02-stop-and-fallback">Stop and fallback</h2>
+<p>Stop at the timebox or hard stop, or after about ten minutes of unsupported API guessing. Preserve the branch and explain the concrete blocker before changing tasks.</p>
+<p>Omit an ineligible optional prize claim; retain an honest valid selected-track submission if permitted. Never fabricate code count, timestamps, analysis results or eligibility.</p>
+<h2 id="ticket-F02-review-and-handoff">Review and handoff</h2>
+<p>Review partner: Marc + Andrew. Provide branch/commit, actual changed behavior, exact test commands/results, local/live/mock status, contract/config, remaining gaps, and next useful action. DONE requires acceptance and integration into trunk; otherwise REVIEW or BLOCKED.</p>
+<p>Begin non-code submission preparation at 17:00. Sync must start before 18:00 for TCR. The packet is not authorization to submit or accept rules on behalf of teammates.</p>
+<h2 id="ticket-F02-read-only-when-needed">Read only when needed</h2>
+<p><a href="#02-product-and-architecture">Product architecture</a> · <a href="#03-tools-and-map">Tools and map</a> · <a href="#04-build-contract">Build contract</a> · <a href="#05-security-and-ci">Security/tests</a> · <a href="#01-phase0-and-clock">Clock</a>.</p>
+</div></details><section class="chapter" id="08-sources"><h1 id="08-sources-source-and-decision-register">Source and decision register</h1>
+<p><strong>Research date:</strong> September 20, 2026. Sources below were opened/read through web or the named connector. Documentation verified is not package installed, code executed, account enabled, or integration passed.</p>
+<h2 id="08-sources-primary-sources">Primary sources</h2>
+<h3 id="source-S01">S01: Hackathon rules and timing</h3>
+<p>Devpost connector overview, rules and key dates retrieved September 20, 2026 around 11:53 UTC. Overview build start is 11:10 EDT; structured submissions open 10:00. TCR details and prior-work disclosure were retrieved from the connector. This plan does not resolve organizer ambiguity or establish individual eligibility.</p>
+<ul>
+<li><p><a href="https://coffee-and-code-agent.devpost.com/" rel="noreferrer noopener">https://coffee-and-code-agent.devpost.com/</a></p>
+</li>
+<li><p><a href="https://coffee-and-code-agent.devpost.com/rules" rel="noreferrer noopener">https://coffee-and-code-agent.devpost.com/rules</a></p>
+</li>
+</ul>
+<h3 id="source-S02">S02: Google Open Knowledge Format</h3>
+<p>Inspected main-branch spec labels itself Version 0.2. Markdown/frontmatter and optional directory indexes/cross-links support progressive navigation; storage/query infrastructure is a non-goal. Main is not an immutable release pin. No OKF package installed; no 0.2.0 runtime claim.</p>
+<ul>
+<li><a href="https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md" rel="noreferrer noopener">https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md</a></li>
+</ul>
+<h3 id="source-S03">S03: Git tree inspection</h3>
+<p>Primary reference for exact tree enumeration, object identity and NUL-delimited output. The proposed portfolio representation is our design, not a Git feature.</p>
+<ul>
+<li><a href="https://git-scm.com/docs/git-ls-tree" rel="noreferrer noopener">https://git-scm.com/docs/git-ls-tree</a></li>
+</ul>
+<h3 id="source-S04">S04: Git object reading</h3>
+<p>Primary reference for object type/size/content and batch reading. Exactness, authorization, range handling and safe invocation still require application tests.</p>
+<ul>
+<li><a href="https://git-scm.com/docs/git-cat-file" rel="noreferrer noopener">https://git-scm.com/docs/git-cat-file</a></li>
+</ul>
+<h3 id="source-S05">S05: Convex actions</h3>
+<p>Actions access data through query/mutation calls and can use supported runtimes. External effects are not automatically retried safely. Our bounded admissions and publication checks are application design.</p>
+<ul>
+<li><a href="https://docs.convex.dev/functions/actions" rel="noreferrer noopener">https://docs.convex.dev/functions/actions</a></li>
+</ul>
+<h3 id="source-S06">S06: Convex scheduled functions</h3>
+<p>Atomic scheduling from mutations differs from scheduling from actions. Scheduled user identity and cancellation need explicit treatment. This is not proof of exactly-once external issue creation.</p>
+<ul>
+<li><a href="https://docs.convex.dev/scheduling/scheduled-functions" rel="noreferrer noopener">https://docs.convex.dev/scheduling/scheduled-functions</a></li>
+</ul>
+<h3 id="source-S07">S07: Self-hosted Convex</h3>
+<p>Official route for running the backend on owned infrastructure. Actual GalaxyGate allocation, image digest, volume, exposure and restoration were not inspected.</p>
+<ul>
+<li><a href="https://docs.convex.dev/self-hosting" rel="noreferrer noopener">https://docs.convex.dev/self-hosting</a></li>
+</ul>
+<h3 id="source-S08">S08: Convex custom JWT</h3>
+<p>Configured issuer/JWKS/algorithm and application audience are verifier inputs. No actual WorkOS token profile or hosted backend was tested here.</p>
+<ul>
+<li><a href="https://docs.convex.dev/auth/advanced/custom-jwt" rel="noreferrer noopener">https://docs.convex.dev/auth/advanced/custom-jwt</a></li>
+</ul>
+<h3 id="source-S09">S09: Convex indexes</h3>
+<p>Ordered database indexes support scoped queries. Our repository/snapshot/parent keys and bounded result policy are proposed design, not vendor-supplied authorization.</p>
+<ul>
+<li><a href="https://docs.convex.dev/database/reading-data/indexes" rel="noreferrer noopener">https://docs.convex.dev/database/reading-data/indexes</a></li>
+</ul>
+<h3 id="source-S10">S10: Convex text search</h3>
+<p>Tokenized full-text search is different from exact byte/code search. Literal source inspection remains a separate operation.</p>
+<ul>
+<li><a href="https://docs.convex.dev/search/text-search" rel="noreferrer noopener">https://docs.convex.dev/search/text-search</a></li>
+</ul>
+<h3 id="source-S11">S11: ast-grep JSON and rule tests</h3>
+<p>Structured match results and rule fixtures support reproducible structural discovery. No rule binary was installed/run in this pass. Context7 examples include rewrite modes; do not copy rewrite flags into read-only tools.</p>
+<ul>
+<li><p><a href="https://ast-grep.github.io/guide/tools/json.html" rel="noreferrer noopener">https://ast-grep.github.io/guide/tools/json.html</a></p>
+</li>
+<li><p><a href="https://ast-grep.github.io/guide/test-rule.html" rel="noreferrer noopener">https://ast-grep.github.io/guide/test-rule.html</a></p>
+</li>
+</ul>
+<h3 id="source-S12">S12: Agent Skills format</h3>
+<p>Instructions and supporting references can be loaded progressively. Native host loading and server guidance tools are different integration routes; neither confers authority.</p>
+<ul>
+<li><a href="https://agentskills.io/specification" rel="noreferrer noopener">https://agentskills.io/specification</a></li>
+</ul>
+<h3 id="source-S13">S13: Theme and component styling</h3>
+<p>Tweakcn is the requested theme-selection surface. The extracted page had no text; no preset was selected or verified. shadcn documents semantic CSS variables. Review the actual export during the event.</p>
+<ul>
+<li><p><a href="https://tweakcn.com/" rel="noreferrer noopener">https://tweakcn.com/</a></p>
+</li>
+<li><p><a href="https://ui.shadcn.com/docs/theming" rel="noreferrer noopener">https://ui.shadcn.com/docs/theming</a></p>
+</li>
+</ul>
+<h3 id="source-S14">S14: TanStack Start</h3>
+<p>Primary framework documentation inspected. Resolve compatible Start/Router/Form/React artifacts and actual initialization steps at P0; no scaffold or package tuple is shipped in this box.</p>
+<ul>
+<li><a href="https://tanstack.com/start/latest/docs/framework/react/overview" rel="noreferrer noopener">https://tanstack.com/start/latest/docs/framework/react/overview</a></li>
+</ul>
+<h3 id="source-S15">S15: CopilotKit A2UI</h3>
+<p>Catalog-based composition fits the proposal. Context7 provided current custom-catalog examples with differing import surfaces; actual installed exports and wire compatibility are a gate, not inferred from examples.</p>
+<ul>
+<li><a href="https://docs.copilotkit.ai/generative-ui/a2ui" rel="noreferrer noopener">https://docs.copilotkit.ai/generative-ui/a2ui</a></li>
+</ul>
+<h3 id="source-S16">S16: Blacksmith runners</h3>
+<p>GitHub Actions runner options are documented. No Blacksmith account, integration, workflow or credentials were inspected or configured.</p>
+<ul>
+<li><a href="https://docs.blacksmith.sh/blacksmith-runners/overview" rel="noreferrer noopener">https://docs.blacksmith.sh/blacksmith-runners/overview</a></li>
+</ul>
+<h3 id="source-S17">S17: GitHub Actions secure use</h3>
+<p>Primary guidance for reviewed action pins, least privilege, and untrusted code boundaries. The proposed CI is not a prebuilt YAML file.</p>
+<ul>
+<li><a href="https://docs.github.com/en/actions/reference/security/secure-use" rel="noreferrer noopener">https://docs.github.com/en/actions/reference/security/secure-use</a></li>
+</ul>
+<h3 id="source-S18">S18: Bun 1.4.2</h3>
+<p>The release page exists and was inspected. The requested version remains a candidate to prove with the actual project. Runtime/build/package benefits do not make source input trustworthy or replace typechecking.</p>
+<ul>
+<li><a href="https://bun.sh/blog/bun-v1.4.2" rel="noreferrer noopener">https://bun.sh/blog/bun-v1.4.2</a></li>
+</ul>
+<h3 id="source-S19">S19: TypeScript 7</h3>
+<p>Official release material states TS7 native tooling and compiler-API compatibility limitations. Keep generators on compatible APIs where necessary; do not assume the checker and programmatic compiler API are interchangeable.</p>
+<ul>
+<li><a href="https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/" rel="noreferrer noopener">https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/</a></li>
+</ul>
+<h3 id="source-S20">S20: OpenAPI type generation</h3>
+<p>Primary tooling documentation for OpenAPI type generation. Our supported schema profile and operation exposure decisions must be authored and checked during the event.</p>
+<ul>
+<li><a href="https://openapi-ts.dev/introduction" rel="noreferrer noopener">https://openapi-ts.dev/introduction</a></li>
+</ul>
+<h3 id="source-S21">S21: Ajv standalone validation</h3>
+<p>Build-time validator generation yields code that still validates at runtime. Standalone compilation is not proof arbitrary inputs are valid.</p>
+<ul>
+<li><a href="https://ajv.js.org/standalone.html" rel="noreferrer noopener">https://ajv.js.org/standalone.html</a></li>
+</ul>
+<h3 id="source-S22">S22: WorkOS MCP</h3>
+<p>WorkOS documents protected-resource discovery, resource indicators and token verification. Actual environment permissions/configuration remain untested. No WorkOS credentials were read.</p>
+<ul>
+<li><a href="https://workos.com/docs/authkit/mcp" rel="noreferrer noopener">https://workos.com/docs/authkit/mcp</a></li>
+</ul>
+<h3 id="source-S23">S23: MCP and OpenAI integration</h3>
+<p>Official spec, SDK migration material and OpenAI tool-server documentation inspected. A main-branch symbol is not proof an installed artifact exports it. Public tool compatibility, OAuth and embedded UI are separate acceptance cells.</p>
+<ul>
+<li><p><a href="https://modelcontextprotocol.io/specification/2026-07-28" rel="noreferrer noopener">https://modelcontextprotocol.io/specification/2026-07-28</a></p>
+</li>
+<li><p><a href="https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/migration/support-2026-07-28.md" rel="noreferrer noopener">https://github.com/modelcontextprotocol/typescript-sdk/blob/main/docs/migration/support-2026-07-28.md</a></p>
+</li>
+<li><p><a href="https://developers.openai.com/plugins/build/mcp-server" rel="noreferrer noopener">https://developers.openai.com/plugins/build/mcp-server</a></p>
+</li>
+</ul>
+<h3 id="source-S24">S24: Claude remote connectors</h3>
+<p>Remote custom connector route is documented. No account/host connection was made. A loopback-only server is not a remote service available to the consumer host.</p>
+<ul>
+<li><a href="https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp" rel="noreferrer noopener">https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp</a></li>
+</ul>
+<h3 id="source-S25">S25: GitHub App installation credentials</h3>
+<p>Installation tokens can be narrowed to granted repositories/permissions and expire. Application-user entitlement and downstream audience must still be checked separately.</p>
+<ul>
+<li><a href="https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app" rel="noreferrer noopener">https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-an-installation-access-token-for-a-github-app</a></li>
+</ul>
+<h3 id="source-S26">S26: GitHub issue API</h3>
+<p>Provider endpoint for issue creation. The plan does not assume an idempotency-key guarantee; approvals, effect reservation and unknown-outcome reconciliation remain application responsibilities.</p>
+<ul>
+<li><a href="https://docs.github.com/en/rest/issues/issues#create-an-issue" rel="noreferrer noopener">https://docs.github.com/en/rest/issues/issues#create-an-issue</a></li>
+</ul>
+<h2 id="08-sources-supplied-team-evidence">Supplied team evidence</h2>
+<p><strong>F01: message.txt</strong>, 38 supplied lines. Andrew's WorkOS/gateway/Convex and A/B isolation priorities, current-token mapping, current-grant and downstream-effect expectations. This plan preserves those constraints but removes its conditional repair execution work from product scope.</p>
+<p><strong>F02: notes.txt</strong>, 17 supplied lines. Reports 28 local workstation readiness checks, Bun 1.3.14 mismatch, ast-grep not on PATH, and hosted WorkOS/Convex/deployment not tested. This is reported supplied-file evidence, not a new verification of Andrew's laptop.</p>
+<h2 id="08-sources-new-design-decisions-in-this-box">New design decisions in this box</h2>
+<p>The latest user request is authoritative for the scope change. Remove source-repair/executor functionality; keep bounded read analysis. Use a single coordinator and issue queue. Treat the hierarchy as indexed metadata, with optional OKF export only. Preserve agent-facing tool depth, exact references and durable decisions. Make local fallback non-public. Protect the 15:00 recording and 16:00 feature freeze.</p>
+<p>These are engineering recommendations tailored to the request, not claims made by Google, Convex, WorkOS, GitHub, OpenAI or Anthropic.</p>
+<h2 id="08-sources-remaining-real-world-facts">Remaining real-world facts</h2>
+<p>Actual repo, build start/selected track confirmation, public GitHub identity, account grants, approved model budget, chosen theme, resolved package/lockfile, self-hosted image and storage, accepted token profile, and host interoperability must be established during initialization. They are not fabricated into the task seeds. No legal or organizational eligibility ruling is made.</p>
+<h2 id="08-sources-what-this-research-did-not-do">What this research did not do</h2>
+<p>No application dependencies installed, source test run, model/API execution, GitHub write, source import, WorkOS/Blacksmith configuration, VPS inspection, deployment, or submission. This box deliberately contains no application implementation to test. Packaging/document QA is documented separately in 09_PACKAGE_QA.md.</p>
+</section><section class="chapter" id="09-package-qa"><h1 id="09-package-qa-documentation-and-package-verification">Documentation and package verification</h1>
+<p><strong>Checked:</strong> September 20, 2026. These checks apply only to this planning package. They are not tests of Think-wide, its dependencies, its accounts, or any deployed service.</p>
+<h2 id="09-package-qa-completed-checks">Completed checks</h2>
+<div aria-label="Scrollable table" class="table-scroll" tabindex="0"><table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Observed result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ticket inventory</td>
+<td>19 unique seeds; no duplicate IDs</td>
+</tr>
+<tr>
+<td>Ticket fields</td>
+<td>Every seed has owner/specialty, dependencies, writable paths, timebox, hard stop, acceptance, fallback, review, and handoff requirements</td>
+</tr>
+<tr>
+<td>Dependency graph</td>
+<td>All named prerequisites exist; no cycles</td>
+</tr>
+<tr>
+<td>Timeboxes</td>
+<td>Each attempt is 10–45 minutes, capped additionally by its hard checkpoint</td>
+</tr>
+<tr>
+<td>Allocations</td>
+<td>Core 400 person-minutes; connection integrations 70; optional 85; release 70. These are attempt caps, not promised durations or parallel capacity guarantees.</td>
+</tr>
+<tr>
+<td>Role identity</td>
+<td>Eassa, Marc, and Andrew used consistently; flexible claims remain allowed</td>
+</tr>
+<tr>
+<td>Documentation-only boundary</td>
+<td>No application source, executable test, package/lock manifest, workflow YAML, Docker configuration, generated client, or initialization script included</td>
+</tr>
+<tr>
+<td>Internal links</td>
+<td>Markdown destination files and handbook fragments checked during packaging</td>
+</tr>
+<tr>
+<td>Offline handbook</td>
+<td>No scripts, external fonts, analytics, or remotely loaded assets; source links are ordinary outbound links</td>
+</tr>
+<tr>
+<td>Browser presentation</td>
+<td>In-memory system Chromium rendering checked at 1440px desktop and 390px mobile; no horizontal page overflow; ticket disclosure opens; zero network asset requests</td>
+</tr>
+<tr>
+<td>Scope review</td>
+<td>Repair/target builds/installs/branch creation/coding-agent dispatch remain excluded; bounded read-only analysis remains included</td>
+</tr>
+<tr>
+<td>Fallback review</td>
+<td>Local mode is loopback/stdio with public/synthetic selected inputs; not a public authentication bypass</td>
+</tr>
+<tr>
+<td>Claims review</td>
+<td>Source documentation, supplied reports, planning decisions, and application NOT RUN status are distinguished</td>
+</tr>
+<tr>
+<td>Archive</td>
+<td>Extractable ZIP with per-file SHA-256 manifest; checksums checked against packaged bytes</td>
+</tr>
+</tbody>
+</table></div>
+<p>A source or document hash establishes identity, not truth or security. Markdown/code-block examples are conceptual descriptions or proposed operation names, not an installed implementation.</p>
+<h2 id="09-package-qa-not-performed">Not performed</h2>
+<p>No application dependencies installed; no application generated, built, tested, or deployed; no actual repository scanned/imported; no model call, GitHub issue, account configuration, or submission created. No WorkOS token, GalaxyGate server, Blacksmith organization, or consumer MCP-host session was inspected. Earlier prototype tests are not inherited as passes.</p>
+<p>The prior readiness report about Andrew's workstation is attributed supplied evidence. All Q01–Q18 application/host/deployment acceptance cases start <strong>NOT RUN</strong>.</p>
+<h2 id="09-package-qa-provenance">Provenance</h2>
+<p>This is design and planning produced before the advertised implementation window. The earlier starter kit exists but is not copied or included. Disclose relevant prior design/assets under the selected track's actual rules. This package is not an eligibility ruling.</p>
+</section><footer class="footer">This guide is self-contained and loads no external assets. The linked source pages are outside this file. No source repository or account was changed to create this packet.</footer></main></body></html>
