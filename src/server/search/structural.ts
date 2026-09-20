@@ -146,10 +146,12 @@ const LANGUAGE_BY_EXT: Readonly<Record<string, string>> = {
 
 export function assertNoMutatingArgs(args: readonly string[]): void {
 	for (const arg of args) {
-		if (FORBIDDEN_ARGS.includes(arg))
+		if (FORBIDDEN_ARGS.includes(arg)) {
 			throw new Error(`refusing to run the analyzer with ${arg}`);
-		if (arg.startsWith("--rewrite") || arg.startsWith("--update"))
+		}
+		if (arg.startsWith("--rewrite") || arg.startsWith("--update")) {
 			throw new Error(`refusing to run the analyzer with ${arg}`);
+		}
 	}
 }
 
@@ -160,7 +162,9 @@ export function assertNoMutatingArgs(args: readonly string[]): void {
  */
 function resolveBinary(name = "ast-grep"): string | null {
 	for (const dir of (process.env.PATH ?? "").split(delimiter)) {
-		if (!dir) continue;
+		if (!dir) {
+			continue;
+		}
 		const candidate = join(dir, name);
 		try {
 			accessSync(candidate, constants.X_OK);
@@ -211,7 +215,9 @@ export function resolveAnalyzerImage(): AnalyzerImage | null {
 			? realpathSync(configured)
 			: null
 		: resolveBinary();
-	if (!candidate) return null;
+	if (!candidate) {
+		return null;
+	}
 
 	let head: Buffer;
 	try {
@@ -221,8 +227,9 @@ export function resolveAnalyzerImage(): AnalyzerImage | null {
 	}
 
 	// Native executable: mount exactly this file.
-	if (head.subarray(0, 4).equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46])))
+	if (head.subarray(0, 4).equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46]))) {
 		return { binary: candidate, extraFiles: [] };
+	}
 
 	// A script: mount the script and its interpreter, never their directories.
 	if (head.subarray(0, 2).toString("latin1") === "#!") {
@@ -231,12 +238,16 @@ export function resolveAnalyzerImage(): AnalyzerImage | null {
 		let interpreter: string | undefined = parts[0];
 		// `#!/usr/bin/env node` resolves through PATH inside the sandbox, where PATH is
 		// /usr/bin:/bin; the platform binary below is preferred for the real analyzer.
-		if (interpreter?.endsWith("/env") && parts[1])
+		if (interpreter?.endsWith("/env") && parts[1]) {
 			interpreter = resolveBinary(parts[1]) ?? undefined;
+		}
 		const native = nativeSibling(candidate);
-		if (native) return { binary: native, extraFiles: [] };
-		if (interpreter && existsSync(interpreter))
+		if (native) {
+			return { binary: native, extraFiles: [] };
+		}
+		if (interpreter && existsSync(interpreter)) {
 			return { binary: candidate, extraFiles: [interpreter] };
+		}
 	}
 	return null;
 }
@@ -255,13 +266,16 @@ function nativeSibling(shim: string): string | null {
 		return null;
 	}
 	for (const name of names.sort()) {
-		if (!name.startsWith("cli-")) continue;
+		if (!name.startsWith("cli-")) {
+			continue;
+		}
 		const candidate = join(scope, name, "ast-grep");
 		try {
 			accessSync(candidate, constants.X_OK);
 			const head = firstBytes(candidate, 4);
-			if (head.equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46])))
+			if (head.equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46]))) {
 				return realpathSync(candidate);
+			}
 		} catch {
 			// keep looking
 		}
@@ -309,13 +323,18 @@ export function detectIsolation(
 	options: { force?: boolean; budgetMs?: number } = {},
 ): Isolation {
 	const budget = options.budgetMs ?? 5_000;
-	if (options.force) isolationCache = null;
-	if (isolationCache) return isolationCache;
-	if (budget <= 0)
+	if (options.force) {
+		isolationCache = null;
+	}
+	if (isolationCache) {
+		return isolationCache;
+	}
+	if (budget <= 0) {
 		return {
 			mode: "none",
 			reason: "deadline exhausted before isolation probe",
 		};
+	}
 	const bwrap = resolveBinary("bwrap");
 	const prlimit = resolveBinary("prlimit");
 	if (!bwrap || !prlimit) {
@@ -360,7 +379,9 @@ export function detectIsolation(
 				: err.message,
 		};
 		// A probe we ran out of time for says nothing about the host. Do not cache it.
-		if (!timedOut) isolationCache = result;
+		if (!timedOut) {
+			isolationCache = result;
+		}
 		return result;
 	}
 	return isolationCache;
@@ -454,11 +475,14 @@ export function runAnalyzer(
 	assertNoMutatingArgs(args);
 	const deadline = Date.now() + timeoutMs;
 	const remaining = () => deadline - Date.now();
-	if (timeoutMs <= 0)
+	if (timeoutMs <= 0) {
 		return { stdout: "", failure: "timed_out", exitCode: null };
+	}
 
 	const image = resolveAnalyzerImage();
-	if (!image) return { stdout: "", failure: "not_found", exitCode: null };
+	if (!image) {
+		return { stdout: "", failure: "not_found", exitCode: null };
+	}
 
 	// Detection spends this call's budget; it does not hold a timeout of its own.
 	const isolation = detectIsolation({ budgetMs: remaining() });
@@ -473,7 +497,9 @@ export function runAnalyzer(
 
 	// Whatever setup cost, the subprocess only gets what is left.
 	const budget = remaining();
-	if (budget <= 0) return { stdout: "", failure: "timed_out", exitCode: null };
+	if (budget <= 0) {
+		return { stdout: "", failure: "timed_out", exitCode: null };
+	}
 
 	try {
 		const stdout = execFileSync(argv[0] as string, argv.slice(1), {
@@ -504,9 +530,12 @@ export function runAnalyzer(
 		// different facts and are reported as different reasons.
 		const capped =
 			err.code === "ENOBUFS" || /maxBuffer/i.test(err.message ?? "");
-		if (capped) return { stdout, failure: "output_capped", exitCode: null };
-		if (err.killed === true || err.code === "ETIMEDOUT")
+		if (capped) {
+			return { stdout, failure: "output_capped", exitCode: null };
+		}
+		if (err.killed === true || err.code === "ETIMEDOUT") {
 			return { stdout, failure: "timed_out", exitCode: null };
+		}
 		return {
 			stdout,
 			failure: "exit_status",
@@ -523,12 +552,14 @@ export function loadRules(): readonly Rule[] {
 		const yaml = readFileSync(join(RULES_DIR, file), "utf8");
 		const id = /^id:\s*(\S+)/m.exec(yaml)?.[1];
 		const language = /^language:\s*(\S+)/m.exec(yaml)?.[1];
-		if (!id || !language)
+		if (!id || !language) {
 			throw new Error(`rule ${file} must declare id and language`);
-		if (/^\s*fix:/m.test(yaml))
+		}
+		if (/^\s*fix:/m.test(yaml)) {
 			throw new Error(
 				`rule ${file} declares a fix; this product never rewrites source`,
 			);
+		}
 		return Object.freeze({
 			ruleId: id,
 			language,
@@ -540,7 +571,9 @@ export function loadRules(): readonly Rule[] {
 
 export function getRule(ruleId: string): Rule {
 	const rule = loadRules().find((r) => r.ruleId === ruleId);
-	if (!rule) throw new SearchInputError(`unknown ruleId: ${ruleId}`);
+	if (!rule) {
+		throw new SearchInputError(`unknown ruleId: ${ruleId}`);
+	}
 	return rule;
 }
 
@@ -577,13 +610,14 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 	const deadline = Date.now() + budgetMs;
 	const remaining = () => deadline - Date.now();
 	const isolation = detectIsolation({ budgetMs: remaining() });
-	if (isolation.mode === "none" && !allowUnisolated())
+	if (isolation.mode === "none" && !allowUnisolated()) {
 		return {
 			available: false,
 			version: null,
 			isolation,
 			reason: `analyzer isolation unavailable: ${isolation.reason}`,
 		};
+	}
 
 	// A successful probe is reused, because otherwise every search spends up to 2 s of
 	// its 5 s deadline launching a sandboxed `--version` before staging a single file.
@@ -591,12 +625,14 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 	// record `extractor.version`, so a stale version would misattribute evidence.
 	const image = resolveAnalyzerImage();
 	const key = image ? probeCacheKey(image, isolation) : null;
-	if (key && probeCache?.key === key) return probeCache.probe;
+	if (key && probeCache?.key === key) {
+		return probeCache.probe;
+	}
 
 	const home = mkdtempSync(join(tmpdir(), "twh-sg-probe-"));
 	try {
 		const out = runAnalyzer(["--version"], home, remaining());
-		if (out.failure !== "ok")
+		if (out.failure !== "ok") {
 			return {
 				available: false,
 				version: null,
@@ -604,16 +640,20 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 				reason: out.failure,
 				failure: out.failure,
 			};
+		}
 		const version = /ast-grep\s+([0-9][^\s]*)/.exec(out.stdout)?.[1] ?? null;
-		if (!version)
+		if (!version) {
 			return {
 				available: false,
 				version: null,
 				isolation,
 				reason: "version not reported",
 			};
+		}
 		const probe: AnalyzerProbe = { available: true, version, isolation };
-		if (key) probeCache = { key, probe };
+		if (key) {
+			probeCache = { key, probe };
+		}
 		return probe;
 	} finally {
 		rmSync(home, { recursive: true, force: true });
@@ -632,22 +672,31 @@ type SgMatch = {
  */
 function parseMatches(stdout: string): SgMatch[] | null {
 	const text = stdout.trim();
-	if (!text) return [];
+	if (!text) {
+		return [];
+	}
 	let parsed: unknown;
 	try {
 		parsed = JSON.parse(text);
 	} catch {
 		return null;
 	}
-	if (!Array.isArray(parsed)) return null;
+	if (!Array.isArray(parsed)) {
+		return null;
+	}
 	const out: SgMatch[] = [];
 	for (const item of parsed) {
 		const file = (item as SgMatch)?.file;
 		const range = (item as SgMatch)?.range?.byteOffset;
-		if (typeof file !== "string" || !file) return null;
-		if (!Number.isInteger(range?.start) || !Number.isInteger(range?.end))
+		if (typeof file !== "string" || !file) {
 			return null;
-		if (range.start < 0 || range.end < range.start) return null;
+		}
+		if (!Number.isInteger(range?.start) || !Number.isInteger(range?.end)) {
+			return null;
+		}
+		if (range.start < 0 || range.end < range.start) {
+			return null;
+		}
 		out.push({
 			file,
 			range: { byteOffset: { start: range.start, end: range.end } },
@@ -672,8 +721,12 @@ function unusableResult(
 	coverage.notIndexed += staged;
 	coverage.filesScanned = 0;
 	coverage.bytesScanned = 0;
-	if (failure === "timed_out") coverage.timeLimited = true;
-	if (failure === "output_capped") coverage.byteLimited = true;
+	if (failure === "timed_out") {
+		coverage.timeLimited = true;
+	}
+	if (failure === "output_capped") {
+		coverage.byteLimited = true;
+	}
 	return {
 		kind: "search",
 		scope: searchScope(snapshotIds),
@@ -716,10 +769,11 @@ export function structuralSearch(
 	const snapshotIds = [...new Set(entries.map((e) => e.snapshotId))];
 	// The same cap literal search enforces. A helper that documents a limit and then
 	// scans past it is worse than one with no limit at all.
-	if (snapshotIds.length > SEARCH_CAPS.maxSnapshots)
+	if (snapshotIds.length > SEARCH_CAPS.maxSnapshots) {
 		throw new SearchInputError(
 			`at most ${SEARCH_CAPS.maxSnapshots} snapshots per search`,
 		);
+	}
 
 	// Isolation detection and the version probe are subprocesses too, and a cold start
 	// pays for both. They come out of the same deadline as the scan phases.
@@ -727,7 +781,9 @@ export function structuralSearch(
 	if (!probe.available) {
 		coverage.notIndexed = entries.length;
 		const outOfTime = remaining() <= 0;
-		if (outOfTime) coverage.timeLimited = true;
+		if (outOfTime) {
+			coverage.timeLimited = true;
+		}
 		return {
 			kind: "search",
 			scope: searchScope(snapshotIds),
@@ -826,7 +882,7 @@ export function structuralSearch(
 			scanDir,
 			remaining(),
 		);
-		if (parseProbe.failure !== "ok")
+		if (parseProbe.failure !== "ok") {
 			return unusableResult(
 				snapshotIds,
 				coverage,
@@ -834,8 +890,9 @@ export function structuralSearch(
 				parseProbe.failure,
 				staged.size,
 			);
+		}
 		const parsed = parseMatches(parseProbe.stdout);
-		if (parsed === null)
+		if (parsed === null) {
 			return unusableResult(
 				snapshotIds,
 				coverage,
@@ -843,6 +900,7 @@ export function structuralSearch(
 				"invalid_output",
 				staged.size,
 			);
+		}
 		const unparsable = new Set(parsed.map((m) => m.file));
 		coverage.parseFailed = unparsable.size;
 
@@ -858,7 +916,7 @@ export function structuralSearch(
 			scanDir,
 			remaining(),
 		);
-		if (scan.failure !== "ok")
+		if (scan.failure !== "ok") {
 			return unusableResult(
 				snapshotIds,
 				coverage,
@@ -866,8 +924,9 @@ export function structuralSearch(
 				scan.failure,
 				staged.size,
 			);
+		}
 		const matches = parseMatches(scan.stdout);
-		if (matches === null)
+		if (matches === null) {
 			return unusableResult(
 				snapshotIds,
 				coverage,
@@ -875,9 +934,12 @@ export function structuralSearch(
 				"invalid_output",
 				staged.size,
 			);
+		}
 
 		for (const match of matches) {
-			if (findings.length >= SEARCH_CAPS.hitsPerPage) break;
+			if (findings.length >= SEARCH_CAPS.hitsPerPage) {
+				break;
+			}
 			const entry = staged.get(match.file);
 			// A match naming a file we did not stage is not a result we can address.
 			if (!entry) {

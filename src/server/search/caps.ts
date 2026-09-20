@@ -95,10 +95,13 @@ export function finalizeCoverage(
 ): Coverage {
 	const missed =
 		c.notIndexed + c.unsupportedLanguage + c.parseFailed + c.excluded > 0;
-	if (c.filesScanned === 0 && missed) c.status = "not_indexed";
-	else if (missed || c.byteLimited || c.timeLimited || pageTruncated)
+	if (c.filesScanned === 0 && missed) {
+		c.status = "not_indexed";
+	} else if (missed || c.byteLimited || c.timeLimited || pageTruncated) {
 		c.status = "partial";
-	else c.status = "complete";
+	} else {
+		c.status = "complete";
+	}
 	return c;
 }
 
