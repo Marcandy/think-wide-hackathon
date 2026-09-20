@@ -142,7 +142,7 @@ function canonicalize(value: unknown, ancestors = new Set<object>()): string {
 			"{" +
 			Object.keys(descriptors)
 				.sort()
-				.map((key) => JSON.stringify(key) + ":" + encode(key))
+				.map((key) => `${JSON.stringify(key)}:${encode(key)}`)
 				.join(",") +
 			"}"
 		);
