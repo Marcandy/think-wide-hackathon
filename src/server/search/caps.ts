@@ -47,6 +47,16 @@ export type ScanEntry = {
 	readonly bytes: Uint8Array;
 };
 
+/**
+ * Git object hash algorithm of an entry's ids. `hashAlgorithm` on a SourceRef names the
+ * algorithm of `commit` and `blobId`, not of `digest` (which is always sha256). Contract
+ * 0.2.0 binds id length to it: 40 hex is sha1, 64 hex is sha256. An entry whose commit and
+ * blob ids disagree in length yields a ref the generated validator rejects, as it should.
+ */
+export function objectHashAlgorithm(entry: ScanEntry): "sha1" | "sha256" {
+	return entry.commit.length === 64 ? "sha256" : "sha1";
+}
+
 /** Why a file did not contribute results. The buckets stay separate on purpose. */
 export type Coverage = {
 	status: "complete" | "partial" | "not_indexed";
