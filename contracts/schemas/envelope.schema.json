@@ -1,0 +1,133 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "envelope.schema.json",
+	"title": "ResultEnvelope",
+	"description": "Wrapper for every discovery response. Never infer totals from a capped page.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"kind",
+		"scope",
+		"entries",
+		"coverage",
+		"nextCursor",
+		"truncated"
+	],
+	"properties": {
+		"kind": {
+			"enum": [
+				"projects",
+				"tree",
+				"search",
+				"history",
+				"investigation",
+				"handoff",
+				"guidance"
+			]
+		},
+		"scope": {
+			"title": "Scope",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["snapshotIds"],
+			"properties": {
+				"workspaceId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"snapshotIds": {
+					"type": "array",
+					"maxItems": 8,
+					"items": {
+						"$ref": "common.schema.json#/$defs/Id"
+					}
+				}
+			}
+		},
+		"entries": {
+			"type": "array",
+			"maxItems": 100,
+			"items": {
+				"type": "object"
+			}
+		},
+		"coverage": {
+			"title": "Coverage",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["status"],
+			"properties": {
+				"status": {
+					"enum": ["complete", "partial", "not_indexed"]
+				},
+				"filesScanned": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"bytesScanned": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"notIndexed": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"unsupportedLanguage": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"parseFailed": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"byteLimited": {
+					"type": "boolean"
+				},
+				"timeLimited": {
+					"type": "boolean"
+				},
+				"excluded": {
+					"type": "integer",
+					"minimum": 0
+				}
+			}
+		},
+		"nextCursor": {
+			"anyOf": [
+				{
+					"$ref": "common.schema.json#/$defs/Cursor"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"freshness": {
+			"title": "Freshness",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["indexedAt"],
+			"properties": {
+				"indexedAt": {
+					"$ref": "common.schema.json#/$defs/TimestampMs"
+				},
+				"stale": {
+					"type": "boolean"
+				}
+			}
+		},
+		"truncated": {
+			"title": "Truncation",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["is"],
+			"properties": {
+				"is": {
+					"type": "boolean"
+				},
+				"reason": {
+					"enum": ["page_limit", "byte_limit", "time_limit", "response_cap"]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,119 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "capabilities.schema.json",
+	"title": "Capabilities",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"contractVersion",
+		"mode",
+		"authProfile",
+		"searchModes",
+		"limits",
+		"integrations"
+	],
+	"properties": {
+		"contractVersion": {
+			"type": "string",
+			"pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+		},
+		"catalogVersion": {
+			"type": "string",
+			"maxLength": 32
+		},
+		"mode": {
+			"enum": ["local-demo", "connected"]
+		},
+		"authProfile": {
+			"enum": ["local-fixed-principal", "workos-authkit", "workos-mcp-resource"]
+		},
+		"searchModes": {
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"enum": ["literal", "structural", "semantic", "type"]
+			}
+		},
+		"limits": {
+			"title": "Limits",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"searchHitsPerPage",
+				"treeChildrenPerPage",
+				"resultTextBytes",
+				"exactWindowBytes"
+			],
+			"properties": {
+				"searchHitsPerPage": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"treeChildrenPerPage": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"resultTextBytes": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"exactWindowBytes": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"scanMaxFiles": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"scanMaxBytes": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"scanMaxMs": {
+					"type": "integer",
+					"minimum": 1
+				}
+			}
+		},
+		"integrations": {
+			"title": "IntegrationStatus",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"hostedIdentity": {
+					"$ref": "#/$defs/Status"
+				},
+				"remoteMcp": {
+					"$ref": "#/$defs/Status"
+				},
+				"githubApp": {
+					"$ref": "#/$defs/Status"
+				},
+				"issuePublish": {
+					"$ref": "#/$defs/Status"
+				},
+				"backendReasoning": {
+					"$ref": "#/$defs/Status"
+				},
+				"outcomeIngestion": {
+					"$ref": "#/$defs/Status"
+				}
+			},
+			"required": [
+				"hostedIdentity",
+				"remoteMcp",
+				"githubApp",
+				"issuePublish",
+				"backendReasoning",
+				"outcomeIngestion"
+			],
+			"description": "Every integration reports an explicit status. Omission is not allowed: an unproven capability says not_run."
+		}
+	},
+	"$defs": {
+		"Status": {
+			"title": "CapabilityStatus",
+			"enum": ["not_run", "disabled", "local_only", "live"]
+		}
+	}
+}

@@ -1,0 +1,399 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "requests.schema.json",
+	"title": "Requests",
+	"description": "Inputs for every operation. Principal, role and owner are NEVER request fields; they come from verified identity.",
+	"$defs": {
+		"GetCapabilitiesRequest": {
+			"title": "GetCapabilitiesRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {}
+		},
+		"ListProjectsRequest": {
+			"title": "ListProjectsRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"workspaceId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"cursor": {
+					"$ref": "common.schema.json#/$defs/Cursor"
+				}
+			}
+		},
+		"BrowseSnapshotRequest": {
+			"title": "BrowseSnapshotRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["snapshotId"],
+			"properties": {
+				"snapshotId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"parentEntryId": {
+					"anyOf": [
+						{
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				"cursor": {
+					"$ref": "common.schema.json#/$defs/Cursor"
+				}
+			}
+		},
+		"ReadSourceRequest": {
+			"title": "ReadSourceRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["snapshotId", "entryId"],
+			"properties": {
+				"snapshotId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"entryId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"byteRange": {
+					"$ref": "source-ref.schema.json#/properties/byteRange"
+				},
+				"lineRange": {
+					"$ref": "source-ref.schema.json#/properties/lineRange"
+				},
+				"maxBytes": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 16384
+				}
+			}
+		},
+		"SearchSourcesRequest": {
+			"title": "SearchSourcesRequest",
+			"description": "Discriminated on mode: the query shape must match the mode.",
+			"oneOf": [
+				{
+					"title": "LiteralSearchRequest",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["snapshotIds", "mode", "query"],
+					"properties": {
+						"snapshotIds": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 2,
+							"uniqueItems": true,
+							"items": {
+								"$ref": "common.schema.json#/$defs/Id"
+							}
+						},
+						"mode": {
+							"const": "literal"
+						},
+						"query": {
+							"title": "LiteralQuery",
+							"type": "object",
+							"additionalProperties": false,
+							"required": ["text"],
+							"properties": {
+								"text": {
+									"type": "string",
+									"minLength": 1,
+									"maxLength": 256
+								},
+								"caseSensitive": {
+									"type": "boolean"
+								}
+							}
+						},
+						"pathPrefixEntryId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"languages": {
+							"type": "array",
+							"maxItems": 8,
+							"items": {
+								"type": "string",
+								"maxLength": 32
+							}
+						},
+						"cursor": {
+							"$ref": "common.schema.json#/$defs/Cursor"
+						}
+					}
+				},
+				{
+					"title": "StructuralSearchRequest",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["snapshotIds", "mode", "query"],
+					"properties": {
+						"snapshotIds": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 2,
+							"uniqueItems": true,
+							"items": {
+								"$ref": "common.schema.json#/$defs/Id"
+							}
+						},
+						"mode": {
+							"const": "structural"
+						},
+						"query": {
+							"title": "StructuralQuery",
+							"type": "object",
+							"additionalProperties": false,
+							"required": ["ruleId"],
+							"properties": {
+								"ruleId": {
+									"$ref": "common.schema.json#/$defs/Id"
+								}
+							}
+						},
+						"pathPrefixEntryId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"languages": {
+							"type": "array",
+							"maxItems": 8,
+							"items": {
+								"type": "string",
+								"maxLength": 32
+							}
+						},
+						"cursor": {
+							"$ref": "common.schema.json#/$defs/Cursor"
+						}
+					}
+				}
+			]
+		},
+		"ReadHistoryRequest": {
+			"title": "ReadHistoryRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["snapshotId"],
+			"properties": {
+				"snapshotId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"entryId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"maxCommits": {
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 20
+				},
+				"cursor": {
+					"$ref": "common.schema.json#/$defs/Cursor"
+				}
+			}
+		},
+		"ReadGuidanceRequest": {
+			"title": "ReadGuidanceRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"recipeId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				}
+			}
+		},
+		"OpenInvestigationRequest": {
+			"title": "OpenInvestigationRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["question", "snapshotIds", "requestKey"],
+			"properties": {
+				"question": {
+					"$ref": "common.schema.json#/$defs/LongText"
+				},
+				"snapshotIds": {
+					"type": "array",
+					"minItems": 1,
+					"maxItems": 8,
+					"uniqueItems": true,
+					"items": {
+						"$ref": "common.schema.json#/$defs/Id"
+					}
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"ReadInvestigationRequest": {
+			"title": "ReadInvestigationRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["investigationId"],
+			"properties": {
+				"investigationId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"detail": {
+					"enum": ["summary", "full"]
+				},
+				"cursor": {
+					"$ref": "common.schema.json#/$defs/Cursor"
+				}
+			}
+		},
+		"RecordDecisionRequest": {
+			"title": "RecordDecisionRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"investigationId",
+				"expectedRevision",
+				"kind",
+				"statement",
+				"requestKey"
+			],
+			"properties": {
+				"investigationId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"expectedRevision": {
+					"$ref": "common.schema.json#/$defs/Revision"
+				},
+				"kind": {
+					"enum": ["correction", "constraint", "rejection", "acceptance"]
+				},
+				"statement": {
+					"$ref": "common.schema.json#/$defs/LongText"
+				},
+				"targetFindingId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"refs": {
+					"type": "array",
+					"maxItems": 16,
+					"items": {
+						"$ref": "source-ref.schema.json"
+					}
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"SubmitProposalRequest": {
+			"title": "SubmitProposalRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["proposal", "requestKey"],
+			"properties": {
+				"proposal": {
+					"$ref": "proposal.schema.json"
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"RequestAnalysisRequest": {
+			"title": "RequestAnalysisRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"investigationId",
+				"expectedRevision",
+				"purpose",
+				"requestKey"
+			],
+			"properties": {
+				"investigationId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"expectedRevision": {
+					"$ref": "common.schema.json#/$defs/Revision"
+				},
+				"purpose": {
+					"$ref": "common.schema.json#/$defs/ShortText"
+				},
+				"budget": {
+					"$ref": "run.schema.json#/properties/budget"
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"GetRunRequest": {
+			"title": "GetRunRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["runId"],
+			"properties": {
+				"runId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				}
+			}
+		},
+		"CancelRunRequest": {
+			"title": "CancelRunRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["runId", "requestKey"],
+			"properties": {
+				"runId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"PrepareHandoffRequest": {
+			"title": "PrepareHandoffRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"investigationId",
+				"expectedRevision",
+				"targetRepositoryId",
+				"audience",
+				"requestKey"
+			],
+			"properties": {
+				"investigationId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"expectedRevision": {
+					"$ref": "common.schema.json#/$defs/Revision"
+				},
+				"targetRepositoryId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"audience": {
+					"enum": ["private_download", "private_issue", "public_issue"]
+				},
+				"requestKey": {
+					"$ref": "common.schema.json#/$defs/RequestKey"
+				}
+			}
+		},
+		"ReadHandoffRequest": {
+			"title": "ReadHandoffRequest",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["handoffId"],
+			"properties": {
+				"handoffId": {
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				"handoffRevision": {
+					"type": "integer",
+					"minimum": 1
+				}
+			}
+		}
+	}
+}

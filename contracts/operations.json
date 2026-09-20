@@ -1,0 +1,194 @@
+{
+	"contractVersion": "0.1.0",
+	"note": "Canonical operation registry. HTTP, MCP and any CLI dispatch through the same handler and policy. A new operation is NOT agent-exposed unless 'mcp' is listed here. Operations that return the result envelope declare envelopeKind; the operation pipeline rejects a response whose kind differs.",
+	"operations": [
+		{
+			"operationId": "getCapabilities",
+			"summary": "Actual enabled modes, limits, versions, integration status",
+			"request": "requests.schema.json#/$defs/GetCapabilitiesRequest",
+			"response": "capabilities.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T08"
+		},
+		{
+			"operationId": "listProjects",
+			"summary": "Authorized projects with compact snapshot and coverage records",
+			"request": "requests.schema.json#/$defs/ListProjectsRequest",
+			"response": "envelope.schema.json",
+			"envelopeKind": "projects",
+			"entries": "project.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T05"
+		},
+		{
+			"operationId": "browseSnapshot",
+			"summary": "Direct children of a tree node with metadata and exact source handles",
+			"request": "requests.schema.json#/$defs/BrowseSnapshotRequest",
+			"response": "envelope.schema.json",
+			"envelopeKind": "tree",
+			"entries": "snapshot-entry.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T05"
+		},
+		{
+			"operationId": "readSource",
+			"summary": "Exact bytes for an authorized source reference, with range and digest",
+			"request": "requests.schema.json#/$defs/ReadSourceRequest",
+			"response": "evidence.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T05"
+		},
+		{
+			"operationId": "searchSources",
+			"summary": "Literal or reviewed structural search over a fixed snapshot set",
+			"request": "requests.schema.json#/$defs/SearchSourcesRequest",
+			"response": "envelope.schema.json",
+			"envelopeKind": "search",
+			"entries": "finding.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T07"
+		},
+		{
+			"operationId": "readHistory",
+			"summary": "Bounded commit records for a snapshot or verified path",
+			"request": "requests.schema.json#/$defs/ReadHistoryRequest",
+			"response": "envelope.schema.json",
+			"envelopeKind": "history",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T05"
+		},
+		{
+			"operationId": "readGuidance",
+			"summary": "Trusted recipe catalog, or one recipe's full guidance",
+			"request": "requests.schema.json#/$defs/ReadGuidanceRequest",
+			"response": "envelope.schema.json",
+			"envelopeKind": "guidance",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T07"
+		},
+		{
+			"operationId": "openInvestigation",
+			"summary": "Create a durable investigation over selected snapshots",
+			"request": "requests.schema.json#/$defs/OpenInvestigationRequest",
+			"response": "investigation.schema.json",
+			"effect": "state",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T06"
+		},
+		{
+			"operationId": "readInvestigation",
+			"summary": "Accepted findings, decisions, revision and run status",
+			"request": "requests.schema.json#/$defs/ReadInvestigationRequest",
+			"response": "investigation.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T06"
+		},
+		{
+			"operationId": "recordDecision",
+			"summary": "Record a human correction, constraint or rejection; advances the revision",
+			"request": "requests.schema.json#/$defs/RecordDecisionRequest",
+			"response": "decision.schema.json",
+			"effect": "state",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T06"
+		},
+		{
+			"operationId": "submitProposal",
+			"summary": "Submit a tentative evidence-backed comparison against a base revision",
+			"request": "requests.schema.json#/$defs/SubmitProposalRequest",
+			"response": "investigation.schema.json",
+			"effect": "state",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T10"
+		},
+		{
+			"operationId": "requestAnalysis",
+			"summary": "Admit one bounded backend reasoning run",
+			"request": "requests.schema.json#/$defs/RequestAnalysisRequest",
+			"response": "run.schema.json",
+			"effect": "state",
+			"exposure": ["http"],
+			"approval": false,
+			"profile": "conditional",
+			"ticket": "T10"
+		},
+		{
+			"operationId": "getRun",
+			"summary": "Current authorized run status",
+			"request": "requests.schema.json#/$defs/GetRunRequest",
+			"response": "run.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "conditional",
+			"ticket": "T10"
+		},
+		{
+			"operationId": "cancelRun",
+			"summary": "Fence a run; does not undo an already dispatched external effect",
+			"request": "requests.schema.json#/$defs/CancelRunRequest",
+			"response": "run.schema.json",
+			"effect": "state",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "conditional",
+			"ticket": "T10"
+		},
+		{
+			"operationId": "prepareHandoff",
+			"summary": "Freeze an implementation brief revision with body hash",
+			"request": "requests.schema.json#/$defs/PrepareHandoffRequest",
+			"response": "handoff.schema.json",
+			"effect": "state",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T09"
+		},
+		{
+			"operationId": "readHandoff",
+			"summary": "Exact reviewed brief text plus structured references",
+			"request": "requests.schema.json#/$defs/ReadHandoffRequest",
+			"response": "handoff.schema.json",
+			"effect": "read",
+			"exposure": ["http", "mcp"],
+			"approval": false,
+			"profile": "required",
+			"ticket": "T09"
+		}
+	],
+	"deferred": [
+		"publishIssue (I03, external effect, human approval binding)",
+		"refreshOutcome (I05)"
+	]
+}

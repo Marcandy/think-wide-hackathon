@@ -1,0 +1,50 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "decision.schema.json",
+	"title": "Decision",
+	"description": "A human correction, constraint, or rejection. Stored separately from any generated display and never expired by regeneration.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"decisionId",
+		"investigationId",
+		"kind",
+		"statement",
+		"madeAtRevision",
+		"resultingRevision",
+		"createdAt"
+	],
+	"properties": {
+		"decisionId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"investigationId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"kind": {
+			"enum": ["correction", "constraint", "rejection", "acceptance"]
+		},
+		"statement": {
+			"$ref": "common.schema.json#/$defs/LongText"
+		},
+		"targetFindingId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"refs": {
+			"type": "array",
+			"maxItems": 16,
+			"items": {
+				"$ref": "source-ref.schema.json"
+			}
+		},
+		"madeAtRevision": {
+			"$ref": "common.schema.json#/$defs/Revision"
+		},
+		"resultingRevision": {
+			"$ref": "common.schema.json#/$defs/Revision"
+		},
+		"createdAt": {
+			"$ref": "common.schema.json#/$defs/TimestampMs"
+		}
+	}
+}

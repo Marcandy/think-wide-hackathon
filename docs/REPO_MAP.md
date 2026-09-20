@@ -15,32 +15,29 @@ Import rule: `convex/` and `src/server/` may import `core/` and `generated/`. `c
 | `components.json` | TOOL: `bunx shadcn@latest init` |
 | `.env.local` | local only, gitignored, copied from `.env.example` |
 
-## `contracts/` hand-written public contract (T02, Eassa)
+## `contracts/` hand-written public contract (T02, Eassa). See decisions/0001
 
 ```
-contracts/openapi.yaml                      all operations, OpenAPI 3.1
-contracts/operations.registry.ts            operationId -> handler, exposure(http|mcp), effect class, approval, projection
-contracts/schemas/source-ref.schema.json    repo + commit + blob + entryId + byte range + digest
-contracts/schemas/envelope.schema.json      scope, kind, entries, coverage, cursor, freshness, truncation
-contracts/schemas/capabilities.schema.json
-contracts/schemas/project.schema.json
-contracts/schemas/snapshot-entry.schema.json
-contracts/schemas/finding.schema.json
-contracts/schemas/investigation.schema.json
-contracts/schemas/decision.schema.json
-contracts/schemas/proposal.schema.json
-contracts/schemas/run.schema.json
-contracts/schemas/handoff.schema.json
-contracts/schemas/composition.schema.json   UI catalog composition (16 nodes, depth 4, 32 KiB)
+contracts/operations.json                   EXISTS  operationId -> request, response, envelopeKind, effect, exposure(http|mcp), approval, ticket
+contracts/schemas/common.schema.json        EXISTS  Id, CommitId, ObjectId, Sha256, Revision, Cursor, RequestKey, EvidenceClass
+contracts/schemas/source-ref.schema.json    EXISTS  repo + full commit + blob + entryId + [start,end) bytes + digest
+contracts/schemas/evidence.schema.json      EXISTS  readSource result: exact bytes, actual range served
+contracts/schemas/envelope.schema.json      EXISTS  kind, scope, entries, coverage, nextCursor, freshness, truncated
+contracts/schemas/requests.schema.json      EXISTS  one $def per operation input; identity is never a field
+contracts/schemas/error.schema.json         EXISTS  code + message; forbidden and not_found must be indistinguishable
+contracts/schemas/{capabilities,project,snapshot-entry,finding,investigation,decision,proposal,run,handoff,composition}.schema.json   EXISTS
+contracts/schemas/commit-record.schema.json T05  entries for readHistory
+contracts/schemas/recipe.schema.json        T07  entries for readGuidance
 ```
+No `openapi.yaml` and no `operations.registry.ts`: the schemas plus `operations.json` are canonical.
 
 ## `generated/` output of `scripts/codegen.ts`, committed, never edited
 
 ```
-generated/types.ts
-generated/validators.js
-generated/validators.d.ts
-generated/operations.ts
+generated/types.ts            EXISTS
+generated/validators.js      EXISTS  Ajv standalone, ESM, no require(
+generated/validators.d.ts    EXISTS
+generated/operations.ts      EXISTS  OPERATIONS, OperationId, MCP_EXPOSED, CONTRACT_VERSION
 ```
 
 ## `core/` pure TypeScript rules (T06 Eassa, reviewed by Andrew)
@@ -63,9 +60,10 @@ core/limits.ts         20 hits, 100 children, 16 KiB windows, scan caps
 ```
 convex/_generated/            TOOL: bunx convex dev
 convex/tsconfig.json          TOOL
-convex/schema.ts              T02
+convex/schema.ts              T06  grants, investigations, decisions, receipts, runs (replaces scaffold todos); T05 adds repositories/snapshots/entries
 convex/auth.config.ts         T02 scaffold, I01 real issuer/JWKS/audience
-convex/lib/authz.ts           T06  shared "who is calling + may they touch this object"
+convex/lib/operation.ts       T06  THE pipeline: validate -> principal -> receipt -> handler -> validate response -> finalize (decisions/0002)
+convex/lib/authz.ts           T06  requirePrincipal, loadAuthorized, queryAuthorized: the only access to protected tables
 convex/projects.ts            T05  listProjects
 convex/snapshots.ts           T05  browseSnapshot, entry index
 convex/sourceCache.ts         T05  exact-byte cache by repo/snapshot/blob
@@ -75,7 +73,7 @@ convex/decisions.ts           T06  recordDecision
 convex/proposals.ts           T10  submitProposal, internal publication mutation
 convex/runs.ts                T10  requestAnalysis, getRun, cancelRun
 convex/handoffs.ts            T09  prepareHandoff, readHandoff
-convex/receipts.ts            T06
+convex/receipts.ts            T06  ids + argument digest only, never response bodies
 convex/actions/reasoning.ts   T10  "use node" internal action, one model call
 ```
 
@@ -108,8 +106,7 @@ src/components/shell/PortfolioNav.tsx          T09
 src/components/shell/SourceViewer.tsx          T09
 src/components/shell/AuthIndicator.tsx         I01
 src/components/shell/ApprovalDialog.tsx        I03
-src/styles/theme.css                    T03  tweakcn export, tokens only
-src/styles/globals.css                  T03  mappings, separate from tokens
+src/styles.css                          TOOL, then T03 (may split into src/styles/theme.css tokens + globals.css mappings)
 
 src/server/config.ts                    T02  mode: local-demo | connected; refuse local-demo in production
 src/server/convex-client.ts             T06  request-scoped client, no global authed client
@@ -145,6 +142,8 @@ tests/domain/q04-exact-bytes.test.ts
 tests/domain/q05-search.test.ts
 tests/domain/q06-stale-proposal.test.ts
 tests/domain/q07-duplicate-command.test.ts
+tests/domain/contract-rejects-nested-invalid.test.ts   EXISTS  contract 0.1.0, 12 cases
+tests/domain/t06-*.test.ts              T06  real handlers via convex-test, identities A and B
 tests/adapter/q08-catalog-composition.test.ts
 tests/boundary/q10-injection.test.ts
 tests/boundary/q13-analyzer-confinement.test.ts
@@ -156,9 +155,10 @@ tests/e2e/q15-full-loop.test.ts         T11
 ## `scripts/` `infra/` `.github/`
 
 ```
-scripts/codegen.ts                      T02  openapi -> generated/, no model calls
-scripts/check-drift.ts                  T02  generate twice into clean dirs, diff
-scripts/check.ts                        T01  frozen install -> codegen drift -> typecheck -> tests (same entry local + CI)
+scripts/codegen.ts                      EXISTS  contracts/ -> generated/, no network, no model calls
+scripts/check-drift.ts                  EXISTS  generate twice into clean dirs, compare with committed generated/
+package.json "verify" script           EXISTS  frozen install -> drift -> biome -> tsc -> vitest -> vite build (same entry local + CI)
+vitest.config.ts                        EXISTS  plain Node env, no app Vite plugins
 scripts/make-fixture-repos.ts           T04
 
 infra/docker-compose.yml                EXISTS  Convex pinned by digest, 127.0.0.1 only
@@ -176,6 +176,7 @@ infra/DEPLOY.md                         I04  ports, volumes, SSH recovery
 docs/*.md, docs/roles/, docs/tickets/   EXISTS  the plan (prior design material, disclosed)
 docs/REPO_MAP.md                        EXISTS  this file
 docs/G0_EVENT_RECORD.md                 G0   track, build window, organizer ruling, disclosure
-docs/decisions/                         short dated notes for contract/architecture changes
+docs/decisions/0001-contract-source.md  EXISTS
+docs/decisions/0002-operation-pipeline.md EXISTS
 docs/evidence/                          sanitized receipts per ticket / Q-case
 ```

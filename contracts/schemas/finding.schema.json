@@ -1,0 +1,77 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "finding.schema.json",
+	"title": "Finding",
+	"description": "A structural match is a finding. A claim that two systems are interchangeable is a hypothesis.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"findingId",
+		"evidenceClass",
+		"summary",
+		"refs",
+		"verification",
+		"observedAt"
+	],
+	"properties": {
+		"findingId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"evidenceClass": {
+			"$ref": "common.schema.json#/$defs/EvidenceClass"
+		},
+		"summary": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"refs": {
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 16,
+			"items": {
+				"$ref": "source-ref.schema.json"
+			}
+		},
+		"extractor": {
+			"title": "Extractor",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["kind"],
+			"properties": {
+				"kind": {
+					"enum": [
+						"literal-search",
+						"ast-grep",
+						"git-history",
+						"model",
+						"human"
+					]
+				},
+				"version": {
+					"type": "string",
+					"maxLength": 64
+				},
+				"ruleHash": {
+					"$ref": "common.schema.json#/$defs/Sha256"
+				},
+				"modelId": {
+					"type": "string",
+					"maxLength": 128
+				}
+			}
+		},
+		"applicabilityNotes": {
+			"$ref": "common.schema.json#/$defs/LongText"
+		},
+		"verification": {
+			"enum": [
+				"unverified",
+				"bytes_verified",
+				"human_confirmed",
+				"human_rejected"
+			]
+		},
+		"observedAt": {
+			"$ref": "common.schema.json#/$defs/TimestampMs"
+		}
+	}
+}
