@@ -178,5 +178,6 @@ docs/REPO_MAP.md                        EXISTS  this file
 docs/G0_EVENT_RECORD.md                 G0   track, build window, organizer ruling, disclosure
 docs/decisions/0001-contract-source.md  EXISTS
 docs/decisions/0002-operation-pipeline.md EXISTS
+docs/decisions/0003-decision-categories.md EXISTS
 docs/evidence/                          sanitized receipts per ticket / Q-case
 ```
