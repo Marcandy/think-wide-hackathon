@@ -70,6 +70,28 @@
 		},
 		"createdAt": {
 			"$ref": "common.schema.json#/$defs/TimestampMs"
+		},
+		"page": {
+			"title": "InvestigationPage",
+			"description": "Present when findings or decisions were paged. Absent means the arrays are complete for this revision.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["nextCursor", "truncated"],
+			"properties": {
+				"nextCursor": {
+					"anyOf": [
+						{
+							"$ref": "common.schema.json#/$defs/Cursor"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				"truncated": {
+					"$ref": "envelope.schema.json#/properties/truncated"
+				}
+			}
 		}
 	}
 }

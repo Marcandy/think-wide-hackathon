@@ -21,7 +21,8 @@
 				"search",
 				"history",
 				"investigation",
-				"handoff"
+				"handoff",
+				"guidance"
 			]
 		},
 		"scope": {

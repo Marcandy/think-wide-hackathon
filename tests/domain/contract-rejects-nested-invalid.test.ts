@@ -136,6 +136,52 @@ describe("generated validators (contract 0.1.0)", () => {
 		expect(v.Handoff(handoff("http://github.com/o/r/issues/1"))).toBe(false);
 	});
 
+	it("accepts a guidance envelope and rejects an unknown envelope kind", () => {
+		const envelope = (kind: string) => ({
+			kind,
+			scope: { snapshotIds: [] },
+			entries: [],
+			coverage: { status: "complete" },
+			nextCursor: null,
+			truncated: { is: false },
+		});
+		expect(v.ResultEnvelope(envelope("guidance"))).toBe(true);
+		expect(v.ResultEnvelope(envelope("recipes"))).toBe(false);
+	});
+
+	it("carries optional continuation state on an investigation", () => {
+		const investigation = (page?: unknown) => ({
+			investigationId: "inv_1",
+			question: "q",
+			snapshotIds: ["s1"],
+			revision: 0,
+			status: "open",
+			createdAt: 1,
+			...(page === undefined ? {} : { page }),
+		});
+		expect(v.Investigation(investigation())).toBe(true);
+		expect(
+			v.Investigation(
+				investigation({
+					nextCursor: "cur_abcdef",
+					truncated: { is: true, reason: "page_limit" },
+				}),
+			),
+		).toBe(true);
+		expect(v.Investigation(investigation({ nextCursor: "cur_abcdef" }))).toBe(
+			false,
+		);
+		expect(
+			v.Investigation(
+				investigation({
+					nextCursor: null,
+					truncated: { is: false },
+					total: 99,
+				}),
+			),
+		).toBe(false);
+	});
+
 	it("emits ESM validators with no CommonJS require()", () => {
 		const source = readFileSync(
 			resolve(import.meta.dirname, "../../generated/validators.js"),

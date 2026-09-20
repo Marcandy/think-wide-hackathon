@@ -333,6 +333,18 @@ decisions?: Decision[]
 currentRunId?: (Id | null)
 latestHandoffId?: (Id | null)
 createdAt: TimestampMs
+page?: InvestigationPage
+}
+/**
+ * Present when findings or decisions were paged. Absent means the arrays are complete for this revision.
+ */
+export interface InvestigationPage {
+nextCursor: (Cursor | null)
+truncated: Truncation
+}
+export interface Truncation {
+is: boolean
+reason?: ("page_limit" | "byte_limit" | "time_limit" | "response_cap")
 }
 export interface ListProjectsRequest {
 workspaceId?: Id
@@ -879,7 +891,7 @@ maxOutputTokens?: number
  * Wrapper for every discovery response. Never infer totals from a capped page.
  */
 export interface ResultEnvelope {
-kind: ("projects" | "tree" | "search" | "history" | "investigation" | "handoff")
+kind: ("projects" | "tree" | "search" | "history" | "investigation" | "handoff" | "guidance")
 scope: Scope
 /**
  * @maxItems 100
@@ -913,10 +925,6 @@ excluded?: number
 export interface Freshness {
 indexedAt: TimestampMs
 stale?: boolean
-}
-export interface Truncation {
-is: boolean
-reason?: ("page_limit" | "byte_limit" | "time_limit" | "response_cap")
 }
 export interface Run {
 runId: Id
