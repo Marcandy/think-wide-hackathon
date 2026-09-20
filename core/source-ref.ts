@@ -98,6 +98,21 @@ export function sourceWindow(bytes: Uint8Array, request: ReadSourceRequest) {
 	}
 	const requestedEnd = end;
 	end = Math.min(end, start + (request.maxBytes ?? 16384));
+	if (end < requestedEnd) {
+		// The clamp is chosen by the server, so the caller cannot correct a split character.
+		// Retract to a UTF-8 character boundary (continuation bytes are 0b10xxxxxx) and report
+		// the served range through rangeAdjusted / nextRange. An explicit caller range that
+		// splits a character is still rejected below.
+		while (end > start && (bytes[end] & 0xc0) === 0x80) {
+			end--;
+		}
+		if (end === start) {
+			throw new SourceReadError(
+				"limit_exceeded",
+				"maxBytes is smaller than one character at this offset",
+			);
+		}
+	}
 	let content: string;
 	try {
 		content = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(
