@@ -1,0 +1,46 @@
+# Who must look at what. Last matching pattern wins. Owners are requested as reviewers automatically.
+# Roles, not walls: anyone can change any file; these people review it.
+
+# Default: the integration captain.
+*                                   @heyoub
+
+# Product UI and brief: Marc. Andrew reviews (keyboard, contrast, hostile input).
+/src/components/                    @Marcandy @adiesh2
+/src/routes/                        @Marcandy @adiesh2
+/src/styles/                        @Marcandy
+/src/styles.css                     @Marcandy
+
+# Source reading, search and the analyzer sandbox: Marc builds the git reader, Andrew the search.
+/src/server/git/                    @Marcandy @adiesh2
+/src/server/search/                 @adiesh2 @heyoub
+/src/server/guidance/               @adiesh2 @heyoub
+
+# Tests, fixtures and evidence: Andrew.
+/tests/                             @adiesh2
+/scripts/make-fixture-repos.ts      @adiesh2
+/docs/evidence/                     @adiesh2
+
+# Shared seams: the contract, generated output, the operation pipeline and authorization,
+# identity, dependencies, CI and deployment. Eassa owns; Andrew reviews anything that touches
+# permissions or effects.
+/contracts/                         @heyoub @adiesh2
+/generated/                         @heyoub
+/scripts/                           @heyoub
+/core/                              @heyoub @adiesh2
+/convex/                            @heyoub @adiesh2
+/convex/lib/                        @heyoub @adiesh2
+/convex/auth.config.ts              @heyoub @adiesh2
+/src/server/auth/                   @heyoub @adiesh2
+/src/server/mcp/                    @heyoub @adiesh2
+/src/server/ops/                    @heyoub @adiesh2
+/package.json                       @heyoub
+/bun.lock                           @heyoub
+/biome.json                         @heyoub
+/vitest.config.ts                   @heyoub @adiesh2
+/tsconfig.json                      @heyoub
+/vite.config.ts                     @heyoub
+/infra/                             @heyoub @adiesh2
+/.github/                           @heyoub
+/AGENTS.md                          @heyoub
+/CLAUDE.md                          @heyoub
+/docs/decisions/                    @heyoub

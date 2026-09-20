@@ -1,51 +1,55 @@
-# G0: event boundary and first acceptance
+# G0: event record
 
-Recorded by the PM session on Eassa's laptop, 2026-09-20 11:35 EDT. Items marked UNCONFIRMED are not facts yet; the named person replaces them with a source.
+Each module below stands alone: one fact family, its source, its status, its owner. Fill or correct a module without touching the others. `CONFIRMED` means a source is cited. `OPEN` means a named person still owes the answer. Nothing here is an eligibility ruling.
 
-## Event
+Sources: [D1] https://coffee-and-code-agent.devpost.com/ and [D2] https://coffee-and-code-agent.devpost.com/rules, both retrieved 2026-09-20 15:20 EDT by the coordinator session. Earlier retrieval: docs/08_SOURCES.md S01.
 
-| Item | Value | Source |
-|---|---|---|
-| Event | Coffee & Code Agent hackathon | docs/08_SOURCES.md S01 |
-| Build block | 11:10–18:00 EDT, 2026-09-20 | S01 (organizer overview) |
-| Early initialization | Organizers told Eassa verbally that repo init and dependency setup before 11:10 was acceptable | **UNCONFIRMED in writing.** Eassa: paste the organizer message or name + time here |
-| Track | **UNCONFIRMED.** Eassa to state. Plan assumes Code Registry constraints apply (17:30 code stop, sync before 18:00) until told otherwise | — |
-| Submission | Devpost, opens 10:00, closes 18:00 EDT | S01 |
+## M1 · Event · CONFIRMED [D1]
+AI Agent Hackathon, organized by Coffee and Code Philadelphia. In person. Build day 2026-09-20 at Pennovation Center, 3401 Grays Ferry Ave, Philadelphia. Awards 2026-09-22, 19:00, Cesium, 601 Walnut St. Build time 11:10–18:00 EDT. **Devpost submission deadline 18:00 EDT, 2026-09-20** [D2]. Teams or solo. Organizer contact: raphael@codephilly.com. The event page names Claude Code and Codex among the expected tools; no restriction on AI tools is stated.
 
-## Repository
+## M2 · Tracks we can enter · OPEN (owner: Eassa picks; more than one is allowed)
+"Your project can solve any problem and may also compete in another hackathon track." [D1]
 
-| Item | Value |
+| Track | Prize | What it takes | Fit |
+|---|---|---|---|
+| **Bring Your Own Project (open)** | $400 | Judged on technical execution, agentic design, innovation, impact, reliability & safety (failure modes, permissions, guardrails), demo & completeness | Strong. The permission model, fencing and honesty rules are exactly the "reliability & safety" criterion |
+| **The Code Registry** | 12-month plan ($3,600) | See M3. Highest Code Score wins; tiebreak security, then quality | Eligible on every structural rule today (M3) |
+| **GalaxyGate** | $1,000 compute credits | **No requirements published** on [D1]/[D2]. We deploy on a GalaxyGate VPS (I04) | OPEN: ask staff on site what qualifies |
+| Quirq: Build It | $500 + credits | Must run through Quirq with xo-space visibility; 25% of the score is that display | Not planned. Would need a Quirq integration we have not scoped |
+| Quirq: Break It / HumanStandard | — | Security bounty on Quirq / music-detection API | Not applicable |
+
+## M3 · Code Registry eligibility · CONFIRMED against [D2], measured on `main` at `2c14b99`
+| Rule [D2] | State |
 |---|---|
-| URL | https://github.com/freebatteryfactory/think-wide-hackathon (public) |
-| Created | 2026-09-20 09:49 EDT (GitHub API `created_at` 2026-09-20T13:49:43Z). Renamed once the same day from `think-wide` to add "hackathon" |
-| Trunk at G0 | `bc3a418` on `main`, CI green (run 35518318766) |
-| Pre-window commits | `30d77b8` (09:5x, planning docs only) and `bc3a418` (11:02, tool scaffolds + config, no product logic). Both before 11:10 under the verbal ruling above. Not backdated, not squashed |
+| New **public** GitHub repo created on 20 September with "hackathon" in the name | `freebatteryfactory/think-wide-hackathon`, public, created 2026-09-20T13:49:43Z (09:49 EDT) ✓ |
+| ≥ 1,500 lines of source across ≥ 10 files | 5,371 hand-written lines in 70 files, excluding tests, generated output and vendored UI ✓ |
+| ≥ 3 third-party dependencies in a manifest | 24 runtime, 13 dev in `package.json` ✓ |
+| README covers: what it does, problem solved, how to run, **AI agent usage**, **team** | ✓ as of this commit |
+| Valid submission: working prototype, repository, description, demo | OPEN: depends on the product loop (M6) |
+| **Stop building at 17:30.** Register with The Code Registry, create a project, start the repository sync **before 18:00** | OPEN: owner Eassa |
+| Log team name, repository URL and Code Registry account email **with staff before leaving** | OPEN: owner Eassa |
+Participants do not see their Code Score during the event. Private repos are not scored.
 
-## Disclosure of prior work
+## M4 · Organizer ruling on early initialization · OPEN (owner: Eassa)
+Two commits predate 11:10: `30d77b8` (planning docs only) and `bc3a418` (11:02, tool scaffolds and config, no product logic). Eassa was told verbally that init and dependency setup before build time was fine. Needed: the organizer's name and the time, or a message/screenshot. [D1]/[D2] state no rule about pre-existing work at all, which makes the verbal ruling consistent with the published rules, but this module stays OPEN until the source is written here. Nothing is backdated or squashed.
 
-- `docs/` planning package (architecture, tickets, acceptance specs) was written before the event. It contains no application code. The product was called "Revive" in that material until renamed Think-Wide on the morning of 2026-09-20.
-- An earlier prototype/starter kit exists outside this repository. It is **not** copied, imported, or used as a source here.
-- Infrastructure that predates the event: one VPS (also hosting an unrelated project of Eassa's), WorkOS account, GitHub org. No code from them.
-- Libraries and scaffolds: official TanStack CLI output (add-ons convex, shadcn, form, nitro, biome), listed in `package.json`. `convex/todos.ts` is scaffold demo code pending replacement in T02.
-- AI coding tools (Claude Code and others) are used by all three teammates, including this coordinator session.
+## M5 · Disclosure · CONFIRMED (facts), to be copied into the Devpost description
+- Planning package (`docs/0*.md`, tickets, roles) written before the event. No application code. Product was called "Revive" in it until renamed Think-Wide on the morning of 2026-09-20.
+- An earlier prototype exists outside this repository. Not copied, imported or used.
+- Pre-existing infrastructure: one GalaxyGate VPS (also hosting an unrelated project of Eassa's), a WorkOS account, the GitHub org, the `fbf.systems` domain.
+- Scaffolds and libraries: official TanStack CLI output, shadcn/ui components, Fontsource fonts, everything in `package.json`.
+- AI assistance: all three teammates use coding agents (Claude Code, Codex). A Claude Code coordinator session ran the board, reviews and adversarial QA and wrote part of the contract and configuration; delegated agents implemented specific briefs; Codex implemented T06. Commit messages carry the co-author trailers. Codex and CodeRabbit review bots comment on PRs.
 
-## Mode and data
+## M6 · Product status for the submission · OPEN (owner: whole team; update before recording)
+Built and verified locally: contract + codegen (T02), fixtures and effect harness (T04), authorization / decisions / receipts / run fencing (T06), literal + sandboxed structural search (T07), themed component workshop on the public catalog (T03). Not built yet: git snapshot reader (T05), MCP/HTTP adapters (T08), persistent workbench and brief (T09), live reasoning driver (T10), full-loop recording (T11). Not run: hosted identity (I01), deployment and a remote MCP host (I04). The first-acceptance sentence below is **not met** until T05, T08/T09 and T10 exist; a recording must show what actually works and label the rest.
 
-- Current mode: `local-demo`. Self-hosted Convex on each developer's loopback. Hosted identity, remote MCP, and deployment: NOT RUN.
-- Public hostname reserved for deployment (I04): `think-wide.fbf.systems` → VPS 162.248.101.225. DNS live 11:41 EDT; origin not serving yet (HTTP 521). Hosted status remains NOT RUN.
-- Demonstration repositories: **UNCONFIRMED.** Must be public or synthetic and clearly labeled. Owner: Marc (needed by T05, 13:30).
-- Model provider and budget for backend reasoning: **UNCONFIRMED.** Owner: Eassa (needed by T10, 15:00).
+First acceptance, as agreed: two immutable repos, one cross-project discovery, one exact evidence expansion, one retained correction that changes reasoning, one reopened investigation, one useful implementation brief. One authenticated remote MCP host if its gate passes; a local demo is never relabeled as that.
 
-## First acceptance (agreed sentence)
+## M7 · Reasoning model and budget · OPEN (owner: Eassa)
+Provider, model id and a spend cap for backend-directed reasoning (T10). Host-directed reasoning (an MCP client such as Claude.ai supplies the model) needs no budget from us and is the cheaper path to a live demo. The app reads the provider key from the environment (`.env.local`); no provider is hardcoded in the contract.
 
-Two immutable repos, one cross-project discovery, one exact evidence expansion, one retained correction that changes reasoning, one reopened investigation, and one useful implementation brief. One authenticated remote MCP host if its gate passes; a local demo is never relabeled as that result.
+## M8 · Demonstration data · CONFIRMED in trunk, pending two 👍
+`tests/fixtures/repos/alpha.bundle` and `beta.bundle`: real git repositories with real commits, synthetic, labeled, reproducible with `scripts/make-fixture-repos.ts`. Proposed as the two demo repositories. Marc and Andrew to confirm on issue #5.
 
-## Team and first tasks
-
-| Person | GitHub | First ticket |
-|---|---|---|
-| Eassa | @heyoub | T01 close-out, then T02 |
-| Marc | @Marcandy | T03 |
-| Andrew | @adiesh2 (confirmed by Eassa 11:40) | T04 |
-
-Late-start note: G0's 11:25 hard stop passed before this record was written. Per PM_BOOT the clock is not reset; T01/T02/T03/T04 keep their original hard stops.
+## M9 · Team, mode, hostname · CONFIRMED
+Eassa @heyoub (integration), Marc @Marcandy (product and UI), Andrew @adiesh2 (fixtures, security, evidence; now also identity, I01). Current mode `local-demo`: self-hosted Convex on each developer's loopback. Hostname reserved for deployment: `think-wide.fbf.systems` → VPS `162.248.101.225`, DNS-only, SSH key-only. Nothing is served there yet: hosted status NOT RUN.

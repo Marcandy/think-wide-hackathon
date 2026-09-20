@@ -67,7 +67,7 @@ try {
 } catch {}
 if (committedDoc !== doc.stdout)
 	problems.push(
-		"docs/OPERATIONS.md: stale, missing or hand-edited (run: bun scripts/operations-doc.ts --write, then regenerate docs/MANIFEST.sha256)",
+		"docs/OPERATIONS.md: stale, missing or hand-edited (run: bun scripts/operations-doc.ts --write)",
 	);
 if (problems.length) {
 	console.error(`contract drift:\n  ${problems.join("\n  ")}`);

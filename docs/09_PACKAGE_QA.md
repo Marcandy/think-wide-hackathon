@@ -32,3 +32,7 @@ The prior readiness report about Andrew's workstation is attributed supplied evi
 ## Provenance
 
 This is design and planning produced before the advertised implementation window. The earlier starter kit exists but is not copied or included. Disclose relevant prior design/assets under the selected track's actual rules. This package is not an eligibility ruling.
+
+## Later change
+
+The per-file `MANIFEST.sha256` that shipped with this planning package was removed from the repository on 2026-09-20. Git object ids already are the integrity record for tracked files, and a file that every documentation change rewrites produced a merge conflict on every pull request (it was the only conflict in PRs #8, #13 and #18). Nothing else depended on it.

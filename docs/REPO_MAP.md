@@ -186,7 +186,7 @@ infra/docker-compose.prod.yml           I04
 infra/DEPLOY.md                         I04  ports, volumes, SSH recovery
 
 .github/workflows/ci.yml                T01  calls scripts/check.ts, actions pinned by SHA
-.github/CODEOWNERS                      T01  contracts/ core/ convex/auth.config.ts .github/ infra/ -> Eassa + reviewer
+.github/CODEOWNERS                      EXISTS  specialty owners; shared seams reviewed by Eassa + Andrew
 ```
 
 ## `docs/`
