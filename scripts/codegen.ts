@@ -198,11 +198,143 @@ export type ImplementedOperationId = keyof typeof OPERATION_HANDLERS;
 export const UNIMPLEMENTED_OPERATIONS = ${JSON.stringify(unimplemented, null, "\t")} as const satisfies readonly OperationId[];
 `;
 
+// ---- MCP tool descriptors (pure data; the server and transport are T08) ----
+// Each inputSchema is the operation's request schema bundled into one self-contained object:
+// every transitively referenced definition is hoisted into the root `$defs` under a stable name
+// and every `$ref` becomes `#/$defs/<Name>`. Recursion stays a ref. Validation keywords are
+// copied verbatim; only `$id`, `$schema` and the nested `$defs` of a hoisted target are dropped.
+type Json = Record<string, unknown>;
+const SUBSCHEMA = new Set(
+	"items additionalProperties not if then else contains propertyNames unevaluatedItems unevaluatedProperties".split(
+		" ",
+	),
+);
+const SUBSCHEMA_LIST = new Set(["oneOf", "anyOf", "allOf", "prefixItems"]);
+const SUBSCHEMA_MAP = new Set(
+	"properties patternProperties dependentSchemas".split(" "),
+);
+const isObject = (v: unknown): v is Json =>
+	typeof v === "object" && v !== null && !Array.isArray(v);
+const schemaFile = (file: string): Json => {
+	const found = schemas.find((s) => s.$id === file);
+	if (!found) throw new Error(`mcp bundle: unknown schema file ${file}`);
+	return found;
+};
+const bundleSchema = (entryRef: string): Json => {
+	const defs = new Map<string, unknown>();
+	const owner = new Map<string, string>(); // def name -> absolute ref that claimed it
+	const hoist = (ref: string, baseFile: string): string => {
+		const [filePart = "", pointer = ""] = ref.split("#");
+		const file = filePart || baseFile;
+		const segments = pointer
+			.split("/")
+			.slice(1)
+			.map((p) => p.replaceAll("~1", "/").replaceAll("~0", "~"));
+		// file -> its title; file#/$defs/X -> X; any other pointer -> <Title>_<segments>.
+		const name =
+			segments.length === 2 && segments[0] === "$defs"
+				? (segments[1] as string)
+				: [schemaFile(file).title, ...segments].join("_");
+		if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(name))
+			throw new Error(`mcp bundle: cannot derive a $defs name for ${ref}`);
+		const absolute = `${file}#${pointer}`;
+		const claimed = owner.get(name);
+		if (claimed !== undefined && claimed !== absolute)
+			throw new Error(`mcp bundle: $defs name ${name} is ambiguous`);
+		if (claimed === undefined) {
+			owner.set(name, absolute); // claim before descending, so recursion terminates
+			let target: unknown = schemaFile(file);
+			for (const seg of segments)
+				target = isObject(target) ? target[seg] : undefined;
+			if (!isObject(target))
+				throw new Error(`mcp bundle: ${ref} does not resolve to a schema`);
+			defs.set(name, rewrite(target, file, true));
+		}
+		return `#/$defs/${name}`;
+	};
+	const rewrite = (node: unknown, file: string, isTarget = false): unknown => {
+		if (!isObject(node)) return node; // boolean schema
+		const out: Json = {};
+		for (const [key, value] of Object.entries(node)) {
+			if (isTarget && ["$id", "$schema", "$defs"].includes(key)) continue;
+			if (key === "$ref" && typeof value === "string")
+				out[key] = hoist(value, file);
+			else if (SUBSCHEMA.has(key)) out[key] = rewrite(value, file);
+			else if (SUBSCHEMA_LIST.has(key) && Array.isArray(value))
+				out[key] = value.map((v) => rewrite(v, file));
+			else if (SUBSCHEMA_MAP.has(key) && isObject(value))
+				out[key] = Object.fromEntries(
+					Object.entries(value).map(([k, v]) => [k, rewrite(v, file)]),
+				);
+			else if (key.startsWith("$") && key !== "$comment")
+				throw new Error(`mcp bundle: unsupported keyword ${key} in ${file}`);
+			else out[key] = structuredClone(value); // annotations and plain validation keywords
+		}
+		return out;
+	};
+	const [entryFile = "", entryPointer = ""] = entryRef.split("#");
+	let entry: unknown = schemaFile(entryFile);
+	for (const seg of entryPointer.split("/").slice(1))
+		entry = isObject(entry) ? entry[seg] : undefined;
+	const body = rewrite(entry, entryFile, true) as Json;
+	// MCP requires a top-level `type: "object"`. Adding it is only faithful when every branch of a
+	// top-level union already demands an object, so that nothing the real validator accepts is lost.
+	if (body.type !== "object") {
+		const branches = body.oneOf ?? body.anyOf;
+		if (
+			body.type !== undefined ||
+			!Array.isArray(branches) ||
+			!branches.every((b) => isObject(b) && b.type === "object")
+		)
+			throw new Error(`mcp bundle: ${entryRef} is not an object schema`);
+	}
+	const { title, description, type: _type, ...rest } = body;
+	const sortedDefs = Object.fromEntries(
+		[...defs].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+	);
+	return {
+		...(title === undefined ? {} : { title }),
+		...(description === undefined ? {} : { description }),
+		type: "object",
+		...rest,
+		...(defs.size ? { $defs: sortedDefs } : {}),
+	};
+};
+const mcpTools = ops
+	.filter((o: Record<string, unknown>) =>
+		(o.exposure as string[]).includes("mcp"),
+	)
+	.map((o: Record<string, string | undefined>) => ({
+		name: o.operationId,
+		description: o.summary,
+		operationId: o.operationId,
+		effect: o.effect,
+		handler: o.handler ?? null,
+		inputSchema: bundleSchema(o.request as string),
+	}));
+// Fail generation, not a later adapter, if a bundle is not self-contained under strict Ajv.
+for (const tool of mcpTools)
+	new Ajv2020({ strict: true, allErrors: true }).compile(tool.inputSchema);
+const mcpToolsTs = `${banner}// MCP tool descriptors: one per operation whose exposure includes "mcp", in registry order.
+// Data only. inputSchema is the request schema bundled self-contained (refs are all #/$defs/...).
+import type { OperationId } from "./operations";
+
+export const MCP_TOOLS = ${JSON.stringify(mcpTools, null, "\t")} as const;
+
+export const MCP_TOOL_NAMES = ${JSON.stringify(
+	mcpTools.map((t: { name: string | undefined }) => t.name),
+	null,
+	"\t",
+)} as const satisfies readonly OperationId[];
+export type McpToolName = (typeof MCP_TOOL_NAMES)[number];
+`;
+
 mkdirSync(outDir, { recursive: true });
 writeFileSync(join(outDir, "validators.js"), validatorsJs);
 writeFileSync(join(outDir, "validators.d.ts"), validatorsDts);
 writeFileSync(join(outDir, "types.ts"), types);
 writeFileSync(join(outDir, "operations.ts"), operationsTs);
+writeFileSync(join(outDir, "mcp-tools.ts"), mcpToolsTs);
 console.log(
-	`codegen: ${files.length} schemas, ${Object.keys(sortedRefs).length} validators, ${ops.length} operations -> ${outDir}`,
+	`codegen: ${files.length} schemas, ${Object.keys(sortedRefs).length} validators, ${ops.length} operations, ${mcpTools.length} MCP tools -> ${outDir}`,
 );
