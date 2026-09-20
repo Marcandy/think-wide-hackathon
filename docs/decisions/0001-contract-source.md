@@ -25,4 +25,6 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 | Entry schema for `readGuidance` | T07 | same, defined with the first recipe |
 | Reject inverted byte/line ranges | T05 `readSource` handler | JSON Schema cannot express end >= start |
 | `scripts/check-drift.ts` should recurse | T02 part 2 | `generated/` is flat today |
+| Object id length must match `hashAlgorithm` (issue #10) | contract 0.1.1 | T05 git reader rejects a mismatch with `invalid_request` |
+| `searchModes` lists `semantic`/`type` with no request branch (issue #10) | contract 0.1.1 | `getCapabilities` returns only `literal` / `structural` |
 | `src/server/config.ts` (mode, refuse local-demo in production) | T02 part 2 | — |

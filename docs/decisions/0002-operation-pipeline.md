@@ -14,7 +14,7 @@ Every public Convex function is registered through one wrapper, `convex/lib/oper
 2. derive the principal from `ctx.auth` only
 3. for state-changing operations, reserve or replay the receipt
 4. call the handler with an already authorized context
-5. validate the response with the generated validator, including `kind === envelopeKind`
+5. validate the response with the generated validator, including `kind === envelopeKind`, then each envelope entry with the operation's registered entry validator (`entriesType`)
 6. finalize the receipt
 
 Handlers never touch protected tables through raw `ctx.db`. They use `loadAuthorized(kind, id)` / `queryAuthorized(...)` from `convex/lib/authz.ts`, which return the document or throw `not_found`.
