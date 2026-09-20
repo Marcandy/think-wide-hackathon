@@ -110,13 +110,60 @@ const types = await compile(bundle as never, "ThinkWideContract", {
 });
 
 // ---- operations ----
+const EFFECTS = ["read", "state", "external"] as const;
+const handlerPattern = /^[A-Za-z][A-Za-z0-9_/]*:[A-Za-z_$][A-Za-z0-9_$]*$/;
 const ops = registry.operations.map((op: Record<string, unknown>) => ({
 	...op,
 	requestType: exportName(op.request as string),
 	responseType: exportName(op.response as string),
 	entriesType: op.entries ? exportName(op.entries as string) : null,
 }));
-const operationsTs = `${banner}export const CONTRACT_VERSION = ${JSON.stringify(registry.contractVersion)} as const;
+const seenIds = new Set<string>();
+const seenHandlers = new Map<string, string>();
+for (const op of ops) {
+	if (seenIds.has(op.operationId))
+		throw new Error(`${op.operationId}: duplicate operationId`);
+	seenIds.add(op.operationId);
+	if (!EFFECTS.includes(op.effect))
+		throw new Error(`${op.operationId}: effect must be one of [${EFFECTS}]`);
+	if (!op.requestType || !op.responseType)
+		throw new Error(`${op.operationId}: request/response has no named type`);
+	if (op.handler === undefined) continue;
+	if (typeof op.handler !== "string" || !handlerPattern.test(op.handler))
+		throw new Error(
+			`${op.operationId}: handler must be "<convexModule>:<exportName>"`,
+		);
+	const other = seenHandlers.get(op.handler);
+	if (other)
+		throw new Error(
+			`${op.operationId}: handler ${op.handler} is already bound to ${other}`,
+		);
+	seenHandlers.set(op.handler, op.operationId);
+}
+// Registry order everywhere, so output is a pure function of contracts/.
+const typeMap = (name: string, field: "requestType" | "responseType") =>
+	`export type ${name} = {\n${ops
+		.map((o: Record<string, string>) => `\t${o.operationId}: ${o[field]};`)
+		.join("\n")}\n};`;
+const effectUnion = (name: string, effect: string) => {
+	const ids = ops
+		.filter((o: Record<string, string>) => o.effect === effect)
+		.map((o: Record<string, string>) => JSON.stringify(o.operationId));
+	return `export type ${name} = ${ids.length ? ids.join(" | ") : "never"};`;
+};
+const importedTypes = [
+	...new Set(
+		ops.flatMap((o: Record<string, string>) => [o.requestType, o.responseType]),
+	),
+].sort() as string[];
+const unimplemented = ops
+	.filter((o: Record<string, unknown>) => o.handler === undefined)
+	.map((o: Record<string, string>) => o.operationId);
+const operationsTs = `${banner}import type {
+${importedTypes.map((t) => `\t${t},`).join("\n")}
+} from "./types";
+
+export const CONTRACT_VERSION = ${JSON.stringify(registry.contractVersion)} as const;
 
 export const OPERATIONS = ${JSON.stringify(ops, null, "\t")} as const;
 
@@ -125,6 +172,30 @@ export type EffectClass = "read" | "state" | "external";
 export const MCP_EXPOSED: readonly OperationId[] = OPERATIONS.filter((o) =>
 	(o.exposure as readonly string[]).includes("mcp"),
 ).map((o) => o.operationId);
+
+/** Request and response type of every registered operation, from requestType / responseType. */
+${typeMap("OperationRequestMap", "requestType")}
+${typeMap("OperationResponseMap", "responseType")}
+
+/** Operation ids by effect class. */
+${effectUnion("ReadOperationId", "read")}
+${effectUnion("StateOperationId", "state")}
+${effectUnion("ExternalOperationId", "external")}
+
+/** "<convexModule>:<exportName>" of the Convex function implementing each operation. */
+export const OPERATION_HANDLERS = ${JSON.stringify(
+	Object.fromEntries(
+		ops
+			.filter((o: Record<string, unknown>) => o.handler !== undefined)
+			.map((o: Record<string, string>) => [o.operationId, o.handler]),
+	),
+	null,
+	"\t",
+)} as const;
+export type ImplementedOperationId = keyof typeof OPERATION_HANDLERS;
+
+/** Registered operations with no handler binding yet. */
+export const UNIMPLEMENTED_OPERATIONS = ${JSON.stringify(unimplemented, null, "\t")} as const satisfies readonly OperationId[];
 `;
 
 mkdirSync(outDir, { recursive: true });
