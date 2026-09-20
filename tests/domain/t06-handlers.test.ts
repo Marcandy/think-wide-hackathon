@@ -6,7 +6,7 @@ import { describe, expect, test } from "vitest";
 import { api, internal } from "../../convex/_generated/api";
 import { validateResponse } from "../../convex/lib/validation";
 import schema from "../../convex/schema";
-import { argumentDigest } from "../../core";
+import { argumentDigest, may } from "../../core";
 import { OPERATIONS } from "../../generated/operations";
 import type { OperationError, SourceRef } from "../../generated/types";
 import { OperationError as isOperationError } from "../../generated/validators.js";
@@ -23,7 +23,6 @@ const identityB = {
 	subject: PRINCIPAL_B.subject,
 	issuer: PRINCIPAL_B.issuer,
 };
-const actions = OPERATIONS.map((operation) => operation.operationId);
 const openRequest = {
 	question: "Compare the implementations",
 	snapshotIds: ["snapshot_A"],
@@ -49,18 +48,13 @@ async function fixture() {
 			[identityA.tokenIdentifier, "A"],
 			[identityB.tokenIdentifier, "B"],
 		]) {
-			for (const [kind, prefix] of [
-				["snapshot", "snapshot"],
-				["repository", "repo"],
-				["entry", "entry"],
-			] as const)
-				await ctx.db.insert("grants", {
-					principal,
-					resourceKind: kind,
-					resourceId: `${prefix}_${suffix}`,
-					actions,
-					epoch: 1,
-				});
+			await ctx.db.insert("grants", {
+				principal,
+				resourceKind: "snapshot",
+				resourceId: `snapshot_${suffix}`,
+				role: "owner",
+				epoch: 1,
+			});
 		}
 	});
 	return { t, a, b };
@@ -314,7 +308,6 @@ describe("T06 real handlers", () => {
 	test.each([
 		"investigation",
 		"snapshot",
-		"decision",
 	])("revoked %s denies current reads and receipt replays", async (kind) => {
 		const { t, a } = await fixture();
 		const inv = await a.mutation(api.investigations.openInvestigation, {
@@ -371,8 +364,7 @@ describe("T06 real handlers", () => {
 						.eq("resourceId", inv.investigationId),
 				)
 				.unique();
-			if (grant)
-				await ctx.db.patch(grant._id, { actions: ["readInvestigation"] });
+			if (grant) await ctx.db.patch(grant._id, { role: "reader" });
 		});
 		expect(
 			(
@@ -392,17 +384,13 @@ describe("T06 real handlers", () => {
 		).toBe("not_found");
 	});
 
-	test("Q03 nested references and finding ids require independent grants", async () => {
+	test("Q03 references and findings stay inside the investigation snapshot scope", async () => {
 		const { t, a } = await fixture();
 		const inv = await a.mutation(api.investigations.openInvestigation, {
 			request: openRequest,
 		});
 		const before = await state(t);
-		for (const foreignRef of [
-			{ ...ref, repositoryId: "repo_B" },
-			{ ...ref, snapshotId: "snapshot_B" },
-			{ ...ref, entryId: "entry_B" },
-		])
+		for (const foreignRef of [{ ...ref, snapshotId: "snapshot_B" }])
 			expect(
 				(
 					await errorOf(
@@ -641,7 +629,7 @@ describe("T06 real handlers", () => {
 			request: openRequest,
 		});
 		await a.mutation(api.decisions.recordDecision, {
-			request: { ...decisionRequest(inv.investigationId), refs: [ref] },
+			request: decisionRequest(inv.investigationId),
 		});
 		const run = await a.mutation(api.runs.admitRun, {
 			request: {
@@ -678,6 +666,17 @@ describe("T06 real handlers", () => {
 		expect(view.acceptedFindings).toMatchObject([
 			{ summary: "A hypothesis", verification: "unverified" },
 		]);
+		const summary = await a.query(api.investigations.readInvestigation, {
+			request: { investigationId: inv.investigationId, detail: "summary" },
+		});
+		const expectedSummary = { ...view };
+		delete expectedSummary.decisions;
+		delete expectedSummary.acceptedFindings;
+		expect(summary).toEqual(expectedSummary);
+		expect(summary).not.toHaveProperty("decisions");
+		expect(summary).not.toHaveProperty("acceptedFindings");
+		expect((await state(t)).grants).toHaveLength(3);
+
 		expect(
 			(
 				await a.mutation(api.runs.cancelRun, {
@@ -760,7 +759,7 @@ describe("T06 real handlers", () => {
 				principal: identityB.tokenIdentifier,
 				resourceKind: "snapshot",
 				resourceId: "snapshot_A",
-				actions,
+				role: "owner",
 				epoch: 1,
 			});
 		});
@@ -783,7 +782,7 @@ describe("T06 real handlers", () => {
 		).toBe("not_found");
 	});
 
-	test("revoked entry denies decision replay, run reads and new decisions targeting its finding", async () => {
+	test("revoked snapshot denies decision replay, run reads and new decisions targeting its finding", async () => {
 		const { t, a } = await fixture();
 		const inv = await a.mutation(api.investigations.openInvestigation, {
 			request: openRequest,
@@ -813,7 +812,7 @@ describe("T06 real handlers", () => {
 		});
 		await t.run(async (ctx) => {
 			for (const grant of await ctx.db.query("grants").collect())
-				if (grant.resourceId === "entry_A")
+				if (grant.resourceId === "snapshot_A")
 					await ctx.db.patch(grant._id, { revokedAt: Date.now() });
 		});
 		const before = await state(t);
@@ -863,6 +862,303 @@ describe("T06 real handlers", () => {
 				)
 			).code,
 		).toBe("request_key_conflict");
+	});
+
+	test("roles derive permissions from every registered operation", () => {
+		for (const role of ["owner", "reader"] as const)
+			for (const operation of OPERATIONS)
+				expect(
+					may(
+						{ id: "A" },
+						operation.operationId,
+						{ kind: "snapshot", id: "snapshot_A" },
+						[
+							{
+								principal: "A",
+								resourceKind: "snapshot",
+								resourceId: "snapshot_A",
+								role,
+								epoch: 1,
+							},
+						],
+					),
+				).toBe(
+					role === "owner" || operation.effect === "read" ? "allow" : "deny",
+				);
+	});
+
+	test("reader can read but every public state-changing operation and replay is denied", async () => {
+		const { t, a } = await fixture();
+		const inv = await a.mutation(api.investigations.openInvestigation, {
+			request: openRequest,
+		});
+		const runRequest = {
+			investigationId: inv.investigationId,
+			expectedRevision: 0,
+			purpose: "compare",
+			requestKey: "reader-run-key",
+		};
+		const run = await a.mutation(api.runs.admitRun, { request: runRequest });
+		await t.run(async (ctx) => {
+			for (const grant of await ctx.db.query("grants").collect())
+				if (grant.principal === identityA.tokenIdentifier)
+					await ctx.db.patch(grant._id, {
+						role: "reader",
+						epoch: grant.epoch + 1,
+					});
+		});
+		expect(
+			(
+				await a.query(api.investigations.readInvestigation, {
+					request: { investigationId: inv.investigationId },
+				})
+			).revision,
+		).toBe(0);
+		expect(
+			(await a.query(api.runs.getRun, { request: { runId: run.runId } }))
+				.status,
+		).toBe("admitted");
+		const before = await state(t);
+		for (const requestKey of [openRequest.requestKey, "reader-new-key"]) {
+			const errors = await Promise.all(
+				[
+					a.mutation(api.investigations.openInvestigation, {
+						request: { ...openRequest, requestKey },
+					}),
+					a.mutation(api.decisions.recordDecision, {
+						request: decisionRequest(inv.investigationId, 0, requestKey),
+					}),
+					a.mutation(api.runs.admitRun, {
+						request: {
+							...runRequest,
+							requestKey:
+								requestKey === openRequest.requestKey
+									? runRequest.requestKey
+									: requestKey,
+						},
+					}),
+					a.mutation(api.runs.cancelRun, {
+						request: { runId: run.runId, requestKey },
+					}),
+				].map(errorOf),
+			);
+			for (const error of errors)
+				expect(error).toEqual({
+					code: "not_found",
+					message: "Resource not found",
+				});
+		}
+		expect(await state(t)).toEqual(before);
+	});
+
+	test("a granted snapshot outside the investigation cannot enter a decision or publication", async () => {
+		const { t, a } = await fixture();
+		await t.run(async (ctx) => {
+			await ctx.db.insert("grants", {
+				principal: identityA.tokenIdentifier,
+				resourceKind: "snapshot",
+				resourceId: "snapshot_B",
+				role: "owner",
+				epoch: 1,
+			});
+		});
+		const inv = await a.mutation(api.investigations.openInvestigation, {
+			request: openRequest,
+		});
+		const before = await state(t);
+		expect(
+			(
+				await errorOf(
+					a.mutation(api.decisions.recordDecision, {
+						request: {
+							...decisionRequest(inv.investigationId),
+							refs: [{ ...ref, snapshotId: "snapshot_B" }],
+						},
+					}),
+				)
+			).code,
+		).toBe("not_found");
+		expect(await state(t)).toEqual(before);
+		const run = await a.mutation(api.runs.admitRun, {
+			request: {
+				investigationId: inv.investigationId,
+				expectedRevision: 0,
+				purpose: "compare",
+				requestKey: "outside-run-key",
+			},
+		});
+		expect(
+			await t.mutation(internal.runs.publish, {
+				request: {
+					investigationId: inv.investigationId,
+					runId: run.runId,
+					baseRevision: 0,
+					claims: [
+						{
+							statement: "Outside evidence",
+							evidenceClass: "model_hypothesis",
+							refs: [{ ...ref, snapshotId: "snapshot_B" }],
+						},
+					],
+				},
+			}),
+		).toEqual({ published: false, status: "superseded" });
+		expect((await state(t)).investigations[0].body).not.toContain(
+			"Outside evidence",
+		);
+	});
+
+	test.each([
+		"revoke",
+		"epoch",
+		"role",
+	])("two-snapshot fence rejects a %s on just one snapshot", async (change) => {
+		const { t, a } = await fixture();
+		await t.run(async (ctx) => {
+			await ctx.db.insert("grants", {
+				principal: identityA.tokenIdentifier,
+				resourceKind: "snapshot",
+				resourceId: "snapshot_B",
+				role: "owner",
+				epoch: 1,
+			});
+		});
+		const inv = await a.mutation(api.investigations.openInvestigation, {
+			request: { ...openRequest, snapshotIds: ["snapshot_A", "snapshot_B"] },
+		});
+		const decision = await a.mutation(api.decisions.recordDecision, {
+			request: decisionRequest(inv.investigationId),
+		});
+		const run = await a.mutation(api.runs.admitRun, {
+			request: {
+				investigationId: inv.investigationId,
+				expectedRevision: 1,
+				purpose: "compare",
+				requestKey: "two-snapshot-run",
+			},
+		});
+		const admitted = await state(t);
+		expect(
+			admitted.grants.every((grant) =>
+				["investigation", "snapshot"].includes(grant.resourceKind),
+			),
+		).toBe(true);
+		expect(admitted.runs[0].fences).toHaveLength(3);
+		expect(
+			new Set(
+				admitted.runs[0].fences.map(
+					(fence) =>
+						admitted.grants.find((grant) => grant._id === fence.grantId)
+							?.resourceId,
+				),
+			),
+		).toEqual(new Set([inv.investigationId, "snapshot_A", "snapshot_B"]));
+		await t.run(async (ctx) => {
+			for (const grant of await ctx.db.query("grants").collect())
+				if (
+					grant.principal === identityA.tokenIdentifier &&
+					grant.resourceId === "snapshot_B"
+				)
+					await ctx.db.patch(
+						grant._id,
+						change === "revoke"
+							? { revokedAt: Date.now() }
+							: change === "epoch"
+								? { epoch: 2 }
+								: { role: "reader" },
+					);
+		});
+		expect(
+			await t.mutation(internal.runs.publish, {
+				request: {
+					investigationId: inv.investigationId,
+					runId: run.runId,
+					baseRevision: 1,
+					claims: [
+						{
+							statement: "Still fenced even though this ref uses A",
+							evidenceClass: "model_hypothesis",
+							refs: [ref],
+						},
+					],
+				},
+			}),
+		).toEqual({ published: false, status: "superseded" });
+		const rows = await state(t);
+		expect(rows.decisions).toHaveLength(1);
+		expect(JSON.parse(rows.decisions[0].body)).toEqual(decision);
+		expect(JSON.parse(rows.investigations[0].body).revision).toBe(1);
+		expect(
+			JSON.parse(rows.investigations[0].body).acceptedFindings,
+		).toBeUndefined();
+	});
+
+	test.each([
+		"admitted",
+		"running",
+	])("human decision immediately supersedes a %s run", async (status) => {
+		const { t, a } = await fixture();
+		const inv = await a.mutation(api.investigations.openInvestigation, {
+			request: openRequest,
+		});
+		const run = await a.mutation(api.runs.admitRun, {
+			request: {
+				investigationId: inv.investigationId,
+				expectedRevision: 0,
+				purpose: "compare",
+				requestKey: "supersede-run-key",
+			},
+		});
+		if (status === "running")
+			await t.run(async (ctx) => {
+				const row = (await ctx.db.query("runs").collect())[0];
+				await ctx.db.patch(row._id, {
+					body: JSON.stringify({ ...run, status }),
+				});
+			});
+		await a.mutation(api.decisions.recordDecision, {
+			request: decisionRequest(inv.investigationId),
+		});
+		const old = await a.query(api.runs.getRun, {
+			request: { runId: run.runId },
+		});
+		expect(old.status).toBe("superseded");
+		expect(old.finishedAt).toEqual(expect.any(Number));
+		const next = await a.mutation(api.runs.admitRun, {
+			request: {
+				investigationId: inv.investigationId,
+				expectedRevision: 1,
+				purpose: "compare",
+				requestKey: "next-run-key",
+			},
+		});
+		expect(next.status).toBe("admitted");
+		expect(next.runId).not.toBe(run.runId);
+	});
+
+	test.each([
+		{ ...ref, snapshotId: undefined },
+		{ ...ref, byteRange: { start: 2, end: 1 } },
+		{ ...ref, lineRange: { start: 2, end: 1 } },
+		{ ...ref, hashAlgorithm: "sha256" },
+	])("source bindings, ranges and algorithm lengths remain enforced: %j", async (invalidRef) => {
+		const { t, a } = await fixture();
+		const inv = await a.mutation(api.investigations.openInvestigation, {
+			request: openRequest,
+		});
+		const before = await state(t);
+		const error = await errorOf(
+			a.mutation(api.decisions.recordDecision, {
+				request: {
+					...decisionRequest(inv.investigationId),
+					refs: [invalidRef],
+				},
+			}),
+		);
+		expect(error.code).toBe(
+			invalidRef.snapshotId ? "invalid_request" : "source_unavailable",
+		);
+		expect(await state(t)).toEqual(before);
 	});
 
 	test("envelope kind and entries use operation-specific generated validators", () => {

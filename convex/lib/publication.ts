@@ -1,4 +1,5 @@
 import { ConvexError } from "convex/values";
+import { may } from "../../core";
 import type {
 	Finding,
 	Investigation,
@@ -52,7 +53,12 @@ export async function publishRun(
 			grant.principal !== row.principal ||
 			grant.epoch !== fence.epoch ||
 			grant.revokedAt !== undefined ||
-			!grant.actions.includes("requestAnalysis")
+			may(
+				{ id: row.principal },
+				"requestAnalysis",
+				{ kind: grant.resourceKind, id: grant.resourceId },
+				[grant],
+			) !== "allow"
 		)
 			return supersede();
 	}
@@ -75,7 +81,8 @@ export async function publishRun(
 			fail("unsupported", "Composition publication belongs to T10");
 		for (const claim of proposal.claims)
 			await authorized.authorizeRefs(claim.refs, investigation);
-		// New source grants cannot expand the authority captured at admission.
+		// Publication must retain exactly the investigation and snapshot fence set.
+		if (authorized.fences().length !== row.fences.length) return supersede();
 		for (const fence of authorized.fences())
 			if (
 				!row.fences.some(
@@ -97,20 +104,6 @@ export async function publishRun(
 			if (Array.from(finding.summary).length > 512)
 				fail("limit_exceeded", "Finding summary exceeds 512 characters");
 			validate(validators.Finding, finding);
-			await ctx.db.insert("grants", {
-				principal: row.principal,
-				resourceKind: "finding",
-				resourceId: finding.findingId,
-				epoch: 1,
-				actions: [
-					"readInvestigation",
-					"openInvestigation",
-					"recordDecision",
-					"requestAnalysis",
-					"getRun",
-					"cancelRun",
-				],
-			});
 		}
 		const updated: Investigation = {
 			...investigation,
@@ -130,6 +123,8 @@ export async function publishRun(
 			0,
 			1025,
 		);
+		if (decisions.length > 1024)
+			fail("limit_exceeded", "Publication input exceeds decision limit");
 		for (const decision of decisions)
 			if (
 				new TextEncoder().encode(

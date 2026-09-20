@@ -6,17 +6,9 @@ import { v } from "convex/values";
 export default defineSchema({
 	grants: defineTable({
 		principal: v.string(),
-		resourceKind: v.union(
-			v.literal("investigation"),
-			v.literal("decision"),
-			v.literal("run"),
-			v.literal("snapshot"),
-			v.literal("repository"),
-			v.literal("entry"),
-			v.literal("finding"),
-		),
+		resourceKind: v.union(v.literal("investigation"), v.literal("snapshot")),
 		resourceId: v.string(),
-		actions: v.array(v.string()),
+		role: v.union(v.literal("owner"), v.literal("reader")),
 		epoch: v.number(),
 		revokedAt: v.optional(v.number()),
 	}).index("by_principal_resource", [

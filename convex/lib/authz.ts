@@ -5,7 +5,7 @@ import {
 	principalFromIdentity,
 	type ResourceKind,
 } from "../../core";
-import { OPERATIONS, type OperationId } from "../../generated/operations";
+import type { OperationId } from "../../generated/operations";
 import type {
 	Decision,
 	Investigation,
@@ -49,17 +49,6 @@ export async function requireAccess(
 	);
 	return grant ?? fail("not_found", "Resource not found");
 }
-
-const OWNED_ACTIONS = OPERATIONS.filter((operation) =>
-	[
-		"openInvestigation",
-		"readInvestigation",
-		"recordDecision",
-		"requestAnalysis",
-		"getRun",
-		"cancelRun",
-	].includes(operation.operationId),
-).map((operation) => operation.operationId);
 
 type ProtectedDocs = {
 	investigation: Doc<"investigations">;
@@ -106,9 +95,9 @@ export class AuthorizedCtx {
 		kind: keyof ProtectedDocs,
 		id: string,
 	): Promise<ProtectedDocs[keyof ProtectedDocs]> {
-		// The grant query is the same for missing and forbidden; content is never read first.
-		await this.requireAccess(kind, id);
+		// Authorize the parent before reading its body. Children inherit this scope.
 		if (kind === "investigation") {
+			await this.requireAccess(kind, id);
 			const normalized = this.#ctx.db.normalizeId("investigations", id);
 			const row = normalized && (await this.#ctx.db.get(normalized));
 			if (!row) return fail("not_found", "Resource not found");
@@ -136,14 +125,6 @@ export class AuthorizedCtx {
 		const row = normalized && (await this.#ctx.db.get(normalized));
 		if (!row) return fail("not_found", "Resource not found");
 		await this.loadAuthorized("investigation", row.investigationId);
-		// Run status is private to every input consumed at admission, including
-		// decisions and entry grants that are narrower than the snapshot grant.
-		for (const fence of row.fences) {
-			const grant = await this.#ctx.db.get(fence.grantId);
-			if (!grant || grant.revokedAt !== undefined)
-				fail("not_found", "Resource not found");
-			await this.requireAccess(grant.resourceKind, grant.resourceId);
-		}
 		return row;
 	}
 
@@ -152,14 +133,12 @@ export class AuthorizedCtx {
 		investigation: Investigation,
 	): Promise<void> {
 		for (const ref of refs) {
-			await this.requireAccess("repository", ref.repositoryId);
 			if (!ref.snapshotId)
 				fail(
 					"source_unavailable",
 					"Snapshot binding required for source reference",
 				);
 			await this.requireAccess("snapshot", ref.snapshotId);
-			await this.requireAccess("entry", ref.entryId);
 			if (!investigation.snapshotIds.includes(ref.snapshotId))
 				fail("not_found", "Resource not found");
 			if (
@@ -184,7 +163,6 @@ export class AuthorizedCtx {
 		investigation: Investigation,
 	): Promise<void> {
 		if (decision.targetFindingId) {
-			await this.requireAccess("finding", decision.targetFindingId);
 			const finding = investigation.acceptedFindings?.find(
 				(candidate) => candidate.findingId === decision.targetFindingId,
 			);
@@ -222,6 +200,18 @@ export class AuthorizedCtx {
 		maximum: number,
 	): Promise<Decision[]> {
 		const parent = await this.loadAuthorized("investigation", investigationId);
+		return this.#queryDecisions(parent, after, maximum);
+	}
+
+	async #queryDecisions(
+		parent: Doc<"investigations">,
+		after: number,
+		maximum: number,
+	): Promise<Decision[]> {
+		const investigation = decode<Investigation>(
+			validators.Investigation,
+			parent.body,
+		);
 		const rows = await this.#ctx.db
 			.query("decisions")
 			.withIndex("by_investigation_revision", (q) =>
@@ -229,7 +219,11 @@ export class AuthorizedCtx {
 			)
 			.take(maximum);
 		const result: Decision[] = [];
-		for (const row of rows) result.push(await this.decision(row._id));
+		for (const row of rows) {
+			const decision = decode<Decision>(validators.Decision, row.body);
+			await this.authorizeDecision(decision, investigation);
+			result.push(decision);
+		}
 		return result;
 	}
 
@@ -244,8 +238,16 @@ export class AuthorizedCtx {
 			validators.Investigation,
 			row.body,
 		);
+		if (request.detail === "summary") {
+			// Summary is a complete metadata projection, with no body pagination.
+			if (request.cursor) fail("cursor_invalid", "Invalid cursor");
+			const summary = { ...investigation };
+			delete summary.decisions;
+			delete summary.acceptedFindings;
+			summary.page = { nextCursor: null, truncated: { is: false } };
+			return summary;
+		}
 		for (const finding of investigation.acceptedFindings ?? []) {
-			await this.requireAccess("finding", finding.findingId);
 			await this.authorizeRefs(finding.refs, investigation);
 		}
 		if (investigation.currentRunId)
@@ -289,11 +291,7 @@ export class AuthorizedCtx {
 			)
 				fail("cursor_invalid", "Invalid cursor");
 		}
-		const decisions = await this.queryAuthorized(
-			investigation.investigationId,
-			after,
-			65,
-		);
+		const decisions = await this.#queryDecisions(row, after, 65);
 		const result: Investigation = { ...investigation, decisions: [] };
 		let more = false;
 		for (const decision of decisions) {
@@ -350,7 +348,7 @@ export class AuthorizedMutationCtx extends AuthorizedCtx {
 			principal: this.principal.id,
 			resourceKind: kind,
 			resourceId: id,
-			actions: OWNED_ACTIONS,
+			role: "owner",
 			epoch: 1,
 		});
 	}
@@ -403,7 +401,18 @@ export class AuthorizedMutationCtx extends AuthorizedCtx {
 		await this.#ctx.db.patch(id, {
 			body: JSON.stringify({ ...value, decisionId: id }),
 		});
-		await this.#grant("decision", id);
+		if (investigation.currentRunId) {
+			const row = await this.loadAuthorized("run", investigation.currentRunId);
+			const run = decode<Run>(validators.Run, row.body);
+			if (run.status === "admitted" || run.status === "running")
+				await this.#ctx.db.patch(row._id, {
+					body: JSON.stringify({
+						...run,
+						status: "superseded",
+						finishedAt: Date.now(),
+					}),
+				});
+		}
 		await this.#ctx.db.patch(parent._id, {
 			body: JSON.stringify({
 				...investigation,
@@ -427,19 +436,8 @@ export class AuthorizedMutationCtx extends AuthorizedCtx {
 			fail("revision_conflict", "Investigation revision changed", {
 				currentRevision: investigation.revision,
 			});
-		for (const finding of investigation.acceptedFindings ?? []) {
-			await this.requireAccess("finding", finding.findingId);
-			await this.authorizeRefs(finding.refs, investigation);
-		}
-		const decisions = await this.queryAuthorized(
-			value.investigationId,
-			0,
-			1025,
-		);
-		if (decisions.length > 1024)
-			fail("limit_exceeded", "Run input exceeds decision limit");
-		// The investigation row serializes admissions. Its pointer avoids an
-		// unbounded scan of historical runs, each of which has its own grant.
+		// The parent and its snapshots are the entire admission authority.
+		// Its pointer serializes admissions without scanning historical runs.
 		if (investigation.currentRunId) {
 			const run = await new AuthorizedCtx(
 				this.#ctx,
@@ -459,8 +457,6 @@ export class AuthorizedMutationCtx extends AuthorizedCtx {
 			fences: this.fences(),
 			body: "",
 		});
-		await this.#grant("run", id);
-		await this.requireAccess("run", id);
 		await this.#ctx.db.patch(id, {
 			body: JSON.stringify({ ...value, runId: id }),
 			fences: this.fences(),
