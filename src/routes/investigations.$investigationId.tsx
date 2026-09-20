@@ -4,6 +4,7 @@ import {
 	operationError,
 	workbenchError,
 } from "../components/behavior/workbench";
+import { PortfolioNav } from "../components/shell/PortfolioNav";
 
 export const Route = createFileRoute("/investigations/$investigationId")({
 	component: InvestigationPage,
@@ -33,7 +34,7 @@ function InvestigationPage() {
 	const { investigationId } = Route.useParams();
 	return (
 		<main className="mx-auto max-w-6xl space-y-6 p-4 text-foreground sm:p-8">
-			<Link to="/">← Home</Link>
+			<PortfolioNav />
 			<InvestigationWorkbench
 				key={investigationId}
 				investigationId={investigationId}

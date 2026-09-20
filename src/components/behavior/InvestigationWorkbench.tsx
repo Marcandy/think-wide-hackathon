@@ -11,11 +11,15 @@ import type {
 	Investigation,
 	RecordDecisionRequest,
 } from "../../../generated/types";
+import { DecisionEditor } from "./DecisionEditor";
+import {
+	InvestigationEvidence,
+	SourceReferences,
+} from "./InvestigationEvidence";
 import {
 	appendDecisionPage,
 	decisionCommand,
 	decisionLabels,
-	isDecisionKind,
 	operationError,
 	workbenchError,
 } from "./workbench";
@@ -50,6 +54,7 @@ export function InvestigationWorkbench({
 	const [loadingPage, setLoadingPage] = useState(false);
 	const [history, setHistory] = useState<{
 		base: Investigation;
+		connectionCount: number;
 		decisions: Decision[];
 		cursor: string | null;
 	}>();
@@ -66,8 +71,14 @@ export function InvestigationWorkbench({
 	}
 	// An updated authorized result invalidates previously fetched pages even when
 	// the revision is unchanged (e.g. a proposal or grant change).
-	const activeHistory = history?.base === investigation ? history : undefined;
-	const decisions = activeHistory?.decisions ?? investigation.decisions ?? [];
+	const activeHistory =
+		history?.base === investigation &&
+		history.connectionCount === connection.connectionCount
+			? history
+			: undefined;
+	const decisions =
+		activeHistory?.decisions ??
+		appendDecisionPage([], investigation, investigation);
 	const cursor = activeHistory
 		? activeHistory.cursor
 		: investigation.page?.nextCursor;
@@ -130,6 +141,7 @@ export function InvestigationWorkbench({
 			});
 			setHistory({
 				base: investigation,
+				connectionCount: connection.connectionCount,
 				decisions: appendDecisionPage(decisions, page, investigation),
 				cursor: page.page?.nextCursor ?? null,
 			});
@@ -158,101 +170,37 @@ export function InvestigationWorkbench({
 				</p>
 			</header>
 			<div className="grid gap-6 lg:grid-cols-2">
-				<section
-					className="space-y-4 rounded-lg border bg-card p-5"
-					aria-labelledby={`${fieldId}-heading`}
-				>
-					<h2 id={`${fieldId}-heading`} className="text-xl font-semibold">
-						Record your decision
-					</h2>
-					<form
-						className="space-y-4"
-						onSubmit={(event) => {
-							event.preventDefault();
-							void save();
-						}}
-					>
-						<fieldset disabled={saving || !!pending} className="space-y-4">
-							<div className="grid gap-2">
-								<label htmlFor={`${fieldId}-kind`}>Decision action</label>
-								<select
-									id={`${fieldId}-kind`}
-									className={control}
-									value={draft.kind}
-									onChange={(event) => {
-										if (isDecisionKind(event.target.value)) {
-											setDraft({ ...draft, kind: event.target.value });
-											setBaseRevision(baseRevision ?? investigation.revision);
-										}
-									}}
-								>
-									{Object.entries(decisionLabels).map(([value, label]) => (
-										<option key={value} value={value}>
-											{label}
-										</option>
-									))}
-								</select>
-							</div>
-							<div className="grid gap-2">
-								<label htmlFor={`${fieldId}-statement`}>Your direction</label>
-								<textarea
-									id={`${fieldId}-statement`}
-									className={`${control} min-h-36`}
-									rows={5}
-									maxLength={16384}
-									required
-									value={draft.statement}
-									aria-describedby={`${fieldId}-draft-help`}
-									onChange={(event) => {
-										setDraft({ ...draft, statement: event.target.value });
-										setBaseRevision(baseRevision ?? investigation.revision);
-									}}
-								/>
-								<p
-									id={`${fieldId}-draft-help`}
-									className="text-sm text-muted-foreground"
-								>
-									Saved decisions survive reopening. Unsaved drafts stay here
-									until you navigate away or reload.
-								</p>
-							</div>
-						</fieldset>
-						{staleDraft && !pending ? (
-							<div className="space-y-2">
-								<p>
-									A newer revision is available. Review the saved history before
-									applying your draft.
-								</p>
-								<button
-									type="button"
-									className={button}
-									onClick={() => {
+				<DecisionEditor
+					draft={draft}
+					onDraftChange={(next) => {
+						setDraft(next);
+						setBaseRevision(baseRevision ?? investigation.revision);
+					}}
+					onSave={() => void save()}
+					locked={saving || !!pending}
+					saveDisabled={
+						saving || (!pending && (staleDraft || !draft.statement.trim()))
+					}
+					submitLabel={
+						saving
+							? "Saving…"
+							: pending
+								? "Retry the same save"
+								: "Save decision"
+					}
+					message={message}
+					review={
+						staleDraft && !pending
+							? {
+									revision: investigation.revision,
+									onConfirm: () => {
 										setBaseRevision(investigation.revision);
 										setMessage("");
-									}}
-								>
-									I reviewed revision {investigation.revision}
-								</button>
-							</div>
-						) : null}
-						<button
-							className={button}
-							type="submit"
-							disabled={
-								saving || (!pending && (staleDraft || !draft.statement.trim()))
-							}
-						>
-							{saving
-								? "Saving…"
-								: pending
-									? "Retry the same save"
-									: "Save decision"}
-						</button>
-						<output aria-live="polite" className="block text-sm">
-							{message}
-						</output>
-					</form>
-				</section>
+									},
+								}
+							: undefined
+					}
+				/>
 				<section
 					className="space-y-4 rounded-lg border bg-card p-5"
 					aria-labelledby={`${fieldId}-history`}
@@ -275,12 +223,7 @@ export function InvestigationWorkbench({
 								<p className="whitespace-pre-wrap break-words">
 									{decision.statement}
 								</p>
-								{decision.refs?.length ? (
-									<p className="text-sm text-muted-foreground">
-										{decision.refs.length} source references recorded. Source
-										viewing is awaiting the snapshot integration.
-									</p>
-								) : null}
+								<SourceReferences references={decision.refs ?? []} />
 							</li>
 						))}
 					</ol>
@@ -297,6 +240,7 @@ export function InvestigationWorkbench({
 					<output className="block text-sm">{pageError}</output>
 				</section>
 			</div>
+			<InvestigationEvidence findings={investigation.acceptedFindings ?? []} />
 			<section
 				className="space-y-3 rounded-lg border bg-card p-5"
 				aria-labelledby={`${fieldId}-brief`}
