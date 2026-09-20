@@ -4,6 +4,7 @@
 	"operations": [
 		{
 			"operationId": "getCapabilities",
+			"handler": "capabilities:getCapabilities",
 			"summary": "Actual enabled modes, limits, versions, integration status",
 			"request": "requests.schema.json#/$defs/GetCapabilitiesRequest",
 			"response": "capabilities.schema.json",
