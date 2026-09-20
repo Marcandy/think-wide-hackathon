@@ -69,6 +69,7 @@ Each one exists because the alternative was examined and loses. Reasons are in `
 2. `bun run codegen`, commit `generated/` in the same commit. Never hand-edit `generated/`.
 3. Add or extend a test in `tests/domain/contract-*.test.ts` that shows the new rejection or acceptance.
 4. Contract changes are reviewed by @heyoub. Note behavior changes in `docs/decisions/0001-contract-source.md`.
+5. Adapters (MCP, HTTP, CLI) consume the generated tables (`generated/operations.ts`, `generated/mcp-tools.ts`, the validators) and never restate a registry fact: not a name, description, schema, effect, exposure or handler.
 
 Do not duplicate a contract shape by hand in Zod, TypeScript, Convex validators, or MCP tool schemas. Import the generated type or validator.
 

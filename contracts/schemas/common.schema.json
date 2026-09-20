@@ -68,6 +68,11 @@
 				"specialist_reported"
 			]
 		},
+		"DecisionCategory": {
+			"title": "DecisionCategory",
+			"description": "Subject of a human decision (decision 0003). User metadata only: never a role, trust label or security guarantee. Absent means uncategorized; never null.",
+			"enum": ["architecture", "security"]
+		},
 		"ShortText": {
 			"title": "ShortText",
 			"type": "string",

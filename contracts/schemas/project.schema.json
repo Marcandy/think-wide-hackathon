@@ -67,6 +67,52 @@
 					"coverage": {
 						"enum": ["complete", "partial", "not_indexed"]
 					}
+				},
+				"if": {
+					"type": "object",
+					"required": ["hashAlgorithm"],
+					"properties": {
+						"hashAlgorithm": {
+							"const": "sha1"
+						}
+					}
+				},
+				"then": {
+					"type": "object",
+					"properties": {
+						"commit": {
+							"type": "string",
+							"pattern": "^[0-9a-f]{40}$"
+						},
+						"rootTreeId": {
+							"type": "string",
+							"pattern": "^[0-9a-f]{40}$"
+						}
+					}
+				},
+				"else": {
+					"if": {
+						"type": "object",
+						"required": ["hashAlgorithm"],
+						"properties": {
+							"hashAlgorithm": {
+								"const": "sha256"
+							}
+						}
+					},
+					"then": {
+						"type": "object",
+						"properties": {
+							"commit": {
+								"type": "string",
+								"pattern": "^[0-9a-f]{64}$"
+							},
+							"rootTreeId": {
+								"type": "string",
+								"pattern": "^[0-9a-f]{64}$"
+							}
+						}
+					}
 				}
 			}
 		}

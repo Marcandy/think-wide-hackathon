@@ -34,6 +34,10 @@ export type LongText = string
  * Investigation revision N. Human corrections advance it and fence stale work.
  */
 export type Revision = number
+/**
+ * Subject of a human decision (decision 0003). User metadata only: never a role, trust label or security guarantee. Absent means uncategorized; never null.
+ */
+export type DecisionCategory = ("architecture" | "security")
 export type TimestampMs = number
 export type EvidenceClass = ("observed_literal" | "observed_structural" | "observed_history" | "source_reported" | "model_hypothesis" | "human_decision" | "specialist_reported")
 export type Sha2561 = string
@@ -101,7 +105,10 @@ contractVersion: string
 catalogVersion?: string
 mode: ("local-demo" | "connected")
 authProfile: ("local-fixed-principal" | "workos-authkit" | "workos-mcp-resource")
-searchModes: ("literal" | "structural" | "semantic" | "type")[]
+/**
+ * Only modes that have a SearchSourcesRequest branch. Re-add a mode together with its request branch.
+ */
+searchModes: ("literal" | "structural")[]
 limits: Limits
 integrations: IntegrationStatus
 }
@@ -211,6 +218,7 @@ export interface Decision {
 decisionId: Id
 investigationId: Id
 kind: ("correction" | "constraint" | "rejection" | "acceptance")
+category?: DecisionCategory
 statement: LongText
 targetFindingId?: Id
 /**
@@ -314,6 +322,7 @@ export interface HandoffConstraint {
 statement: LongText
 decisionId: Id
 kind?: ("constraint" | "rejected_approach" | "correction")
+category?: DecisionCategory
 }
 export interface HandoffEvidence {
 ref: SourceRef
@@ -895,6 +904,7 @@ export interface RecordDecisionRequest {
 investigationId: Id
 expectedRevision: Revision
 kind: ("correction" | "constraint" | "rejection" | "acceptance")
+category?: DecisionCategory
 statement: LongText
 targetFindingId?: Id
 /**
