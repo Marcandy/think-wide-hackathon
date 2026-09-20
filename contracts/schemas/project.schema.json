@@ -1,0 +1,74 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "project.schema.json",
+	"title": "Project",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"repositoryId",
+		"displayName",
+		"provider",
+		"syncStatus",
+		"snapshots"
+	],
+	"properties": {
+		"repositoryId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"displayName": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"provider": {
+			"enum": ["local-git", "github"]
+		},
+		"syncStatus": {
+			"enum": ["ready", "syncing", "failed", "revoked"]
+		},
+		"dataLabel": {
+			"enum": ["synthetic", "public", "private"],
+			"description": "Demonstration data must say what it is."
+		},
+		"snapshots": {
+			"type": "array",
+			"maxItems": 16,
+			"items": {
+				"title": "SnapshotSummary",
+				"type": "object",
+				"additionalProperties": false,
+				"required": [
+					"snapshotId",
+					"commit",
+					"hashAlgorithm",
+					"rootTreeId",
+					"indexedAt",
+					"coverage"
+				],
+				"properties": {
+					"snapshotId": {
+						"$ref": "common.schema.json#/$defs/Id"
+					},
+					"commit": {
+						"$ref": "common.schema.json#/$defs/CommitId"
+					},
+					"hashAlgorithm": {
+						"$ref": "common.schema.json#/$defs/HashAlgorithm"
+					},
+					"rootTreeId": {
+						"$ref": "common.schema.json#/$defs/ObjectId"
+					},
+					"resolvedFromRef": {
+						"type": "string",
+						"maxLength": 256,
+						"description": "Branch/tag name resolved ONCE at selection time."
+					},
+					"indexedAt": {
+						"$ref": "common.schema.json#/$defs/TimestampMs"
+					},
+					"coverage": {
+						"enum": ["complete", "partial", "not_indexed"]
+					}
+				}
+			}
+		}
+	}
+}

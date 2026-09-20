@@ -1,0 +1,81 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "source-ref.schema.json",
+	"title": "SourceRef",
+	"description": "Exact evidence address: repository + full commit + blob + entry + half-open byte range + digest of the exact bytes returned.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"repositoryId",
+		"commit",
+		"hashAlgorithm",
+		"blobId",
+		"entryId",
+		"byteRange",
+		"digest"
+	],
+	"properties": {
+		"repositoryId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"snapshotId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"commit": {
+			"$ref": "common.schema.json#/$defs/CommitId"
+		},
+		"hashAlgorithm": {
+			"$ref": "common.schema.json#/$defs/HashAlgorithm"
+		},
+		"blobId": {
+			"$ref": "common.schema.json#/$defs/ObjectId"
+		},
+		"entryId": {
+			"$ref": "common.schema.json#/$defs/Id",
+			"description": "Opaque id mapped to the verified Git tree entry. Not a path string."
+		},
+		"displayPath": {
+			"type": "string",
+			"maxLength": 4096,
+			"description": "Presentation only. Never used for lookup or authorization."
+		},
+		"byteRange": {
+			"title": "ByteRange",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["start", "end"],
+			"properties": {
+				"start": {
+					"type": "integer",
+					"minimum": 0
+				},
+				"end": {
+					"type": "integer",
+					"minimum": 0
+				}
+			},
+			"description": "[start,end) in bytes of the blob."
+		},
+		"lineRange": {
+			"title": "LineRange",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["start", "end"],
+			"properties": {
+				"start": {
+					"type": "integer",
+					"minimum": 1
+				},
+				"end": {
+					"type": "integer",
+					"minimum": 1
+				}
+			},
+			"description": "1-based inclusive, presentation only."
+		},
+		"digest": {
+			"$ref": "common.schema.json#/$defs/Sha256",
+			"description": "sha256 of exactly the bytes in byteRange."
+		}
+	}
+}

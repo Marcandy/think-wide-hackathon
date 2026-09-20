@@ -1,0 +1,75 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "run.schema.json",
+	"title": "Run",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"runId",
+		"investigationId",
+		"baseRevision",
+		"driver",
+		"status",
+		"admittedAt"
+	],
+	"properties": {
+		"runId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"investigationId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"baseRevision": {
+			"$ref": "common.schema.json#/$defs/Revision"
+		},
+		"driver": {
+			"enum": ["host", "backend"]
+		},
+		"purpose": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"status": {
+			"enum": [
+				"admitted",
+				"running",
+				"published",
+				"superseded",
+				"cancelled",
+				"failed",
+				"external_outcome_unknown"
+			]
+		},
+		"budget": {
+			"title": "RunBudget",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"maxModelCalls": {
+					"type": "integer",
+					"minimum": 0,
+					"maximum": 4
+				},
+				"maxOutputTokens": {
+					"type": "integer",
+					"minimum": 1
+				}
+			}
+		},
+		"sanitizedOutcome": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"admittedAt": {
+			"$ref": "common.schema.json#/$defs/TimestampMs"
+		},
+		"finishedAt": {
+			"anyOf": [
+				{
+					"$ref": "common.schema.json#/$defs/TimestampMs"
+				},
+				{
+					"type": "null"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "error.schema.json",
+	"title": "OperationError",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["code", "message"],
+	"properties": {
+		"code": {
+			"enum": [
+				"invalid_request",
+				"unauthenticated",
+				"forbidden",
+				"not_found",
+				"revision_conflict",
+				"request_key_conflict",
+				"cursor_invalid",
+				"source_unavailable",
+				"unsupported",
+				"limit_exceeded",
+				"capability_disabled",
+				"external_outcome_unknown",
+				"internal"
+			]
+		},
+		"message": {
+			"type": "string",
+			"maxLength": 512
+		},
+		"currentRevision": {
+			"$ref": "common.schema.json#/$defs/Revision"
+		},
+		"details": {
+			"type": "array",
+			"maxItems": 16,
+			"items": {
+				"type": "object",
+				"additionalProperties": false,
+				"required": ["path", "problem"],
+				"properties": {
+					"path": {
+						"type": "string",
+						"maxLength": 256
+					},
+					"problem": {
+						"type": "string",
+						"maxLength": 256
+					}
+				}
+			}
+		}
+	},
+	"description": "forbidden and not_found must be indistinguishable to a caller without a grant: never leak existence."
+}

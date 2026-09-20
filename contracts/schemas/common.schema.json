@@ -1,0 +1,84 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "common.schema.json",
+	"title": "Common",
+	"$defs": {
+		"Id": {
+			"title": "Id",
+			"description": "Opaque identifier. An address, never a permission.",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 128,
+			"pattern": "^[A-Za-z0-9_:.-]+$"
+		},
+		"CommitId": {
+			"title": "CommitId",
+			"description": "Full Git object id, never a branch name.",
+			"type": "string",
+			"pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+		},
+		"ObjectId": {
+			"title": "ObjectId",
+			"type": "string",
+			"pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+		},
+		"HashAlgorithm": {
+			"title": "HashAlgorithm",
+			"enum": ["sha1", "sha256"]
+		},
+		"Sha256": {
+			"title": "Sha256",
+			"type": "string",
+			"pattern": "^[0-9a-f]{64}$"
+		},
+		"TimestampMs": {
+			"title": "TimestampMs",
+			"type": "integer",
+			"minimum": 0
+		},
+		"Revision": {
+			"title": "Revision",
+			"description": "Investigation revision N. Human corrections advance it and fence stale work.",
+			"type": "integer",
+			"minimum": 0
+		},
+		"Cursor": {
+			"title": "Cursor",
+			"description": "Opaque. Bound server-side to principal, grant scope, snapshots, query and ordering.",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 512
+		},
+		"RequestKey": {
+			"title": "RequestKey",
+			"description": "Caller-chosen idempotency key. Same key + same args = same result; same key + different args = conflict.",
+			"type": "string",
+			"minLength": 8,
+			"maxLength": 128
+		},
+		"EvidenceClass": {
+			"title": "EvidenceClass",
+			"enum": [
+				"observed_literal",
+				"observed_structural",
+				"observed_history",
+				"source_reported",
+				"model_hypothesis",
+				"human_decision",
+				"specialist_reported"
+			]
+		},
+		"ShortText": {
+			"title": "ShortText",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 512
+		},
+		"LongText": {
+			"title": "LongText",
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 16384
+		}
+	}
+}
