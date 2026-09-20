@@ -34,16 +34,19 @@ export function decisionCommand(
 		...draft,
 		requestKey,
 	};
-	if (!draft.statement.trim() || !isDecisionRequest(request))
+	if (!draft.statement.trim() || !isDecisionRequest(request)) {
 		throw new Error(
 			"Enter a decision within the contract’s 16,384 character limit.",
 		);
+	}
 	return request;
 }
 
 /** Only expose validated public errors; transport exceptions may contain URLs or payloads. */
 export function operationError(error: unknown): OperationError | undefined {
-	if (!(error instanceof ConvexError)) return undefined;
+	if (!(error instanceof ConvexError)) {
+		return undefined;
+	}
 	let data: unknown = error.data;
 	if (typeof data === "string") {
 		try {
@@ -85,8 +88,9 @@ export function appendDecisionPage(
 	if (
 		page.investigationId !== expected.investigationId ||
 		page.revision !== expected.revision
-	)
+	) {
 		throw new Error("Investigation revision changed");
+	}
 	const next = [...current, ...(page.decisions ?? [])];
 	if (
 		next.some(
@@ -98,7 +102,8 @@ export function appendDecisionPage(
 		new Set(next.map((decision) => decision.decisionId)).size !== next.length ||
 		(!page.page?.nextCursor &&
 			(page.page?.truncated.is || next.length !== expected.revision))
-	)
+	) {
 		throw new Error("Decision history is incomplete");
+	}
 	return next;
 }

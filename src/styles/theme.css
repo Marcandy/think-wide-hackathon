@@ -1,0 +1,130 @@
+/* User-selected tweakcn export. Keep theme values separate from layout. */
+:root {
+	--background: #fdf6e3;
+	--foreground: #073642;
+	--card: #eee8d5;
+	--card-foreground: #073642;
+	--popover: #eee8d5;
+	--popover-foreground: #073642;
+	--primary: #c72b76; /* white on it 5.20:1; Button hover (primary/90 over the page) 4.55:1. #d33682 gave 4.55 / 4.01 */
+	--primary-foreground: #ffffff;
+	--secondary: #2aa198;
+	--secondary-foreground: #002b36; /* 4.75:1 on secondary, 5.94:1 on hover (secondary/80 over the page); white was 3.16 */
+	--muted: #93a1a1;
+	--muted-foreground: #073642;
+	--accent: #cb4b16;
+	--accent-foreground: #ffffff;
+	--destructive: #dc322f;
+	--destructive-foreground: #ffffff;
+	--border: #839496;
+	--input: #657b83; /* control boundary: 4.13:1 on background, 3.64:1 on card (WCAG 1.4.11 needs 3:1) */
+	--ring: #d33682;
+	--primary-text: #c72b76; /* brand pink as text or icon on a surface: 4.82:1 on background, 4.25:1 on card */
+	--chart-1: #268bd2;
+	--chart-2: #2aa198;
+	--chart-3: #d33682;
+	--chart-4: #cb4b16;
+	--chart-5: #dc322f;
+	--sidebar: #fdf6e3;
+	--sidebar-foreground: #073642;
+	--sidebar-primary: #d33682;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #2aa198;
+	--sidebar-accent-foreground: #ffffff;
+	--sidebar-border: #839496;
+	--sidebar-ring: #d33682;
+	--font-sans: "Outfit Variable", Outfit, sans-serif;
+	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-mono: Space Mono, monospace;
+	--radius: 0.25rem;
+	--shadow-x: 2px;
+	--shadow-y: 2px;
+	--shadow-blur: 4px;
+	--shadow-spread: 0px;
+	--shadow-opacity: 0.15;
+	--shadow-color: hsl(196 83% 10%);
+	--shadow-2xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+	--shadow-xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+	--shadow-sm:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+	--shadow:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+	--shadow-md:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 2px 4px -1px hsl(196 83% 10% / 0.15);
+	--shadow-lg:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 4px 6px -1px hsl(196 83% 10% / 0.15);
+	--shadow-xl:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 8px 10px -1px hsl(196 83% 10% / 0.15);
+	--shadow-2xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.38);
+	--tracking-normal: 0em;
+	--spacing: 0.25rem;
+}
+
+.dark {
+	--background: #002b36;
+	--foreground: #b6c0c0; /* 8.07:1 on background, 6.99:1 on card; 4.57:1 on the outline Button / Textarea fill (input/30 over card). #93a1a1 gave 3.18 there */
+	--card: #073642;
+	--card-foreground: #b6c0c0;
+	--popover: #073642;
+	--popover-foreground: #b6c0c0;
+	--primary: #d33682;
+	--primary-foreground: #ffffff;
+	--secondary: #21827a; /* white on it 4.63:1, hover (secondary/80 over the page) 5.82:1; #2aa198 gave 3.16 */
+	--secondary-foreground: #ffffff;
+	--muted: #0a4f61; /* muted-foreground on it 4.90:1; #586e75 gave 2.01 */
+	--muted-foreground: #b6c0c0;
+	--accent: #cb4b16;
+	--accent-foreground: #ffffff;
+	--destructive: #dc322f;
+	--destructive-foreground: #ffffff;
+	--border: #586e75;
+	--input: #839496; /* control boundary: 4.75:1 on background, 4.11:1 on card */
+	--ring: #e0609b; /* focus: 4.52:1 on background, 3.91:1 on card; the brand pink is 2.86:1 on card */
+	--primary-text: #e0609b; /* white-on-primary needs a darker pink than 3:1-on-card allows, so pink text gets its own token: 4.52:1 on background, 3.91:1 on card */
+	--chart-1: #268bd2;
+	--chart-2: #2aa198;
+	--chart-3: #d33682;
+	--chart-4: #cb4b16;
+	--chart-5: #dc322f;
+	--sidebar: #002b36;
+	--sidebar-foreground: #93a1a1;
+	--sidebar-primary: #d33682;
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #2aa198;
+	--sidebar-accent-foreground: #ffffff;
+	--sidebar-border: #586e75;
+	--sidebar-ring: #d33682;
+	--font-sans: "Outfit Variable", Outfit, sans-serif;
+	--font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+	--font-mono: Space Mono, monospace;
+	--radius: 0.25rem;
+	--shadow-x: 2px;
+	--shadow-y: 2px;
+	--shadow-blur: 4px;
+	--shadow-spread: 0px;
+	--shadow-opacity: 0.15;
+	--shadow-color: hsl(196 83% 10%);
+	--shadow-2xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+	--shadow-xs: 2px 2px 4px 0px hsl(196 83% 10% / 0.07);
+	--shadow-sm:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+	--shadow:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 1px 2px -1px hsl(196 83% 10% / 0.15);
+	--shadow-md:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 2px 4px -1px hsl(196 83% 10% / 0.15);
+	--shadow-lg:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 4px 6px -1px hsl(196 83% 10% / 0.15);
+	--shadow-xl:
+		2px 2px 4px 0px hsl(196 83% 10% / 0.15),
+		2px 8px 10px -1px hsl(196 83% 10% / 0.15);
+	--shadow-2xl: 2px 2px 4px 0px hsl(196 83% 10% / 0.38);
+}

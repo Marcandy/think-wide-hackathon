@@ -27,7 +27,10 @@ export default defineConfig({
 		// tests/ subdirectory is picked up automatically instead of silently never
 		// running, which looks identical to passing. `.spec.ts` is included so a file
 		// named that way is not skipped without anyone noticing.
-		include: ["tests/**/*.{test,spec}.ts", "core/**/*.{test,spec}.ts"],
+		include: [
+			"tests/**/*.{test,spec}.{ts,tsx}",
+			"core/**/*.{test,spec}.{ts,tsx}",
+		],
 		// Fixtures are data, not suites - tests/fixtures holds byte-exact inputs and git
 		// bundles. tests/browser needs a DOM environment and gets its own config rather
 		// than failing silently under environment: "node".

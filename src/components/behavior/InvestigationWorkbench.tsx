@@ -53,14 +53,17 @@ export function InvestigationWorkbench({
 		decisions: Decision[];
 		cursor: string | null;
 	}>();
-	if (!connection.isWebSocketConnected)
+	if (!connection.isWebSocketConnected) {
 		return (
 			<output>
 				Connecting to the investigation service… Saved content will appear when
 				the connection is available.
 			</output>
 		);
-	if (!investigation) return <output>Loading investigation…</output>;
+	}
+	if (!investigation) {
+		return <output>Loading investigation…</output>;
+	}
 	// An updated authorized result invalidates previously fetched pages even when
 	// the revision is unchanged (e.g. a proposal or grant change).
 	const activeHistory = history?.base === investigation ? history : undefined;
@@ -72,7 +75,9 @@ export function InvestigationWorkbench({
 		baseRevision !== undefined && baseRevision !== investigation.revision;
 
 	async function save() {
-		if (!investigation || inFlight.current) return;
+		if (!investigation || inFlight.current) {
+			return;
+		}
 		let request: RecordDecisionRequest;
 		try {
 			request =
@@ -104,7 +109,9 @@ export function InvestigationWorkbench({
 			setMessage(workbenchError(error));
 			// Known operation failures roll back the transaction. A transport failure
 			// may follow a committed write: keep the exact request/key for replay.
-			if (operationError(error)) setPending(undefined);
+			if (operationError(error)) {
+				setPending(undefined);
+			}
 		} finally {
 			inFlight.current = false;
 			setSaving(false);
@@ -112,7 +119,9 @@ export function InvestigationWorkbench({
 	}
 
 	async function loadMore() {
-		if (!investigation || !cursor || loadingPage) return;
+		if (!investigation || !cursor || loadingPage) {
+			return;
+		}
 		setLoadingPage(true);
 		setPageError("");
 		try {
