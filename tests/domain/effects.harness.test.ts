@@ -27,7 +27,8 @@ describe("effect ledger", () => {
 		ledger.recordJob({
 			jobId: "job_1",
 			reference: "internal.analyze",
-			runAtMs: 0,
+			kind: "runAfter",
+			delayMs: 0,
 		});
 		ledger.recordDispatch({ provider: "p", model: "m", args: { a: 1 } });
 
@@ -53,7 +54,8 @@ describe("effect ledger", () => {
 		ledger.recordJob({
 			jobId: "job_leak",
 			reference: "internal.analyze",
-			runAtMs: 0,
+			kind: "runAfter",
+			delayMs: 0,
 		});
 
 		const diff = diffEffects(before, ledger.snapshot());
@@ -74,7 +76,7 @@ describe("effect ledger", () => {
 	it("reset clears every channel and starts a new generation", () => {
 		const ledger = new EffectLedger();
 		ledger.recordWrite({ table: "todos", op: "delete", docId: "doc_3" });
-		ledger.recordJob({ jobId: "job_2", reference: "r", runAtMs: null });
+		ledger.recordJob({ jobId: "job_2", reference: "r", kind: "direct" });
 		ledger.reset();
 
 		const after = ledger.snapshot();

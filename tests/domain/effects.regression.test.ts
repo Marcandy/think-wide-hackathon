@@ -4,6 +4,7 @@ import {
 	digestArguments,
 	EffectLedger,
 	instrumentDb,
+	instrumentScheduler,
 } from "../helpers/effects.ts";
 import { createDelayedProvider } from "../helpers/provider.ts";
 
@@ -197,6 +198,80 @@ describe("regression: provider call that genuinely stays pending", () => {
 		const outcome = await provider.call({ args: { q: "virtual timeout" } });
 		expect(outcome.kind).toBe("external_outcome_unknown");
 		expect(ledger.snapshot().dispatches).toHaveLength(1);
+	});
+});
+
+describe("regression: scheduler timing and function references", () => {
+	function schedulerFor(ledger: EffectLedger) {
+		const raw = {
+			runAfter: async (_ms: unknown, _ref: unknown, _args?: unknown) =>
+				"job_after",
+			runAt: async (_at: unknown, _ref: unknown, _args?: unknown) => "job_at",
+		};
+		return instrumentScheduler(
+			raw as unknown as Record<string, unknown>,
+			ledger,
+		) as typeof raw;
+	}
+
+	it("stores a runAfter delay as a delay, not as an absolute timestamp", async () => {
+		const ledger = new EffectLedger();
+		await schedulerFor(ledger).runAfter(5_000, "internal/analyze:run", {});
+
+		const job = ledger.snapshot().jobs[0];
+		expect(job?.kind).toBe("runAfter");
+		expect(job?.delayMs).toBe(5_000);
+		// Before the fix a 5s delay was recorded as an absolute epoch time.
+		expect(job?.runAtMs).toBeNull();
+	});
+
+	it("stores a runAt timestamp as absolute, not as a delay", async () => {
+		const ledger = new EffectLedger();
+		const at = Date.UTC(2026, 8, 20, 18, 0, 0);
+		await schedulerFor(ledger).runAt(at, "internal/analyze:run", {});
+
+		const job = ledger.snapshot().jobs[0];
+		expect(job?.kind).toBe("runAt");
+		expect(job?.runAtMs).toBe(at);
+		expect(job?.delayMs).toBeNull();
+	});
+
+	it("normalizes a Date passed to runAt", async () => {
+		const ledger = new EffectLedger();
+		const at = new Date(Date.UTC(2026, 8, 20, 18, 0, 0));
+		await schedulerFor(ledger).runAt(at, "internal/analyze:run", {});
+
+		expect(ledger.snapshot().jobs[0]?.runAtMs).toBe(at.getTime());
+	});
+
+	it("never records a stringified reference object", async () => {
+		const ledger = new EffectLedger();
+		// A Convex function reference is an object. String() on one yields
+		// "[object Object]" - the same defect class as the stringified promise.
+		const reference = { someInternalShape: true } as unknown as string;
+		await schedulerFor(ledger).runAfter(0, reference, {});
+
+		const job = ledger.snapshot().jobs[0];
+		expect(job?.reference).not.toBe("[object Object]");
+		expect(job?.reference).toBe("unresolved-reference");
+	});
+
+	it("resolves a string reference to its stable name", async () => {
+		const ledger = new EffectLedger();
+		await schedulerFor(ledger).runAfter(0, "internal/analyze:run", {});
+
+		expect(ledger.snapshot().jobs[0]?.reference).toBe("internal/analyze:run");
+	});
+
+	it("keeps scheduler arguments out of the ledger", async () => {
+		const ledger = new EffectLedger();
+		await schedulerFor(ledger).runAfter(0, "internal/analyze:run", {
+			secret: "SYNTHETIC_JOB_ARG_0002",
+		});
+
+		expect(JSON.stringify(ledger.snapshot().jobs)).not.toContain(
+			"SYNTHETIC_JOB_ARG_0002",
+		);
 	});
 });
 

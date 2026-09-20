@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { getFunctionName } from "convex/server";
 
 /**
  * T04 · effect harness.
@@ -44,7 +45,16 @@ export type JobSchedule = {
 	readonly seq: number;
 	/** Opaque job id. Never a secret, source payload or prompt. */
 	readonly jobId: string;
+	/** Resolved Convex function name, never a stringified reference object. */
 	readonly reference: string;
+	/**
+	 * How the job was scheduled. runAfter takes a RELATIVE delay and runAt an ABSOLUTE
+	 * timestamp; storing both in one field silently turned a 0 ms delay into the epoch.
+	 */
+	readonly kind: "runAfter" | "runAt" | "direct";
+	/** Relative delay in ms for runAfter. Null otherwise. */
+	readonly delayMs: number | null;
+	/** Absolute wall-clock ms for runAt. Null otherwise. */
 	readonly runAtMs: number | null;
 };
 
@@ -201,9 +211,20 @@ export class EffectLedger {
 	recordJob(job: {
 		jobId: string;
 		reference: string;
-		runAtMs: number | null;
+		kind?: "runAfter" | "runAt" | "direct";
+		delayMs?: number | null;
+		runAtMs?: number | null;
 	}): void {
-		this.#jobs.push(Object.freeze({ seq: this.#next(), ...job }));
+		this.#jobs.push(
+			Object.freeze({
+				seq: this.#next(),
+				jobId: job.jobId,
+				reference: job.reference,
+				kind: job.kind ?? "direct",
+				delayMs: job.delayMs ?? null,
+				runAtMs: job.runAtMs ?? null,
+			}),
+		);
 	}
 
 	/**
@@ -307,6 +328,28 @@ export function diffEffects(
 type AnyFn = (...args: never[]) => unknown;
 
 /**
+ * Convex function references are objects, so String() on one yields "[object Object]" -
+ * the same class of defect as stringifying a pending promise. getFunctionName resolves
+ * the stable name and throws on anything that is not a reference; the harness observes
+ * rather than decides, so an unresolvable value is labelled, never guessed and never
+ * allowed to break the call it is instrumenting.
+ */
+function referenceName(value: unknown): string {
+	try {
+		return getFunctionName(value as Parameters<typeof getFunctionName>[0]);
+	} catch {
+		return typeof value === "string" ? value : "unresolved-reference";
+	}
+}
+
+/** Accepts the ms number or Date that the scheduler API allows. */
+function normalizeTiming(value: unknown): number | null {
+	if (typeof value === "number" && Number.isFinite(value)) return value;
+	if (value instanceof Date) return value.getTime();
+	return null;
+}
+
+/**
  * Wraps a real Convex-style `ctx.db` so effects are observed without replacing policy.
  * This instruments; it does not decide.
  *
@@ -387,12 +430,17 @@ export function instrumentScheduler<T extends Record<string, unknown>>(
 			if (typeof original !== "function") return original;
 			const name = String(prop);
 			if (name !== "runAfter" && name !== "runAt") return original;
+			const kind = name as "runAfter" | "runAt";
 			return async (...args: unknown[]) => {
 				const jobId = await (original as AnyFn).apply(target, args as never[]);
+				const timing = normalizeTiming(args[0]);
 				ledger.recordJob({
 					jobId: String(jobId),
-					reference: String(args[1] ?? "unknown"),
-					runAtMs: typeof args[0] === "number" ? args[0] : null,
+					reference: referenceName(args[1]),
+					kind,
+					// runAfter's first argument is a relative delay, runAt's is absolute.
+					delayMs: kind === "runAfter" ? timing : null,
+					runAtMs: kind === "runAt" ? timing : null,
 				});
 				return jobId;
 			};

@@ -76,7 +76,21 @@ const REPO_GITATTRIBUTES = "* -text\n";
 
 function initRepo(root: string): void {
 	mkdirSync(root, { recursive: true });
-	git(root, ["init", "--quiet", `--initial-branch=${BRANCH}`]);
+	// --object-format is explicit: a host with init.defaultObjectFormat=sha256 would
+	// otherwise produce object IDs that do not match the 40-character SHA-1s pinned in
+	// manifest.json, quietly breaking the reproducibility this script exists to provide.
+	git(root, [
+		"init",
+		"--quiet",
+		"--object-format=sha1",
+		`--initial-branch=${BRANCH}`,
+	]);
+	// An inherited core.hooksPath (husky, lefthook) would run the operator's own hooks
+	// inside the fixture repo, where a pre-commit or commit-msg hook can alter the tree
+	// or message and change the commit SHA. Point it at an empty directory.
+	const hooks = join(root, ".git", "twh-empty-hooks");
+	mkdirSync(hooks, { recursive: true });
+	git(root, ["config", "core.hooksPath", hooks]);
 	git(root, ["config", "user.name", IDENTITY.GIT_AUTHOR_NAME]);
 	git(root, ["config", "user.email", IDENTITY.GIT_AUTHOR_EMAIL]);
 	git(root, ["config", "core.autocrlf", "false"]);

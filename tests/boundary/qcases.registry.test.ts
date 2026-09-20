@@ -61,22 +61,62 @@ describe("q-case registry", () => {
 		).toThrow(/removed feature/);
 	});
 
-	it("allows BLOCKED and NOT ASSESSED without a result, since neither claims a pass", () => {
+	it("refuses BLOCKED with no recorded blocker", () => {
+		// A table of empty BLOCKED rows looks handled while proving nothing.
 		const registry = freshRegistry();
-		expect(
+		expect(() =>
 			registry.observe("Q15", {
 				layer: "live",
 				observed: "",
 				command: "",
 				status: "BLOCKED",
 				nextAction: "needs T08/T09/T10",
+			}),
+		).toThrow(/observed result/);
+	});
+
+	it("refuses NOT ASSESSED with no assessment basis", () => {
+		const registry = freshRegistry();
+		expect(() =>
+			registry.observe("Q13", {
+				layer: "unit",
+				observed: "",
+				command: "",
+				status: "NOT ASSESSED",
+			}),
+		).toThrow(/observed result/);
+	});
+
+	it("refuses any transition that names no command, even when nothing ran", () => {
+		const registry = freshRegistry();
+		expect(() =>
+			registry.observe("Q15", {
+				layer: "live",
+				observed: "T08/T09/T10 have not landed",
+				command: "",
+				status: "BLOCKED",
+			}),
+		).toThrow(/actual command/);
+	});
+
+	it("accepts BLOCKED and NOT ASSESSED once they carry evidence", () => {
+		const registry = freshRegistry();
+		expect(
+			registry.observe("Q15", {
+				layer: "live",
+				observed:
+					"blocked: T08/T09/T10 have not landed, no end-to-end path exists",
+				command: "not attempted: prerequisite tickets open",
+				status: "BLOCKED",
+				nextAction: "retry after T10",
 			}).status,
 		).toBe("BLOCKED");
 		expect(
 			registry.observe("Q13", {
 				layer: "unit",
-				observed: "",
-				command: "",
+				observed:
+					"semgrep default ignore list excludes tests/; no rule evaluated these files",
+				command: "semgrep --config ... --metrics=off tests/",
 				status: "NOT ASSESSED",
 			}).status,
 		).toBe("NOT ASSESSED");

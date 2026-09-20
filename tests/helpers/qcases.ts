@@ -60,7 +60,20 @@ export type Observation = {
 	readonly removedFeature?: string;
 };
 
-const RESULT_STATUSES: readonly Status[] = ["PASS", "FAIL"];
+/**
+ * Every status other than NOT RUN is a transition OUT of NOT RUN, and each one must
+ * carry evidence. Limiting this to PASS/FAIL left a hole: a row could be flipped to
+ * BLOCKED or NOT ASSESSED with blank observed/command, so the receipt recorded neither
+ * the concrete blocker nor the assessment basis. A table of empty BLOCKED rows looks
+ * handled while proving nothing - the fabricated pass wearing a different costume.
+ */
+const EVIDENCE_REQUIRED: readonly Status[] = [
+	"PASS",
+	"FAIL",
+	"BLOCKED",
+	"NOT ASSESSED",
+	"N/A",
+];
 
 export class QCaseRegistry {
 	readonly tester: string;
@@ -99,31 +112,37 @@ export class QCaseRegistry {
 		const current = this.#rows.get(caseId);
 		if (!current) throw new Error(`q-case not registered: ${caseId}`);
 
-		if (RESULT_STATUSES.includes(obs.status)) {
-			if (!obs.observed.trim()) {
-				throw new Error(
-					`${caseId}: ${obs.status} requires an observed result, not an assumption`,
-				);
-			}
-			if (!obs.command.trim()) {
-				throw new Error(
-					`${caseId}: ${obs.status} requires the actual command that produced it`,
-				);
-			}
-		}
 		if (obs.status === "N/A" && !obs.removedFeature?.trim()) {
 			throw new Error(
 				`${caseId}: N/A requires an explicitly removed feature. An unavailable credential is BLOCKED.`,
 			);
 		}
 
+		// N/A carries its evidence in removedFeature; every other status states it directly.
+		const observedValue =
+			obs.status === "N/A"
+				? `removed feature: ${obs.removedFeature}`
+				: obs.observed;
+
+		if (EVIDENCE_REQUIRED.includes(obs.status)) {
+			if (!observedValue.trim()) {
+				throw new Error(
+					`${caseId}: ${obs.status} requires an observed result, not an assumption. ` +
+						"BLOCKED records the concrete blocker; NOT ASSESSED records which tool and why.",
+				);
+			}
+			if (!obs.command.trim()) {
+				throw new Error(
+					`${caseId}: ${obs.status} requires the actual command that produced it. ` +
+						"If nothing was run, say so explicitly, for example: not attempted, no credential.",
+				);
+			}
+		}
+
 		const row: Receipt = Object.freeze({
 			...current,
 			layer: obs.layer,
-			observed:
-				obs.status === "N/A"
-					? `removed feature: ${obs.removedFeature}`
-					: obs.observed,
+			observed: observedValue,
 			command: obs.command,
 			status: obs.status,
 			artifact: obs.artifact ?? "",
