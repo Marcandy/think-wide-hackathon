@@ -32,6 +32,7 @@ Recorded by the PM session on Eassa's laptop, 2026-09-20 11:35 EDT. Items marked
 ## Mode and data
 
 - Current mode: `local-demo`. Self-hosted Convex on each developer's loopback. Hosted identity, remote MCP, and deployment: NOT RUN.
+- Public hostname reserved for deployment (I04): `think-wide.fbf.systems` → VPS 162.248.101.225. DNS live 11:41 EDT; origin not serving yet (HTTP 521). Hosted status remains NOT RUN.
 - Demonstration repositories: **UNCONFIRMED.** Must be public or synthetic and clearly labeled. Owner: Marc (needed by T05, 13:30).
 - Model provider and budget for backend reasoning: **UNCONFIRMED.** Owner: Eassa (needed by T10, 15:00).
 
@@ -45,6 +46,6 @@ Two immutable repos, one cross-project discovery, one exact evidence expansion, 
 |---|---|---|
 | Eassa | @heyoub | T01 close-out, then T02 |
 | Marc | @Marcandy | T03 |
-| Andrew | @adiesh2 (assumed from repo access; correct if wrong) | T04 |
+| Andrew | @adiesh2 (confirmed by Eassa 11:40) | T04 |
 
 Late-start note: G0's 11:25 hard stop passed before this record was written. Per PM_BOOT the clock is not reset; T01/T02/T03/T04 keep their original hard stops.
