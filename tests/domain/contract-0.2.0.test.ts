@@ -223,7 +223,11 @@ describe("contract 0.2.0: decision categories (decision 0003)", () => {
 		investigationId: "inv_1",
 		investigationRevision: 1,
 		objective: "Align the command contract between A and B",
-		targetRepository: { repositoryId: "repo_a", baseCommit: id40 },
+		targetRepository: {
+			repositoryId: "repo_a",
+			baseCommit: id40,
+			hashAlgorithm: "sha1",
+		},
 		constraints: [
 			{
 				statement: "never log authentication tokens",

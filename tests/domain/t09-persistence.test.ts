@@ -123,6 +123,9 @@ test("two real Git snapshots feed a durable exact brief; reread and replay survi
 		throw new Error("Expected complete brief");
 	}
 	expect(read.targetRepository.baseCommit).toBe(snapshots[0].summary.commit);
+	expect(read.targetRepository.hashAlgorithm).toBe(
+		snapshots[0].summary.hashAlgorithm,
+	);
 	expect(read.constraints.map((c) => [c.kind, c.category])).toEqual([
 		["rejected_approach", "security"],
 		["correction", "security"],

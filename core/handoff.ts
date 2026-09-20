@@ -103,21 +103,14 @@ export function projectHandoffDecisions(
 			"revision_conflict",
 			"A complete decision ledger at the selected revision is required",
 		);
-	const constraints: Handoff["constraints"] = ordered
-		.filter((decision) => decision.kind !== "acceptance")
-		.map((decision) => ({
-			decisionId: decision.decisionId,
-			statement: decision.statement,
-			...(decision.category === undefined
-				? {}
-				: { category: decision.category }),
-			kind:
-				decision.kind === "rejection"
-					? "rejected_approach"
-					: decision.kind === "correction"
-						? "correction"
-						: "constraint",
-		}));
+	// Every human decision reaches the structured brief, acceptance included: a specialist
+	// reading `constraints` must see what was already agreed, with its category.
+	const constraints: Handoff["constraints"] = ordered.map((decision) => ({
+		decisionId: decision.decisionId,
+		statement: decision.statement,
+		...(decision.category === undefined ? {} : { category: decision.category }),
+		kind: decision.kind === "rejection" ? "rejected_approach" : decision.kind,
+	}));
 	if (constraints.length > 32)
 		throw new HandoffError(
 			"limit_exceeded",

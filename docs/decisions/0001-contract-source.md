@@ -84,3 +84,8 @@ ambiguous targets are rejected atomically without a handoff or receipt. Referenc
 source windows must each be at most 16 KiB. File-level allowed scope is explicitly
 unspecified and requires specialist confirmation; acceptance is always `not_run`.
 No model, issue publication, provider call or target code execution is introduced.
+
+## Contract 0.3.0 additions from the PR #20 review
+
+- `HandoffConstraint.kind` gains `acceptance`. Every human decision reaches the structured brief, with its optional `category`; `rejection` is still rendered as `rejected_approach`. Before this, acceptance decisions existed only inside the Markdown body, so a reader of `detail: "full"` (for example an MCP host) never saw them.
+- `HandoffTarget` requires `hashAlgorithm`, and `baseCommit` length is bound to it (sha1 = 40 hex, sha256 = 64), the same rule as `SourceRef` and `SnapshotSummary`. The projection takes it from the algorithm-checked snapshot.

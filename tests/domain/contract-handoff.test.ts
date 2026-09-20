@@ -11,7 +11,11 @@ const summary = {
 	handoffRevision: 1,
 	investigationId: "investigation",
 	investigationRevision: 2,
-	targetRepository: { repositoryId: "repo", baseCommit: "a".repeat(40) },
+	targetRepository: {
+		repositoryId: "repo",
+		baseCommit: "a".repeat(40),
+		hashAlgorithm: "sha1",
+	},
 	audience: "private_download",
 	bodyHash: "b".repeat(64),
 	bodyByteLength: 5,
@@ -63,4 +67,31 @@ test("body windows have a closed bounded shape and are distinct from full briefs
 	expect(
 		HandoffRead({ ...page, bodyMarkdown: "different representation" }),
 	).toBe(false);
+});
+
+test("the brief's base commit is bound to a Git hash algorithm", () => {
+	expect(HandoffSummary(summary)).toBe(true);
+	const { hashAlgorithm: _omitted, ...noAlgorithm } = summary.targetRepository;
+	expect(HandoffSummary({ ...summary, targetRepository: noAlgorithm })).toBe(
+		false,
+	);
+	expect(
+		HandoffSummary({
+			...summary,
+			targetRepository: {
+				...summary.targetRepository,
+				baseCommit: "a".repeat(64),
+			},
+		}),
+	).toBe(false);
+	expect(
+		HandoffSummary({
+			...summary,
+			targetRepository: {
+				...summary.targetRepository,
+				hashAlgorithm: "sha256",
+				baseCommit: "a".repeat(64),
+			},
+		}),
+	).toBe(true);
 });

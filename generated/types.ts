@@ -348,11 +348,15 @@ publication: Publication
 export interface HandoffTarget {
 repositoryId: Id
 baseCommit: CommitId
+hashAlgorithm: HashAlgorithm
 }
 export interface HandoffConstraint {
 statement: LongText
 decisionId: Id
-kind?: ("constraint" | "rejected_approach" | "correction")
+/**
+ * Mirrors Decision.kind (rejection is rendered as rejected_approach). Acceptance decisions are constraints on the specialist too: they say what the human already agreed to.
+ */
+kind?: ("constraint" | "rejected_approach" | "correction" | "acceptance")
 category?: DecisionCategory
 }
 export interface HandoffEvidence {

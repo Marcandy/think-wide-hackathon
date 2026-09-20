@@ -56,6 +56,7 @@ function input(ledger = decisions): HandoffInput {
 		targetRepository: {
 			repositoryId: "repo_alpha",
 			baseCommit: "a".repeat(40),
+			hashAlgorithm: "sha1",
 		},
 		constraints: projectHandoffDecisions(
 			{ investigationId: "investigation_alpha", revision: ledger.length },
@@ -88,10 +89,12 @@ describe("T09 deterministic private implementation brief", () => {
 		expect(first.bodyHash).toBe(
 			createHash("sha256").update(first.bodyMarkdown, "utf8").digest("hex"),
 		);
+		// Acceptance decisions reach the structured brief too (PR #20 review, R1).
 		expect(first.constraints.map((item) => item.kind)).toEqual([
 			"correction",
 			"rejected_approach",
 			"constraint",
+			"acceptance",
 		]);
 		for (const entry of decisions)
 			expect(first.bodyMarkdown).toContain(JSON.stringify(entry.statement));
@@ -122,6 +125,7 @@ describe("T09 deterministic private implementation brief", () => {
 		const reordered = {
 			...normal,
 			targetRepository: {
+				hashAlgorithm: normal.targetRepository.hashAlgorithm,
 				baseCommit: normal.targetRepository.baseCommit,
 				repositoryId: normal.targetRepository.repositoryId,
 			},

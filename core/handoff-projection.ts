@@ -156,6 +156,7 @@ export function projectHandoffInputs(
 		targetRepository: {
 			repositoryId: target.repositoryId,
 			baseCommit: snapshot.commit,
+			hashAlgorithm: snapshot.hashAlgorithm,
 		},
 		constraints,
 		evidence,
