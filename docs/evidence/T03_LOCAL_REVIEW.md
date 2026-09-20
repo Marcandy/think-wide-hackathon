@@ -76,9 +76,22 @@ Confirmation run completed over all 28 local files with `outcome: completed` and
 
 No source-code changes followed the completed reviews or the 164-test verification run. Only this outcome record was finalized before the commit.
 
+## Follow-up: T06 integration and inspector feedback
+
+Integrated main at `41e73ad` (PR #12) and Eassa's T03 QA commits `24e53e8` and `3f66c61`. The QA commits supersede the earlier minimum-length and unchanged-theme statements: decisions now require nonempty text, the heading is fixed with agent suggestions labeled separately, and input/focus tokens were adjusted for contrast. Backend, dependencies, and shared instructions match main unchanged.
+
+Marc reported that rejected-composition feedback appeared far above its controls. Both rejection and success feedback now appear inside the inspector, immediately after its buttons. Composition feedback is separate from decision/download feedback; applying or rejecting a layout preserves the draft and decision preview. Help text explains that applying JSON changes only the local layout.
+
+- `bun run verify`: exit 0, 225 tests across 13 files, frozen install, no contract drift, Biome, TypeScript and build passed. Log: `/tmp/think-wide-t03-sync-verify.log`.
+- Own adversarial review: checked integration against main, valid/rejected transitions, stale feedback clearing, draft/preview preservation and accessible feedback placement. No further confirmed defect found in these changes.
+- Safari desktop interaction: clicked Try a rejected view and then Apply composition. Screenshots confirmed rejection directly beneath the buttons and replacement by success feedback; keyboard focus remained visibly outlined. This does not complete the remaining mobile/keyboard/draft acceptance checklist.
+- Additional CodeRabbit integration review was still running when Marc changed the policy to require CodeRabbit at PR readiness rather than every commit. It was stopped before completion; no pass is claimed for this incremental diff. The completed pre-PR reviews above remain the recorded CodeRabbit results for PR #13's original implementation.
+
+Status remains fixtures only for the workshop. T06's integration does not connect this UI to durable decisions. Marc's notes and the separate category proposal remain local and excluded from this PR.
+
 ## QA follow-up: self-hosted fonts, contrast, repo sync (September 20, 2026)
 
-Status level for everything in this section: **fixtures only**, computed or fetched with curl. No browser was opened. `origin/main` (T06 backend) was merged into the branch first; the merged state passed `bun run verify` (13 files, 224 tests) before any change.
+Status level for everything in this section: **fixtures only**, computed or fetched with curl. No browser was opened. `origin/main` (T06 backend) was merged into the branch first; the merged state passed `bun run verify` (13 files, 224 tests) before any change. Marc's concurrent commit `b5da6e4` (the follow-up above) landed on the branch while this work was in progress and was merged in afterwards; the only conflict was this file, resolved by keeping both sections.
 
 ### Fonts
 
@@ -124,7 +137,7 @@ Removed the `generate-routes` script (`tsr generate` rewrites `src/routeTree.gen
 
 ### Verification
 
-`bun run verify` exit 0 on the final state: frozen install, no contract drift, Biome, TypeScript, 250 tests in 14 files, production build.
+`bun run verify` exit 0 on the final state, after merging `b5da6e4`: frozen install, no contract drift, Biome, TypeScript, 251 tests in 14 files, production build. (250 before that merge; its one new state test accounts for the difference.)
 
 ### Still UNVERIFIED (NOT RUN in a browser)
 
@@ -134,3 +147,4 @@ Removed the `generate-routes` script (`tsr generate` rewrites `src/routeTree.gen
 - Mobile layout in both themes.
 - iOS Safari focus zoom on the select and textareas.
 - Everything in the "Remaining manual checklist" above.
+||||||| merged common ancestors

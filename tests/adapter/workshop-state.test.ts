@@ -61,6 +61,32 @@ describe("human input survives workshop view changes", () => {
 		expect(restored.draft).toBe(draft);
 		expect(restored.accepted).toBe(initialWorkshopState.accepted);
 	});
+	it("keeps composition feedback separate from decision feedback and clears stale results", () => {
+		const previewed = workshopReducer(initialWorkshopState, {
+			type: "preview",
+			draft,
+		});
+		const rejected = workshopReducer(previewed, {
+			type: "compose",
+			serialized: '{"type":"script"}',
+		});
+		expect(rejected.notice).toBe(previewed.notice);
+		expect(rejected.compositionNotice).toBe("");
+		const applied = workshopReducer(rejected, {
+			type: "compose",
+			serialized: initialWorkshopState.accepted,
+		});
+		expect(applied.rejection).toBe("");
+		expect(applied.compositionNotice).toContain("applied");
+		expect(applied.notice).toBe(previewed.notice);
+		expect(applied.preview).toBe(previewed.preview);
+		const rejectedAgain = workshopReducer(applied, {
+			type: "compose",
+			serialized: "invalid",
+		});
+		expect(rejectedAgain.compositionNotice).toBe("");
+		expect(rejectedAgain.rejection).not.toBe("");
+	});
 	it("keeps the draft and preview across empty and unavailable states", () => {
 		let state = workshopReducer(initialWorkshopState, { type: "draft", draft });
 		state = workshopReducer(state, { type: "preview", draft });
