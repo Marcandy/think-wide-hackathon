@@ -1,4 +1,5 @@
 import { Component, type ReactNode } from "react";
+import { backendConfigured } from "../../integrations/convex/provider";
 import { Button } from "../ui/button";
 import { workbenchError } from "./workbench";
 
@@ -12,6 +13,16 @@ export class OperationPanel extends Component<
 		return { error, failed: true };
 	}
 	render() {
+		// A bundle built without VITE_CONVEX_URL has no Convex client in context; say so instead
+		// of letting useConvex() throw and take the page down.
+		if (!backendConfigured) {
+			return (
+				<output className="block rounded border p-4">
+					The backend is not configured for this build, so saved investigations,
+					snapshots and briefs are unavailable here.
+				</output>
+			);
+		}
 		if (this.state.failed) {
 			return (
 				<div className="space-y-3 rounded border p-4">

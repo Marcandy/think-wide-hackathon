@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { InvestigationWorkbench } from "../components/behavior/InvestigationWorkbench";
+import { OperationPanel } from "../components/behavior/OperationPanel";
 import {
 	operationError,
 	workbenchError,
@@ -35,10 +36,12 @@ function InvestigationPage() {
 	return (
 		<main className="mx-auto max-w-6xl space-y-6 p-4 text-foreground sm:p-8">
 			<PortfolioNav />
-			<InvestigationWorkbench
-				key={investigationId}
-				investigationId={investigationId}
-			/>
+			<OperationPanel key={investigationId}>
+				<InvestigationWorkbench
+					key={investigationId}
+					investigationId={investigationId}
+				/>
+			</OperationPanel>
 		</main>
 	);
 }
