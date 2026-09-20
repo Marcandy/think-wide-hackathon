@@ -10,6 +10,8 @@ import {
 	rmSync,
 	writeFileSync,
 } from "node:fs";
+import type { AddressInfo } from "node:net";
+import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -19,6 +21,7 @@ import {
 	detectIsolation,
 	loadRules,
 	probeAnalyzer,
+	resetIsolationCache,
 	runAnalyzer,
 	structuralSearch,
 } from "../../src/server/search/structural.ts";
@@ -76,6 +79,7 @@ afterAll(() => {
 function withInstrumentedAnalyzer<T>(
 	script: string,
 	body: (scanDir: string) => T,
+	extra: { siblingCanary?: string; slowBwrapMs?: number } = {},
 ): T {
 	const root = mkdtempSync(join(tmpdir(), "twh-q13-instr-"));
 	const bin = join(root, "bin");
@@ -86,6 +90,22 @@ function withInstrumentedAnalyzer<T>(
 	const file = join(bin, "ast-grep");
 	writeFileSync(file, `#!/usr/bin/node\n${script}\n`);
 	chmodSync(file, 0o755);
+	// A file that happens to sit beside the analyzer. It is not a selected input, so
+	// the sandbox must not expose it just because the analyzer lives in that directory.
+	if (extra.siblingCanary)
+		writeFileSync(join(bin, "sibling-canary.txt"), extra.siblingCanary);
+	// A delayed bwrap, used to charge the isolation probe real time on a cold start.
+	if (extra.slowBwrapMs) {
+		const realBwrap = execFileSync("bash", ["-lc", "command -v bwrap"], {
+			encoding: "utf8",
+		}).trim();
+		const wrapper = join(bin, "bwrap");
+		writeFileSync(
+			wrapper,
+			`#!/usr/bin/node\nconst end = Date.now() + ${extra.slowBwrapMs}; while (Date.now() < end) {}\nrequire("node:child_process").spawnSync(${JSON.stringify(realBwrap)}, process.argv.slice(2), { stdio: "inherit" })\n`,
+		);
+		chmodSync(wrapper, 0o755);
+	}
 	const originalPath = process.env.PATH;
 	// Prepended, not replacing: the instrumented executable must win the PATH lookup
 	// for `ast-grep` while the runner still resolves its real sandbox tools.
@@ -171,7 +191,7 @@ describe("Q13 isolation profile", () => {
 				expect(out.stdout).toBe("");
 			} finally {
 				process.env.PATH = originalPath;
-				detectIsolation(true);
+				detectIsolation({ force: true });
 				rmSync(empty, { recursive: true, force: true });
 			}
 		},
@@ -240,29 +260,85 @@ describe.runIf(confined)(
 			expect(out.stdout).not.toContain("WROTE");
 		});
 
-		it("has no network: a loopback connection attempt fails", () => {
+		it("cannot read a file sitting beside the analyzer itself", () => {
+			// Follow-up review: the first sandbox mounted the analyzer's whole parent
+			// directory, so an unrelated sibling was readable. Only the executable file
+			// is mounted now, and this is the regression that says so.
+			const sibling = "SYNTHETIC_UNSELECTED_SIBLING_4a21";
 			const out = withInstrumentedAnalyzer(
 				[
+					'const fs = require("node:fs")',
+					'let seen = "DENIED"',
+					'try { seen = fs.readdirSync("/analyzer").join(",") } catch (e) { seen = "DENIED:" + e.code }',
+					'let read = "DENIED"',
+					'try { read = fs.readFileSync("/analyzer/sibling-canary.txt", "utf8") } catch (e) { read = "DENIED:" + e.code }',
+					"process.stdout.write(JSON.stringify({ seen, read }))",
+				].join("\n"),
+				(scanDir) => runAnalyzer(["--version"], scanDir, 10_000),
+				{ siblingCanary: sibling },
+			);
+			expect(out.stdout).not.toContain(sibling);
+			const observed = JSON.parse(out.stdout) as {
+				seen: string;
+				read: string;
+			};
+			// /analyzer holds the mounted executable and nothing else.
+			expect(observed.seen).toBe("ast-grep");
+			expect(observed.read.startsWith("DENIED:")).toBe(true);
+		});
+
+		it("has no network, against a listener this test proves is reachable", async () => {
+			// Positive control first: ECONNREFUSED on its own proves nothing, because a
+			// closed port refuses with or without isolation. So a real listener is
+			// started, an unsandboxed child connects to it, and only then is the same
+			// connection attempted from inside the sandbox.
+			const server = createServer();
+			try {
+				await new Promise<void>((resolve) => {
+					server.listen(0, "127.0.0.1", resolve);
+				});
+				const port = (server.address() as AddressInfo).port;
+				const connectScript = [
 					'const net = require("node:net")',
-					'const s = net.connect({ host: "127.0.0.1", port: 22 })',
+					`const s = net.connect({ host: "127.0.0.1", port: ${port} })`,
 					's.on("connect", () => { process.stdout.write("CONNECTED"); process.exit(0) })',
 					's.on("error", (e) => { process.stdout.write("DENIED:" + e.code); process.exit(0) })',
 					'setTimeout(() => { process.stdout.write("DENIED:timeout"); process.exit(0) }, 2000)',
-				].join("\n"),
-				(scanDir) => runAnalyzer(["--version"], scanDir, 10_000),
-			);
-			expect(out.stdout).not.toContain("CONNECTED");
-			expect(out.stdout.startsWith("DENIED:")).toBe(true);
+				].join("\n");
+
+				const control = execFileSync("/usr/bin/node", ["-e", connectScript], {
+					encoding: "utf8",
+					timeout: 10_000,
+				});
+				expect(control).toBe("CONNECTED");
+
+				const sandboxed = withInstrumentedAnalyzer(connectScript, (scanDir) =>
+					runAnalyzer(["--version"], scanDir, 10_000),
+				);
+				expect(sandboxed.stdout).not.toContain("CONNECTED");
+				expect(sandboxed.stdout.startsWith("DENIED:")).toBe(true);
+			} finally {
+				server.close();
+			}
 		});
 
-		it("enforces an address-space limit", () => {
-			const out = withInstrumentedAnalyzer(
+		it("enforces an address-space limit, and allows an allocation under it", () => {
+			// Positive control: a small allocation must succeed, otherwise "no ALLOCATED"
+			// would pass even if the sandbox could not run node at all.
+			const under = withInstrumentedAnalyzer(
+				`try { const b = Buffer.alloc(64 * 1024 * 1024); process.stdout.write("ALLOCATED:" + b.length) } catch (e) { process.stdout.write("DENIED:" + e.message) }`,
+				(scanDir) => runAnalyzer(["--version"], scanDir, 20_000),
+			);
+			expect(under.failure).toBe("ok");
+			expect(under.stdout).toBe(`ALLOCATED:${64 * 1024 * 1024}`);
+
+			const over = withInstrumentedAnalyzer(
 				`try { const b = Buffer.alloc(${ISOLATION_OVER_LIMIT}); process.stdout.write("ALLOCATED:" + b.length) } catch (e) { process.stdout.write("DENIED") }`,
 				(scanDir) => runAnalyzer(["--version"], scanDir, 20_000),
 			);
 			// Either the allocation is refused in-process or the process is killed by the
 			// limit. Both are acceptable; succeeding is not.
-			expect(out.stdout).not.toContain("ALLOCATED");
+			expect(over.stdout).not.toContain("ALLOCATED");
 		});
 	},
 );
@@ -396,6 +472,34 @@ describe.runIf(confined)(
 			);
 			expect(result.entries).toHaveLength(0);
 			expect(result.failure).toBe("invalid_output");
+		});
+
+		it("holds the deadline on a cold start, when isolation is probed first", () => {
+			// Follow-up review measured 6,114 ms because isolation detection held a timeout
+			// of its own. The cache is cleared here so detection, the version probe and the
+			// scan phases all compete for the one request budget.
+			const started = Date.now();
+			const result = withInstrumentedAnalyzer(
+				[
+					'if (process.argv.includes("--version")) { const end = Date.now() + 1500; while (Date.now() < end) {} ; console.log("ast-grep 0.45.3") }',
+					'else { console.log("[]") }',
+				].join("\n"),
+				() => {
+					resetIsolationCache();
+					return structuralSearch(knownMatch, "exported-function-declaration");
+				},
+				{ slowBwrapMs: 4_500 },
+			);
+			const elapsed = Date.now() - started;
+			try {
+				expect(elapsed).toBeLessThan(SEARCH_CAPS.wallClockMs + 1_500);
+				expect(result.entries).toHaveLength(0);
+				expect(result.coverage.status).not.toBe("complete");
+				expect(result.failure).not.toBe("ok");
+			} finally {
+				// Restore a real profile for the rest of the run.
+				detectIsolation({ force: true });
+			}
 		});
 
 		it("holds one deadline across both analyzer phases", () => {

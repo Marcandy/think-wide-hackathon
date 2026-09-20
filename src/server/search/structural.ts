@@ -2,16 +2,20 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
 	accessSync,
+	closeSync,
 	constants,
+	existsSync,
 	mkdirSync,
 	mkdtempSync,
+	openSync,
 	readdirSync,
 	readFileSync,
+	readSync,
 	realpathSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
-import { homedir, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import { delimiter, dirname, extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Finding, SourceRef } from "../../../generated/types.ts";
@@ -142,8 +146,8 @@ export function assertNoMutatingArgs(args: readonly string[]): void {
 }
 
 /**
- * Resolves `ast-grep` on PATH. Resolution is deliberate rather than letting execFile do
- * it: the sandbox has to mount the real binary, and a test or a local demonstration
+ * Resolves an executable on PATH. Resolution is deliberate rather than letting execFile
+ * do it: the sandbox has to mount the real file, and a test or a local demonstration
  * that substitutes a controlled executable on PATH must go through the same argv.
  */
 function resolveBinary(name = "ast-grep"): string | null {
@@ -155,6 +159,103 @@ function resolveBinary(name = "ast-grep"): string | null {
 			return realpathSync(candidate);
 		} catch {
 			// next PATH entry
+		}
+	}
+	return null;
+}
+
+function firstBytes(path: string, count: number): Buffer {
+	const fd = openSync(path, "r");
+	try {
+		const buf = Buffer.alloc(count);
+		const read = readSync(fd, buf, 0, count, 0);
+		return buf.subarray(0, read);
+	} finally {
+		closeSync(fd);
+	}
+}
+
+/**
+ * What the sandbox must mount for one executable, and nothing else.
+ *
+ * Follow-up review found the first sandbox mounting `~/.bun` and the analyzer's whole
+ * parent directory: read-only, but a sibling file beside the analyzer was readable, and
+ * an operator's package tree is not a selected input. Only the exact executable file is
+ * mounted now, at a fixed path, plus its shebang interpreter when it is a script.
+ *
+ * The npm `ast-grep` entry on PATH is a JS shim that spawns a platform binary; a shim
+ * cannot run with its package directory unmounted. So resolution prefers the native ELF:
+ * `THINKWIDE_ANALYZER_BIN` if set, else the PATH entry when it is already an ELF, else
+ * the platform package binary beside the shim. Anything else is reported as unavailable
+ * rather than mounting a directory to make it work.
+ */
+export type AnalyzerImage = {
+	/** Absolute host path of the file to execute. */
+	readonly binary: string;
+	/** Extra single files the sandbox must mount (a script's interpreter). */
+	readonly extraFiles: readonly string[];
+};
+
+export function resolveAnalyzerImage(): AnalyzerImage | null {
+	const configured = process.env.THINKWIDE_ANALYZER_BIN;
+	const candidate = configured
+		? existsSync(configured)
+			? realpathSync(configured)
+			: null
+		: resolveBinary();
+	if (!candidate) return null;
+
+	let head: Buffer;
+	try {
+		head = firstBytes(candidate, 128);
+	} catch {
+		return null;
+	}
+
+	// Native executable: mount exactly this file.
+	if (head.subarray(0, 4).equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46])))
+		return { binary: candidate, extraFiles: [] };
+
+	// A script: mount the script and its interpreter, never their directories.
+	if (head.subarray(0, 2).toString("latin1") === "#!") {
+		const line = head.toString("utf8").split("\n", 1)[0] ?? "";
+		const parts = line.slice(2).trim().split(/\s+/);
+		let interpreter: string | undefined = parts[0];
+		// `#!/usr/bin/env node` resolves through PATH inside the sandbox, where PATH is
+		// /usr/bin:/bin; the platform binary below is preferred for the real analyzer.
+		if (interpreter?.endsWith("/env") && parts[1])
+			interpreter = resolveBinary(parts[1]) ?? undefined;
+		const native = nativeSibling(candidate);
+		if (native) return { binary: native, extraFiles: [] };
+		if (interpreter && existsSync(interpreter))
+			return { binary: candidate, extraFiles: [interpreter] };
+	}
+	return null;
+}
+
+/**
+ * For the npm layout only: `<...>/node_modules/@ast-grep/cli/ast-grep` has its real
+ * binary in a sibling platform package. The result must itself be an ELF file.
+ */
+function nativeSibling(shim: string): string | null {
+	const pkgDir = dirname(shim);
+	const scope = dirname(pkgDir);
+	let names: string[];
+	try {
+		names = readdirSync(scope);
+	} catch {
+		return null;
+	}
+	for (const name of names.sort()) {
+		if (!name.startsWith("cli-")) continue;
+		const candidate = join(scope, name, "ast-grep");
+		try {
+			accessSync(candidate, constants.X_OK);
+			const head = firstBytes(candidate, 4);
+			if (head.equals(Buffer.from([0x7f, 0x45, 0x4c, 0x46])))
+				return realpathSync(candidate);
+		} catch {
+			// keep looking
 		}
 	}
 	return null;
@@ -175,9 +276,36 @@ function roBindIfPresent(path: string): string[] {
 
 let isolationCache: Isolation | null = null;
 
-/** Probes the isolation profile once per process. */
-export function detectIsolation(force = false): Isolation {
-	if (isolationCache && !force) return isolationCache;
+/**
+ * Forgets the cached profile so the next call probes again. Tests use this to exercise
+ * the cold path; nothing in a request path should need it.
+ */
+export function resetIsolationCache(): void {
+	isolationCache = null;
+}
+
+/**
+ * Probes the isolation profile once per process, inside the caller's budget.
+ *
+ * The budget matters: follow-up review measured a cold start at 6,114 ms against a 5 s
+ * cap because detection held a timeout of its own.
+ *
+ * Two results are deliberately NOT cached, because caching them would turn a momentary
+ * condition into a permanent one: a profile that could not be probed inside the budget,
+ * and a probe killed by its timeout. A definitive answer — the profile works, or the
+ * tools are missing — is cached.
+ */
+export function detectIsolation(
+	options: { force?: boolean; budgetMs?: number } = {},
+): Isolation {
+	const budget = options.budgetMs ?? 5_000;
+	if (options.force) isolationCache = null;
+	if (isolationCache) return isolationCache;
+	if (budget <= 0)
+		return {
+			mode: "none",
+			reason: "deadline exhausted before isolation probe",
+		};
 	const bwrap = resolveBinary("bwrap");
 	const prlimit = resolveBinary("prlimit");
 	if (!bwrap || !prlimit) {
@@ -205,7 +333,7 @@ export function detectIsolation(force = false): Isolation {
 				"--",
 				"/bin/true",
 			],
-			{ timeout: 5_000, stdio: "ignore", shell: false },
+			{ timeout: budget, stdio: "ignore", shell: false },
 		);
 		isolationCache = {
 			mode: "bwrap",
@@ -213,20 +341,36 @@ export function detectIsolation(force = false): Isolation {
 			cpuSeconds: ISOLATION_LIMITS.cpuSeconds,
 		};
 	} catch (error) {
-		isolationCache = { mode: "none", reason: (error as Error).message };
+		const err = error as NodeJS.ErrnoException & { killed?: boolean };
+		const timedOut = err.killed === true || err.code === "ETIMEDOUT";
+		const result: Isolation = {
+			mode: "none",
+			reason: timedOut
+				? `isolation probe exceeded its ${budget} ms budget`
+				: err.message,
+		};
+		// A probe we ran out of time for says nothing about the host. Do not cache it.
+		if (!timedOut) isolationCache = result;
+		return result;
 	}
 	return isolationCache;
 }
 
-/** Builds the confined argv. The scanned bytes are mounted read-only at /scan. */
+/** Where the analyzer file is mounted inside the sandbox. */
+const SANDBOX_BINARY = "/analyzer/ast-grep";
+
+/**
+ * Builds the confined argv. The scanned bytes are mounted read-only at /scan and the
+ * analyzer is mounted as a single file at /analyzer/ast-grep. No host directory outside
+ * the read-only system paths is visible.
+ */
 function sandboxArgv(
-	binary: string,
+	image: AnalyzerImage,
 	args: readonly string[],
 	scanDir: string,
 ): string[] {
 	const prlimit = resolveBinary("prlimit") as string;
 	const bwrap = resolveBinary("bwrap") as string;
-	const bunRoot = join(homedir(), ".bun");
 	return [
 		prlimit,
 		`--as=${ISOLATION_LIMITS.memoryBytes}`,
@@ -255,13 +399,17 @@ function sandboxArgv(
 		...roBindIfPresent("/bin"),
 		...roBindIfPresent("/lib"),
 		...roBindIfPresent("/lib64"),
-		...roBindIfPresent(bunRoot),
 		// tmpfs first, then the binds that live under /tmp, or they are covered over.
 		"--tmpfs",
 		"/tmp",
 		"--dir",
 		"/sbx",
-		...roBindIfPresent(dirname(binary)),
+		// Exactly one executable file, plus a script's interpreter when there is one.
+		// Never a directory: a sibling of the analyzer is not a selected input.
+		"--ro-bind",
+		image.binary,
+		SANDBOX_BINARY,
+		...image.extraFiles.flatMap((file) => ["--ro-bind", file, file]),
 		"--ro-bind",
 		scanDir,
 		"/scan",
@@ -272,7 +420,7 @@ function sandboxArgv(
 		"--chdir",
 		"/scan",
 		"--",
-		binary,
+		SANDBOX_BINARY,
 		...args,
 	];
 }
@@ -292,15 +440,16 @@ export function runAnalyzer(
 	if (timeoutMs <= 0)
 		return { stdout: "", failure: "timed_out", exitCode: null };
 
-	const binary = resolveBinary();
-	if (!binary) return { stdout: "", failure: "not_found", exitCode: null };
+	const image = resolveAnalyzerImage();
+	if (!image) return { stdout: "", failure: "not_found", exitCode: null };
 
-	const isolation = detectIsolation();
+	// Detection shares this call's budget rather than holding a timeout of its own.
+	const isolation = detectIsolation({ budgetMs: timeoutMs });
 	let argv: string[];
 	if (isolation.mode === "bwrap") {
-		argv = sandboxArgv(binary, args, scanDir);
+		argv = sandboxArgv(image, args, scanDir);
 	} else if (allowUnisolated()) {
-		argv = [binary, ...args];
+		argv = [image.binary, ...args];
 	} else {
 		return { stdout: "", failure: "isolation_unavailable", exitCode: null };
 	}
@@ -375,7 +524,9 @@ export function getRule(ruleId: string): Rule {
 }
 
 export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
-	const isolation = detectIsolation();
+	// Detection runs inside the same budget as the probe it precedes, so a cold start
+	// cannot spend the request's whole deadline before the first real subprocess.
+	const isolation = detectIsolation({ budgetMs });
 	if (isolation.mode === "none" && !allowUnisolated())
 		return {
 			available: false,
@@ -508,19 +659,26 @@ export function structuralSearch(
 			`at most ${SEARCH_CAPS.maxSnapshots} snapshots per search`,
 		);
 
+	// Isolation detection and the version probe are subprocesses too, and a cold start
+	// pays for both. They come out of the same deadline as the scan phases.
 	const probe = probeAnalyzer(Math.min(2_000, Math.max(0, remaining())));
 	if (!probe.available) {
 		coverage.notIndexed = entries.length;
+		const outOfTime = remaining() <= 0;
+		if (outOfTime) coverage.timeLimited = true;
 		return {
 			kind: "search",
 			scope: searchScope(snapshotIds),
 			entries: [],
-			coverage: finalizeCoverage(coverage, false),
+			coverage: finalizeCoverage(coverage, outOfTime),
 			nextCursor: null,
-			truncated: { is: false },
+			truncated: outOfTime ? { is: true, reason: "time_limit" } : { is: false },
 			analyzer: probe,
-			failure:
-				probe.isolation.mode === "none" ? "isolation_unavailable" : "not_found",
+			failure: outOfTime
+				? "timed_out"
+				: probe.isolation.mode === "none"
+					? "isolation_unavailable"
+					: "not_found",
 		};
 	}
 
@@ -532,6 +690,13 @@ export function structuralSearch(
 		const staged = new Map<string, ScanEntry>();
 		mkdirSync(join(scanDir, "s"), { recursive: true });
 		for (const entry of entries) {
+			// Staging writes files, so it can run long on a large selection. It is inside
+			// the deadline like every other phase.
+			if (remaining() <= 0) {
+				coverage.notIndexed++;
+				coverage.timeLimited = true;
+				continue;
+			}
 			if (entry.kind !== "blob") {
 				coverage.excluded++;
 				continue;
