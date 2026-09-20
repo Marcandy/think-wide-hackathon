@@ -1,5 +1,11 @@
 import { canonicalArguments, type Principal } from "../../core";
 import type {
+	BrowseSnapshotRequest,
+	ReadHistoryRequest,
+	ListProjectsRequest,
+	ReadSourceRequest,
+	ResultEnvelope,
+	Evidence,
 	CancelRunRequest,
 	Decision,
 	GetRunRequest,
@@ -26,6 +32,10 @@ import {
 } from "./validation";
 
 type Requests = {
+	readHistory: ReadHistoryRequest;
+	listProjects: ListProjectsRequest;
+	browseSnapshot: BrowseSnapshotRequest;
+	readSource: ReadSourceRequest;
 	openInvestigation: OpenInvestigationRequest;
 	readInvestigation: ReadInvestigationRequest;
 	recordDecision: RecordDecisionRequest;
@@ -34,6 +44,10 @@ type Requests = {
 	cancelRun: CancelRunRequest;
 };
 type Responses = {
+	readHistory: ResultEnvelope;
+	listProjects: ResultEnvelope;
+	browseSnapshot: ResultEnvelope;
+	readSource: Evidence;
 	openInvestigation: Investigation;
 	readInvestigation: Investigation;
 	recordDecision: Decision;
@@ -46,7 +60,13 @@ type StateOperation =
 	| "recordDecision"
 	| "requestAnalysis"
 	| "cancelRun";
-type ReadOperation = "readInvestigation" | "getRun";
+type ReadOperation =
+	| "readHistory"
+	| "readInvestigation"
+	| "getRun"
+	| "listProjects"
+	| "browseSnapshot"
+	| "readSource";
 
 function requestFor<K extends keyof Requests>(
 	id: K,
@@ -95,6 +115,8 @@ async function authorize(
 	ctx: AuthorizedCtx,
 	request: Requests[keyof Requests],
 ): Promise<void> {
+	if ("snapshotId" in request)
+		await ctx.loadAuthorized("snapshot", request.snapshotId);
 	if ("snapshotIds" in request)
 		for (const snapshotId of request.snapshotIds)
 			await ctx.requireAccess("snapshot", snapshotId);

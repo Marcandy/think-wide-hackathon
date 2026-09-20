@@ -6,17 +6,20 @@ import {
 	type ResourceKind,
 } from "../../core";
 import type { OperationId } from "../../generated/operations";
+import { SourceReadError, validateIndexedRef } from "../../core/source-ref";
 import type {
 	Decision,
 	Investigation,
 	ReadInvestigationRequest,
 	Run,
 	SourceRef,
+	Project,
 } from "../../generated/types";
 import * as validators from "../../generated/validators.js";
 import type { Doc } from "../_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "../_generated/server";
 import { decode, fail } from "./validation";
+import { SourceAccess } from "./sources";
 
 export async function requirePrincipal(
 	ctx: Pick<QueryCtx, "auth">,
@@ -51,6 +54,7 @@ export async function requireAccess(
 }
 
 type ProtectedDocs = {
+	snapshot: Doc<"snapshots">;
 	investigation: Doc<"investigations">;
 	decision: Doc<"decisions">;
 	run: Doc<"runs">;
@@ -59,6 +63,7 @@ type Fence = Doc<"runs">["fences"][number];
 
 /** This capability exposes no raw database, auth, scheduler, or service credentials. */
 export class AuthorizedCtx {
+	readonly sources: SourceAccess;
 	readonly principal: Principal;
 	readonly operationId: OperationId;
 	#ctx: QueryCtx;
@@ -68,6 +73,9 @@ export class AuthorizedCtx {
 		this.#ctx = ctx;
 		this.principal = principal;
 		this.operationId = operationId;
+		this.sources = new SourceAccess(ctx, principal, (snapshotId) =>
+			this.requireAccess("snapshot", snapshotId),
+		);
 	}
 
 	async requireAccess(kind: ResourceKind, id: string): Promise<void> {
@@ -95,6 +103,7 @@ export class AuthorizedCtx {
 		kind: keyof ProtectedDocs,
 		id: string,
 	): Promise<ProtectedDocs[keyof ProtectedDocs]> {
+		if (kind === "snapshot") return this.sources.snapshot(id);
 		// Authorize the parent before reading its body. Children inherit this scope.
 		if (kind === "investigation") {
 			await this.requireAccess(kind, id);
@@ -155,6 +164,20 @@ export class AuthorizedCtx {
 						},
 					],
 				});
+			const { snapshot, entry } = await this.sources.entry(
+				ref.snapshotId,
+				ref.entryId,
+			);
+			try {
+				validateIndexedRef(
+					ref,
+					decode<Project>(validators.Project, snapshot.project),
+					entry,
+				);
+			} catch (error) {
+				if (error instanceof SourceReadError) fail(error.code, error.message);
+				throw error;
+			}
 		}
 	}
 

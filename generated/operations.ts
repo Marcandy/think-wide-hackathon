@@ -99,6 +99,7 @@ export const OPERATIONS = [
 		"request": "requests.schema.json#/$defs/ReadHistoryRequest",
 		"response": "envelope.schema.json",
 		"envelopeKind": "history",
+		"entries": "commit-record.schema.json",
 		"effect": "read",
 		"exposure": [
 			"http",
@@ -109,7 +110,7 @@ export const OPERATIONS = [
 		"ticket": "T05",
 		"requestType": "ReadHistoryRequest",
 		"responseType": "ResultEnvelope",
-		"entriesType": null
+		"entriesType": "CommitRecord"
 	},
 	{
 		"operationId": "readGuidance",

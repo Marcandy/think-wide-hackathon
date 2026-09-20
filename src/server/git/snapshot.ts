@@ -12,6 +12,7 @@ import {
 	SnapshotEntry as validEntry,
 	Project as validProject,
 } from "../../../generated/validators.js";
+import type { ScanEntry } from "../search/caps";
 import { assertObjectId, GitSourceError, runGit } from "./process";
 
 export const MAX_BLOB_BYTES = 2 ** 20;
@@ -107,6 +108,125 @@ export class GitSnapshot {
 			);
 		}
 		return bytes;
+	}
+
+	/** Search consumes these exact bytes after its operation boundary authorizes
+	 * the snapshot. The search layer applies aggregate file/byte/time caps. */
+	async scanEntry(entryId: string): Promise<ScanEntry> {
+		const entry = this.entry(entryId);
+		if (entry.kind !== "blob" || entry.displayPath === undefined) {
+			throw new GitSourceError(
+				"unsupported",
+				"Search requires a regular indexed blob",
+			);
+		}
+		return {
+			repositoryId: this.repositoryId,
+			snapshotId: this.summary.snapshotId,
+			commit: this.summary.commit,
+			entryId: entry.entryId,
+			blobId: entry.objectId,
+			path: entry.displayPath,
+			kind: "blob",
+			bytes: await this.blob(entryId),
+		};
+	}
+
+	/** Fixed, read-only history commands. Only verified object ids and indexed paths
+	 * reach Git; the caller supplies the shared deadline for the entire page. */
+	async historyIds(
+		offset: number,
+		count: number,
+		deadline: number,
+		entryId?: string,
+	) {
+		this.assertOpen();
+		const path = entryId ? this.entry(entryId).displayPath : undefined;
+		if (entryId && !path) {
+			throw new GitSourceError(
+				"source_unavailable",
+				"Entry path is unavailable",
+			);
+		}
+		const raw = await this.historyGit(
+			[
+				"--literal-pathspecs",
+				"rev-list",
+				"--first-parent",
+				`--max-count=${count}`,
+				`--skip=${offset}`,
+				this.summary.commit,
+				"--",
+				...(path ? [path] : []),
+			],
+			deadline,
+			8192,
+		);
+		return raw
+			.toString("ascii")
+			.trim()
+			.split("\n")
+			.filter(Boolean)
+			.map((id) => {
+				assertObjectId(id, this.summary.hashAlgorithm);
+				return id;
+			});
+	}
+
+	async historyObject(commit: string, deadline: number) {
+		this.assertOpen();
+		assertObjectId(commit, this.summary.hashAlgorithm);
+		const raw = await this.historyGit(
+			["cat-file", "commit", commit],
+			deadline,
+			65536,
+		);
+		const actual = createHash(this.summary.hashAlgorithm)
+			.update(`commit ${raw.length}\0`)
+			.update(raw)
+			.digest("hex");
+		if (actual !== commit) {
+			throw new GitSourceError(
+				"source_unavailable",
+				"Commit integrity check failed",
+			);
+		}
+		return raw;
+	}
+
+	async changedPaths(commit: string, parent: string | null, deadline: number) {
+		this.assertOpen();
+		assertObjectId(commit, this.summary.hashAlgorithm);
+		if (parent) {
+			assertObjectId(parent, this.summary.hashAlgorithm);
+		}
+		return this.historyGit(
+			[
+				"diff-tree",
+				"--name-only",
+				"-z",
+				"-r",
+				"--no-commit-id",
+				"--no-renames",
+				"--no-ext-diff",
+				"--no-textconv",
+				...(parent ? [parent, commit] : ["--root", commit]),
+				"--",
+			],
+			deadline,
+			65536,
+		);
+	}
+
+	private historyGit(args: string[], deadline: number, maximum: number) {
+		const remaining = deadline - Date.now();
+		if (remaining <= 0) {
+			throw new GitSourceError(
+				"limit_exceeded",
+				"History exceeded its time limit",
+			);
+		}
+		return runGit(this.directory, args, maximum, remaining);
 	}
 
 	async close() {

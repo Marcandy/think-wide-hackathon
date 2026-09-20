@@ -993,7 +993,7 @@ export function structuralFinding(
 		repositoryId: entry.repositoryId,
 		snapshotId: entry.snapshotId,
 		commit: entry.commit,
-		hashAlgorithm: "sha256",
+		hashAlgorithm: entry.commit.length === 40 ? "sha1" : "sha256",
 		blobId: entry.blobId,
 		entryId: entry.entryId,
 		displayPath: entry.path,

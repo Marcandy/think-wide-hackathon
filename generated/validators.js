@@ -222,14 +222,14 @@ return errors === 0;
 }
 validate27.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const CancelRunRequest = validate61;
-const schema175 = {"title":"CancelRunRequest","type":"object","additionalProperties":false,"required":["runId","requestKey"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
-const schema113 = {"title":"RequestKey","description":"Caller-chosen idempotency key. Same key + same args = same result; same key + different args = conflict.","type":"string","minLength":8,"maxLength":128};
+export const CancelRunRequest = validate62;
+const schema181 = {"title":"CancelRunRequest","type":"object","additionalProperties":false,"required":["runId","requestKey"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+const schema119 = {"title":"RequestKey","description":"Caller-chosen idempotency key. Same key + same args = same result; same key + different args = conflict.","type":"string","minLength":8,"maxLength":128};
 
-function validate61(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate62(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate61.evaluated;
+const evaluated0 = validate62.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -360,10 +360,10 @@ vErrors.push(err10);
 }
 errors++;
 }
-validate61.errors = vErrors;
+validate62.errors = vErrors;
 return errors === 0;
 }
-validate61.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate62.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const Capabilities = validate22;
 const schema33 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"capabilities.schema.json","title":"Capabilities","type":"object","additionalProperties":false,"required":["contractVersion","mode","authProfile","searchModes","limits","integrations"],"properties":{"contractVersion":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},"catalogVersion":{"type":"string","maxLength":32},"mode":{"enum":["local-demo","connected"]},"authProfile":{"enum":["local-fixed-principal","workos-authkit","workos-mcp-resource"]},"searchModes":{"type":"array","uniqueItems":true,"items":{"enum":["literal","structural","semantic","type"]}},"limits":{"title":"Limits","type":"object","additionalProperties":false,"required":["searchHitsPerPage","treeChildrenPerPage","resultTextBytes","exactWindowBytes"],"properties":{"searchHitsPerPage":{"type":"integer","minimum":1},"treeChildrenPerPage":{"type":"integer","minimum":1},"resultTextBytes":{"type":"integer","minimum":1},"exactWindowBytes":{"type":"integer","minimum":1},"scanMaxFiles":{"type":"integer","minimum":1},"scanMaxBytes":{"type":"integer","minimum":1},"scanMaxMs":{"type":"integer","minimum":1}}},"integrations":{"title":"IntegrationStatus","type":"object","additionalProperties":false,"properties":{"hostedIdentity":{"$ref":"#/$defs/Status"},"remoteMcp":{"$ref":"#/$defs/Status"},"githubApp":{"$ref":"#/$defs/Status"},"issuePublish":{"$ref":"#/$defs/Status"},"backendReasoning":{"$ref":"#/$defs/Status"},"outcomeIngestion":{"$ref":"#/$defs/Status"}},"required":["hostedIdentity","remoteMcp","githubApp","issuePublish","backendReasoning","outcomeIngestion"],"description":"Every integration reports an explicit status. Omission is not allowed: an unproven capability says not_run."}},"$defs":{"Status":{"title":"CapabilityStatus","enum":["not_run","disabled","local_only","live"]}}};
@@ -1003,20 +1003,398 @@ return errors === 0;
 }
 validate22.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Composition = validate51;
-const schema148 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"composition.schema.json","title":"Composition","description":"Closed UI catalog. The server additionally enforces <=16 nodes, depth <=4, <=32 KiB serialized. No JSX, HTML, CSS, URLs, or handlers.","type":"object","additionalProperties":false,"required":["catalogVersion","root"],"properties":{"catalogVersion":{"type":"string","maxLength":32},"root":{"$ref":"#/$defs/Node"}},"$defs":{"Node":{"title":"CatalogNode","oneOf":[{"title":"StackNode","type":"object","additionalProperties":false,"required":["component","children"],"properties":{"component":{"const":"Stack"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"SectionNode","type":"object","additionalProperties":false,"required":["component","title","children"],"properties":{"component":{"const":"Section"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"EvidencePairNode","type":"object","additionalProperties":false,"required":["component","left","right"],"properties":{"component":{"const":"EvidencePair"},"left":{"$ref":"source-ref.schema.json"},"right":{"$ref":"source-ref.schema.json"},"caption":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"ConnectionCardNode","type":"object","additionalProperties":false,"required":["component","findingId","status"],"properties":{"component":{"const":"ConnectionCard"},"findingId":{"$ref":"common.schema.json#/$defs/Id"},"status":{"enum":["tentative","accepted","rejected"]},"rationale":{"$ref":"common.schema.json#/$defs/LongText"}}},{"title":"ConstraintEditorNode","type":"object","additionalProperties":false,"required":["component","investigationId","expectedRevision"],"properties":{"component":{"const":"ConstraintEditor"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"prompt":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"HandoffPreviewNode","type":"object","additionalProperties":false,"required":["component","handoffId","handoffRevision"],"properties":{"component":{"const":"HandoffPreview"},"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}}]}}};
-const schema149 = {"title":"CatalogNode","oneOf":[{"title":"StackNode","type":"object","additionalProperties":false,"required":["component","children"],"properties":{"component":{"const":"Stack"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"SectionNode","type":"object","additionalProperties":false,"required":["component","title","children"],"properties":{"component":{"const":"Section"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"EvidencePairNode","type":"object","additionalProperties":false,"required":["component","left","right"],"properties":{"component":{"const":"EvidencePair"},"left":{"$ref":"source-ref.schema.json"},"right":{"$ref":"source-ref.schema.json"},"caption":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"ConnectionCardNode","type":"object","additionalProperties":false,"required":["component","findingId","status"],"properties":{"component":{"const":"ConnectionCard"},"findingId":{"$ref":"common.schema.json#/$defs/Id"},"status":{"enum":["tentative","accepted","rejected"]},"rationale":{"$ref":"common.schema.json#/$defs/LongText"}}},{"title":"ConstraintEditorNode","type":"object","additionalProperties":false,"required":["component","investigationId","expectedRevision"],"properties":{"component":{"const":"ConstraintEditor"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"prompt":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"HandoffPreviewNode","type":"object","additionalProperties":false,"required":["component","handoffId","handoffRevision"],"properties":{"component":{"const":"HandoffPreview"},"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}}]};
-const schema51 = {"title":"ShortText","type":"string","minLength":1,"maxLength":512};
-const schema95 = {"title":"LongText","type":"string","minLength":1,"maxLength":16384};
-const schema118 = {"title":"Revision","description":"Investigation revision N. Human corrections advance it and fence stale work.","type":"integer","minimum":0};
-const wrapper0 = {validate: validate52};
-const schema69 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"source-ref.schema.json","title":"SourceRef","description":"Exact evidence address: repository + full commit + blob + entry + half-open byte range + digest of the exact bytes returned.","type":"object","additionalProperties":false,"required":["repositoryId","commit","hashAlgorithm","blobId","entryId","byteRange","digest"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"commit":{"$ref":"common.schema.json#/$defs/CommitId"},"hashAlgorithm":{"$ref":"common.schema.json#/$defs/HashAlgorithm"},"blobId":{"$ref":"common.schema.json#/$defs/ObjectId"},"entryId":{"$ref":"common.schema.json#/$defs/Id","description":"Opaque id mapped to the verified Git tree entry. Not a path string."},"displayPath":{"type":"string","maxLength":4096,"description":"Presentation only. Never used for lookup or authorization."},"byteRange":{"title":"ByteRange","type":"object","additionalProperties":false,"required":["start","end"],"properties":{"start":{"type":"integer","minimum":0},"end":{"type":"integer","minimum":0}},"description":"[start,end) in bytes of the blob. end MUST be >= start; handlers reject inverted ranges with invalid_request."},"lineRange":{"title":"LineRange","type":"object","additionalProperties":false,"required":["start","end"],"properties":{"start":{"type":"integer","minimum":1},"end":{"type":"integer","minimum":1}},"description":"1-based inclusive, presentation only. end MUST be >= start; handlers reject inverted ranges with invalid_request."},"digest":{"$ref":"common.schema.json#/$defs/Sha256","description":"sha256 of exactly the bytes in byteRange."}}};
+export const CommitRecord = validate37;
+const schema101 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"commit-record.schema.json","title":"CommitRecord","description":"An observed commit on the pinned snapshot's first-parent history. changedPaths is the exact bounded diff against comparedTo, or the empty tree for a root commit. Over-limit records reject rather than silently truncate.","type":"object","additionalProperties":false,"required":["commit","hashAlgorithm","parents","subject","committedAt","comparedTo","changedPaths"],"properties":{"commit":{"$ref":"common.schema.json#/$defs/CommitId"},"hashAlgorithm":{"$ref":"common.schema.json#/$defs/HashAlgorithm"},"parents":{"type":"array","maxItems":16,"items":{"$ref":"common.schema.json#/$defs/CommitId"}},"subject":{"type":"string","maxLength":512},"committedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"comparedTo":{"anyOf":[{"$ref":"common.schema.json#/$defs/CommitId"},{"type":"null"}]},"changedPaths":{"type":"array","maxItems":100,"items":{"type":"string","minLength":1,"maxLength":4096}}}};
 const schema53 = {"title":"CommitId","description":"Full Git object id, never a branch name.","type":"string","pattern":"^([0-9a-f]{40}|[0-9a-f]{64})$"};
 const schema54 = {"title":"HashAlgorithm","enum":["sha1","sha256"]};
+const schema48 = {"title":"TimestampMs","type":"integer","minimum":0};
+const pattern10 = new RegExp("^([0-9a-f]{40}|[0-9a-f]{64})$", "u");
+
+function validate37(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+/*# sourceURL="commit-record.schema.json" */;
+let vErrors = null;
+let errors = 0;
+const evaluated0 = validate37.evaluated;
+if(evaluated0.dynamicProps){
+evaluated0.props = undefined;
+}
+if(evaluated0.dynamicItems){
+evaluated0.items = undefined;
+}
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.commit === undefined){
+const err0 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "commit"},message:"must have required property '"+"commit"+"'"};
+if(vErrors === null){
+vErrors = [err0];
+}
+else {
+vErrors.push(err0);
+}
+errors++;
+}
+if(data.hashAlgorithm === undefined){
+const err1 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "hashAlgorithm"},message:"must have required property '"+"hashAlgorithm"+"'"};
+if(vErrors === null){
+vErrors = [err1];
+}
+else {
+vErrors.push(err1);
+}
+errors++;
+}
+if(data.parents === undefined){
+const err2 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "parents"},message:"must have required property '"+"parents"+"'"};
+if(vErrors === null){
+vErrors = [err2];
+}
+else {
+vErrors.push(err2);
+}
+errors++;
+}
+if(data.subject === undefined){
+const err3 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "subject"},message:"must have required property '"+"subject"+"'"};
+if(vErrors === null){
+vErrors = [err3];
+}
+else {
+vErrors.push(err3);
+}
+errors++;
+}
+if(data.committedAt === undefined){
+const err4 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "committedAt"},message:"must have required property '"+"committedAt"+"'"};
+if(vErrors === null){
+vErrors = [err4];
+}
+else {
+vErrors.push(err4);
+}
+errors++;
+}
+if(data.comparedTo === undefined){
+const err5 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "comparedTo"},message:"must have required property '"+"comparedTo"+"'"};
+if(vErrors === null){
+vErrors = [err5];
+}
+else {
+vErrors.push(err5);
+}
+errors++;
+}
+if(data.changedPaths === undefined){
+const err6 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "changedPaths"},message:"must have required property '"+"changedPaths"+"'"};
+if(vErrors === null){
+vErrors = [err6];
+}
+else {
+vErrors.push(err6);
+}
+errors++;
+}
+for(const key0 in data){
+if(!(((((((key0 === "commit") || (key0 === "hashAlgorithm")) || (key0 === "parents")) || (key0 === "subject")) || (key0 === "committedAt")) || (key0 === "comparedTo")) || (key0 === "changedPaths"))){
+const err7 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err7];
+}
+else {
+vErrors.push(err7);
+}
+errors++;
+}
+}
+if(data.commit !== undefined){
+let data0 = data.commit;
+if(typeof data0 === "string"){
+if(!pattern10.test(data0)){
+const err8 = {instancePath:instancePath+"/commit",schemaPath:"common.schema.json#/$defs/CommitId/pattern",keyword:"pattern",params:{pattern: "^([0-9a-f]{40}|[0-9a-f]{64})$"},message:"must match pattern \""+"^([0-9a-f]{40}|[0-9a-f]{64})$"+"\""};
+if(vErrors === null){
+vErrors = [err8];
+}
+else {
+vErrors.push(err8);
+}
+errors++;
+}
+}
+else {
+const err9 = {instancePath:instancePath+"/commit",schemaPath:"common.schema.json#/$defs/CommitId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err9];
+}
+else {
+vErrors.push(err9);
+}
+errors++;
+}
+}
+if(data.hashAlgorithm !== undefined){
+let data1 = data.hashAlgorithm;
+if(!((data1 === "sha1") || (data1 === "sha256"))){
+const err10 = {instancePath:instancePath+"/hashAlgorithm",schemaPath:"common.schema.json#/$defs/HashAlgorithm/enum",keyword:"enum",params:{allowedValues: schema54.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err10];
+}
+else {
+vErrors.push(err10);
+}
+errors++;
+}
+}
+if(data.parents !== undefined){
+let data2 = data.parents;
+if(Array.isArray(data2)){
+if(data2.length > 16){
+const err11 = {instancePath:instancePath+"/parents",schemaPath:"#/properties/parents/maxItems",keyword:"maxItems",params:{limit: 16},message:"must NOT have more than 16 items"};
+if(vErrors === null){
+vErrors = [err11];
+}
+else {
+vErrors.push(err11);
+}
+errors++;
+}
+const len0 = data2.length;
+for(let i0=0; i0<len0; i0++){
+let data3 = data2[i0];
+if(typeof data3 === "string"){
+if(!pattern10.test(data3)){
+const err12 = {instancePath:instancePath+"/parents/" + i0,schemaPath:"common.schema.json#/$defs/CommitId/pattern",keyword:"pattern",params:{pattern: "^([0-9a-f]{40}|[0-9a-f]{64})$"},message:"must match pattern \""+"^([0-9a-f]{40}|[0-9a-f]{64})$"+"\""};
+if(vErrors === null){
+vErrors = [err12];
+}
+else {
+vErrors.push(err12);
+}
+errors++;
+}
+}
+else {
+const err13 = {instancePath:instancePath+"/parents/" + i0,schemaPath:"common.schema.json#/$defs/CommitId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err13];
+}
+else {
+vErrors.push(err13);
+}
+errors++;
+}
+}
+}
+else {
+const err14 = {instancePath:instancePath+"/parents",schemaPath:"#/properties/parents/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err14];
+}
+else {
+vErrors.push(err14);
+}
+errors++;
+}
+}
+if(data.subject !== undefined){
+let data4 = data.subject;
+if(typeof data4 === "string"){
+if(func1(data4) > 512){
+const err15 = {instancePath:instancePath+"/subject",schemaPath:"#/properties/subject/maxLength",keyword:"maxLength",params:{limit: 512},message:"must NOT have more than 512 characters"};
+if(vErrors === null){
+vErrors = [err15];
+}
+else {
+vErrors.push(err15);
+}
+errors++;
+}
+}
+else {
+const err16 = {instancePath:instancePath+"/subject",schemaPath:"#/properties/subject/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err16];
+}
+else {
+vErrors.push(err16);
+}
+errors++;
+}
+}
+if(data.committedAt !== undefined){
+let data5 = data.committedAt;
+if(!(((typeof data5 == "number") && (!(data5 % 1) && !isNaN(data5))) && (isFinite(data5)))){
+const err17 = {instancePath:instancePath+"/committedAt",schemaPath:"common.schema.json#/$defs/TimestampMs/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err17];
+}
+else {
+vErrors.push(err17);
+}
+errors++;
+}
+if((typeof data5 == "number") && (isFinite(data5))){
+if(data5 < 0 || isNaN(data5)){
+const err18 = {instancePath:instancePath+"/committedAt",schemaPath:"common.schema.json#/$defs/TimestampMs/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err18];
+}
+else {
+vErrors.push(err18);
+}
+errors++;
+}
+}
+}
+if(data.comparedTo !== undefined){
+let data6 = data.comparedTo;
+const _errs18 = errors;
+let valid7 = false;
+const _errs19 = errors;
+if(typeof data6 === "string"){
+if(!pattern10.test(data6)){
+const err19 = {instancePath:instancePath+"/comparedTo",schemaPath:"common.schema.json#/$defs/CommitId/pattern",keyword:"pattern",params:{pattern: "^([0-9a-f]{40}|[0-9a-f]{64})$"},message:"must match pattern \""+"^([0-9a-f]{40}|[0-9a-f]{64})$"+"\""};
+if(vErrors === null){
+vErrors = [err19];
+}
+else {
+vErrors.push(err19);
+}
+errors++;
+}
+}
+else {
+const err20 = {instancePath:instancePath+"/comparedTo",schemaPath:"common.schema.json#/$defs/CommitId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err20];
+}
+else {
+vErrors.push(err20);
+}
+errors++;
+}
+var _valid0 = _errs19 === errors;
+valid7 = valid7 || _valid0;
+const _errs22 = errors;
+if(data6 !== null){
+const err21 = {instancePath:instancePath+"/comparedTo",schemaPath:"#/properties/comparedTo/anyOf/1/type",keyword:"type",params:{type: "null"},message:"must be null"};
+if(vErrors === null){
+vErrors = [err21];
+}
+else {
+vErrors.push(err21);
+}
+errors++;
+}
+var _valid0 = _errs22 === errors;
+valid7 = valid7 || _valid0;
+if(!valid7){
+const err22 = {instancePath:instancePath+"/comparedTo",schemaPath:"#/properties/comparedTo/anyOf",keyword:"anyOf",params:{},message:"must match a schema in anyOf"};
+if(vErrors === null){
+vErrors = [err22];
+}
+else {
+vErrors.push(err22);
+}
+errors++;
+}
+else {
+errors = _errs18;
+if(vErrors !== null){
+if(_errs18){
+vErrors.length = _errs18;
+}
+else {
+vErrors = null;
+}
+}
+}
+}
+if(data.changedPaths !== undefined){
+let data7 = data.changedPaths;
+if(Array.isArray(data7)){
+if(data7.length > 100){
+const err23 = {instancePath:instancePath+"/changedPaths",schemaPath:"#/properties/changedPaths/maxItems",keyword:"maxItems",params:{limit: 100},message:"must NOT have more than 100 items"};
+if(vErrors === null){
+vErrors = [err23];
+}
+else {
+vErrors.push(err23);
+}
+errors++;
+}
+const len1 = data7.length;
+for(let i1=0; i1<len1; i1++){
+let data8 = data7[i1];
+if(typeof data8 === "string"){
+if(func1(data8) > 4096){
+const err24 = {instancePath:instancePath+"/changedPaths/" + i1,schemaPath:"#/properties/changedPaths/items/maxLength",keyword:"maxLength",params:{limit: 4096},message:"must NOT have more than 4096 characters"};
+if(vErrors === null){
+vErrors = [err24];
+}
+else {
+vErrors.push(err24);
+}
+errors++;
+}
+if(func1(data8) < 1){
+const err25 = {instancePath:instancePath+"/changedPaths/" + i1,schemaPath:"#/properties/changedPaths/items/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err25];
+}
+else {
+vErrors.push(err25);
+}
+errors++;
+}
+}
+else {
+const err26 = {instancePath:instancePath+"/changedPaths/" + i1,schemaPath:"#/properties/changedPaths/items/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err26];
+}
+else {
+vErrors.push(err26);
+}
+errors++;
+}
+}
+}
+else {
+const err27 = {instancePath:instancePath+"/changedPaths",schemaPath:"#/properties/changedPaths/type",keyword:"type",params:{type: "array"},message:"must be array"};
+if(vErrors === null){
+vErrors = [err27];
+}
+else {
+vErrors.push(err27);
+}
+errors++;
+}
+}
+}
+else {
+const err28 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err28];
+}
+else {
+vErrors.push(err28);
+}
+errors++;
+}
+validate37.errors = vErrors;
+return errors === 0;
+}
+validate37.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+
+export const Composition = validate52;
+const schema154 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"composition.schema.json","title":"Composition","description":"Closed UI catalog. The server additionally enforces <=16 nodes, depth <=4, <=32 KiB serialized. No JSX, HTML, CSS, URLs, or handlers.","type":"object","additionalProperties":false,"required":["catalogVersion","root"],"properties":{"catalogVersion":{"type":"string","maxLength":32},"root":{"$ref":"#/$defs/Node"}},"$defs":{"Node":{"title":"CatalogNode","oneOf":[{"title":"StackNode","type":"object","additionalProperties":false,"required":["component","children"],"properties":{"component":{"const":"Stack"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"SectionNode","type":"object","additionalProperties":false,"required":["component","title","children"],"properties":{"component":{"const":"Section"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"EvidencePairNode","type":"object","additionalProperties":false,"required":["component","left","right"],"properties":{"component":{"const":"EvidencePair"},"left":{"$ref":"source-ref.schema.json"},"right":{"$ref":"source-ref.schema.json"},"caption":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"ConnectionCardNode","type":"object","additionalProperties":false,"required":["component","findingId","status"],"properties":{"component":{"const":"ConnectionCard"},"findingId":{"$ref":"common.schema.json#/$defs/Id"},"status":{"enum":["tentative","accepted","rejected"]},"rationale":{"$ref":"common.schema.json#/$defs/LongText"}}},{"title":"ConstraintEditorNode","type":"object","additionalProperties":false,"required":["component","investigationId","expectedRevision"],"properties":{"component":{"const":"ConstraintEditor"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"prompt":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"HandoffPreviewNode","type":"object","additionalProperties":false,"required":["component","handoffId","handoffRevision"],"properties":{"component":{"const":"HandoffPreview"},"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}}]}}};
+const schema155 = {"title":"CatalogNode","oneOf":[{"title":"StackNode","type":"object","additionalProperties":false,"required":["component","children"],"properties":{"component":{"const":"Stack"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"SectionNode","type":"object","additionalProperties":false,"required":["component","title","children"],"properties":{"component":{"const":"Section"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"children":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"#/$defs/Node"}}}},{"title":"EvidencePairNode","type":"object","additionalProperties":false,"required":["component","left","right"],"properties":{"component":{"const":"EvidencePair"},"left":{"$ref":"source-ref.schema.json"},"right":{"$ref":"source-ref.schema.json"},"caption":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"ConnectionCardNode","type":"object","additionalProperties":false,"required":["component","findingId","status"],"properties":{"component":{"const":"ConnectionCard"},"findingId":{"$ref":"common.schema.json#/$defs/Id"},"status":{"enum":["tentative","accepted","rejected"]},"rationale":{"$ref":"common.schema.json#/$defs/LongText"}}},{"title":"ConstraintEditorNode","type":"object","additionalProperties":false,"required":["component","investigationId","expectedRevision"],"properties":{"component":{"const":"ConstraintEditor"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"prompt":{"$ref":"common.schema.json#/$defs/ShortText"}}},{"title":"HandoffPreviewNode","type":"object","additionalProperties":false,"required":["component","handoffId","handoffRevision"],"properties":{"component":{"const":"HandoffPreview"},"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}}]};
+const schema51 = {"title":"ShortText","type":"string","minLength":1,"maxLength":512};
+const schema95 = {"title":"LongText","type":"string","minLength":1,"maxLength":16384};
+const schema124 = {"title":"Revision","description":"Investigation revision N. Human corrections advance it and fence stale work.","type":"integer","minimum":0};
+const wrapper0 = {validate: validate53};
+const schema69 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"source-ref.schema.json","title":"SourceRef","description":"Exact evidence address: repository + full commit + blob + entry + half-open byte range + digest of the exact bytes returned.","type":"object","additionalProperties":false,"required":["repositoryId","commit","hashAlgorithm","blobId","entryId","byteRange","digest"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"commit":{"$ref":"common.schema.json#/$defs/CommitId"},"hashAlgorithm":{"$ref":"common.schema.json#/$defs/HashAlgorithm"},"blobId":{"$ref":"common.schema.json#/$defs/ObjectId"},"entryId":{"$ref":"common.schema.json#/$defs/Id","description":"Opaque id mapped to the verified Git tree entry. Not a path string."},"displayPath":{"type":"string","maxLength":4096,"description":"Presentation only. Never used for lookup or authorization."},"byteRange":{"title":"ByteRange","type":"object","additionalProperties":false,"required":["start","end"],"properties":{"start":{"type":"integer","minimum":0},"end":{"type":"integer","minimum":0}},"description":"[start,end) in bytes of the blob. end MUST be >= start; handlers reject inverted ranges with invalid_request."},"lineRange":{"title":"LineRange","type":"object","additionalProperties":false,"required":["start","end"],"properties":{"start":{"type":"integer","minimum":1},"end":{"type":"integer","minimum":1}},"description":"1-based inclusive, presentation only. end MUST be >= start; handlers reject inverted ranges with invalid_request."},"digest":{"$ref":"common.schema.json#/$defs/Sha256","description":"sha256 of exactly the bytes in byteRange."}}};
 const schema55 = {"title":"ObjectId","type":"string","pattern":"^([0-9a-f]{40}|[0-9a-f]{64})$"};
 const schema76 = {"title":"Sha256","type":"string","pattern":"^[0-9a-f]{64}$"};
 const func11 = Object.prototype.hasOwnProperty;
-const pattern10 = new RegExp("^([0-9a-f]{40}|[0-9a-f]{64})$", "u");
 const pattern26 = new RegExp("^[0-9a-f]{64}$", "u");
 
 function validate30(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
@@ -1572,10 +1950,10 @@ return errors === 0;
 validate30.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 
-function validate52(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate53(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate52.evaluated;
+const evaluated0 = validate53.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -2078,7 +2456,7 @@ errors++;
 if(data.status !== undefined){
 let data13 = data.status;
 if(!(((data13 === "tentative") || (data13 === "accepted")) || (data13 === "rejected"))){
-const err38 = {instancePath:instancePath+"/status",schemaPath:"#/oneOf/3/properties/status/enum",keyword:"enum",params:{allowedValues: schema149.oneOf[3].properties.status.enum},message:"must be equal to one of the allowed values"};
+const err38 = {instancePath:instancePath+"/status",schemaPath:"#/oneOf/3/properties/status/enum",keyword:"enum",params:{allowedValues: schema155.oneOf[3].properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err38];
 }
@@ -2508,18 +2886,18 @@ vErrors = null;
 }
 }
 }
-validate52.errors = vErrors;
+validate53.errors = vErrors;
 evaluated0.props = props1;
 return errors === 0;
 }
-validate52.evaluated = {"dynamicProps":true,"dynamicItems":false};
+validate53.evaluated = {"dynamicProps":true,"dynamicItems":false};
 
 
-function validate51(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate52(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="composition.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate51.evaluated;
+const evaluated0 = validate52.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -2585,8 +2963,8 @@ errors++;
 }
 }
 if(data.root !== undefined){
-if(!(validate52(data.root, {instancePath:instancePath+"/root",parentData:data,parentDataProperty:"root",rootData,dynamicAnchors}))){
-vErrors = vErrors === null ? validate52.errors : vErrors.concat(validate52.errors);
+if(!(validate53(data.root, {instancePath:instancePath+"/root",parentData:data,parentDataProperty:"root",rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate53.errors : vErrors.concat(validate53.errors);
 errors = vErrors.length;
 }
 }
@@ -2601,20 +2979,19 @@ vErrors.push(err5);
 }
 errors++;
 }
-validate51.errors = vErrors;
+validate52.errors = vErrors;
 return errors === 0;
 }
-validate51.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate52.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Decision = validate42;
-const schema119 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"decision.schema.json","title":"Decision","description":"A human correction, constraint, or rejection. Stored separately from any generated display and never expired by regeneration.","type":"object","additionalProperties":false,"required":["decisionId","investigationId","kind","statement","madeAtRevision","resultingRevision","createdAt"],"properties":{"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["correction","constraint","rejection","acceptance"]},"statement":{"$ref":"common.schema.json#/$defs/LongText"},"targetFindingId":{"$ref":"common.schema.json#/$defs/Id"},"refs":{"type":"array","maxItems":16,"items":{"$ref":"source-ref.schema.json"}},"madeAtRevision":{"$ref":"common.schema.json#/$defs/Revision"},"resultingRevision":{"$ref":"common.schema.json#/$defs/Revision"},"createdAt":{"$ref":"common.schema.json#/$defs/TimestampMs"}}};
-const schema48 = {"title":"TimestampMs","type":"integer","minimum":0};
+export const Decision = validate43;
+const schema125 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"decision.schema.json","title":"Decision","description":"A human correction, constraint, or rejection. Stored separately from any generated display and never expired by regeneration.","type":"object","additionalProperties":false,"required":["decisionId","investigationId","kind","statement","madeAtRevision","resultingRevision","createdAt"],"properties":{"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["correction","constraint","rejection","acceptance"]},"statement":{"$ref":"common.schema.json#/$defs/LongText"},"targetFindingId":{"$ref":"common.schema.json#/$defs/Id"},"refs":{"type":"array","maxItems":16,"items":{"$ref":"source-ref.schema.json"}},"madeAtRevision":{"$ref":"common.schema.json#/$defs/Revision"},"resultingRevision":{"$ref":"common.schema.json#/$defs/Revision"},"createdAt":{"$ref":"common.schema.json#/$defs/TimestampMs"}}};
 
-function validate42(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate43(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="decision.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate42.evaluated;
+const evaluated0 = validate43.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -2693,7 +3070,7 @@ vErrors.push(err6);
 errors++;
 }
 for(const key0 in data){
-if(!(func11.call(schema119.properties, key0))){
+if(!(func11.call(schema125.properties, key0))){
 const err7 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err7];
@@ -2797,7 +3174,7 @@ errors++;
 if(data.kind !== undefined){
 let data2 = data.kind;
 if(!((((data2 === "correction") || (data2 === "constraint")) || (data2 === "rejection")) || (data2 === "acceptance"))){
-const err16 = {instancePath:instancePath+"/kind",schemaPath:"#/properties/kind/enum",keyword:"enum",params:{allowedValues: schema119.properties.kind.enum},message:"must be equal to one of the allowed values"};
+const err16 = {instancePath:instancePath+"/kind",schemaPath:"#/properties/kind/enum",keyword:"enum",params:{allowedValues: schema125.properties.kind.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err16];
 }
@@ -3005,10 +3382,10 @@ vErrors.push(err32);
 }
 errors++;
 }
-validate42.errors = vErrors;
+validate43.errors = vErrors;
 return errors === 0;
 }
-validate42.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate43.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const Evidence = validate31;
 const schema79 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"evidence.schema.json","title":"Evidence","description":"Result of readSource: exact bytes (or a labeled encoding) plus the actual range served.","type":"object","additionalProperties":false,"required":["ref","encoding","content","blobSize","evidenceClass"],"properties":{"ref":{"$ref":"source-ref.schema.json"},"encoding":{"enum":["utf8","base64"]},"content":{"type":"string","maxLength":24576},"blobSize":{"type":"integer","minimum":0},"rangeAdjusted":{"type":"boolean","description":"True when the served range differs from the requested one (e.g. moved to a UTF-8 boundary)."},"nextRange":{"$ref":"source-ref.schema.json#/properties/byteRange"},"evidenceClass":{"$ref":"common.schema.json#/$defs/EvidenceClass"}}};
@@ -3772,13 +4149,13 @@ return errors === 0;
 }
 validate21.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const GetRunRequest = validate60;
-const schema173 = {"title":"GetRunRequest","type":"object","additionalProperties":false,"required":["runId"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"}}};
+export const GetRunRequest = validate61;
+const schema179 = {"title":"GetRunRequest","type":"object","additionalProperties":false,"required":["runId"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"}}};
 
-function validate60(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate61(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate60.evaluated;
+const evaluated0 = validate61.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -3864,20 +4241,20 @@ vErrors.push(err6);
 }
 errors++;
 }
-validate60.errors = vErrors;
+validate61.errors = vErrors;
 return errors === 0;
 }
-validate60.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate61.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Handoff = validate63;
-const schema183 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff.schema.json","title":"Handoff","description":"Frozen implementation brief. Issue and download are representations of the same revision.","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","investigationId","investigationRevision","objective","targetRepository","constraints","evidence","acceptance","audience","bodyMarkdown","bodyHash","preparedAt","publication"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"investigationRevision":{"$ref":"common.schema.json#/$defs/Revision"},"objective":{"$ref":"common.schema.json#/$defs/LongText"},"targetRepository":{"title":"HandoffTarget","type":"object","additionalProperties":false,"required":["repositoryId","baseCommit"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"baseCommit":{"$ref":"common.schema.json#/$defs/CommitId"}}},"constraints":{"type":"array","maxItems":32,"items":{"title":"HandoffConstraint","type":"object","additionalProperties":false,"required":["statement","decisionId"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["constraint","rejected_approach","correction"]}}}},"evidence":{"type":"array","maxItems":32,"items":{"title":"HandoffEvidence","type":"object","additionalProperties":false,"required":["ref","note"],"properties":{"ref":{"$ref":"source-ref.schema.json"},"note":{"$ref":"common.schema.json#/$defs/ShortText"}}}},"likelyFiles":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":1024},"description":"Suggestion only, not a verified dependency list."},"acceptance":{"type":"array","minItems":1,"maxItems":32,"items":{"title":"AcceptanceItem","type":"object","additionalProperties":false,"required":["behavior","status"],"properties":{"behavior":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["not_run","specialist_reported","ci_reported"]}}}},"allowedScope":{"$ref":"common.schema.json#/$defs/LongText"},"excludedChanges":{"$ref":"common.schema.json#/$defs/LongText"},"uncertainties":{"type":"array","maxItems":16,"items":{"$ref":"common.schema.json#/$defs/ShortText"}},"audience":{"enum":["private_download","private_issue","public_issue"]},"bodyMarkdown":{"type":"string","minLength":1,"maxLength":65536},"bodyHash":{"$ref":"common.schema.json#/$defs/Sha256"},"preparedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"publication":{"title":"Publication","type":"object","additionalProperties":false,"required":["status"],"properties":{"status":{"enum":["prepared","exported","approved","published","outcome_unknown"]},"issueUrl":{"type":"string","maxLength":512,"pattern":"^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"},"receiptId":{"$ref":"common.schema.json#/$defs/Id"}}}}};
-const pattern68 = new RegExp("^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$", "u");
+export const Handoff = validate64;
+const schema189 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff.schema.json","title":"Handoff","description":"Frozen implementation brief. Issue and download are representations of the same revision.","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","investigationId","investigationRevision","objective","targetRepository","constraints","evidence","acceptance","audience","bodyMarkdown","bodyHash","preparedAt","publication"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"investigationRevision":{"$ref":"common.schema.json#/$defs/Revision"},"objective":{"$ref":"common.schema.json#/$defs/LongText"},"targetRepository":{"title":"HandoffTarget","type":"object","additionalProperties":false,"required":["repositoryId","baseCommit"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"baseCommit":{"$ref":"common.schema.json#/$defs/CommitId"}}},"constraints":{"type":"array","maxItems":32,"items":{"title":"HandoffConstraint","type":"object","additionalProperties":false,"required":["statement","decisionId"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["constraint","rejected_approach","correction"]}}}},"evidence":{"type":"array","maxItems":32,"items":{"title":"HandoffEvidence","type":"object","additionalProperties":false,"required":["ref","note"],"properties":{"ref":{"$ref":"source-ref.schema.json"},"note":{"$ref":"common.schema.json#/$defs/ShortText"}}}},"likelyFiles":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":1024},"description":"Suggestion only, not a verified dependency list."},"acceptance":{"type":"array","minItems":1,"maxItems":32,"items":{"title":"AcceptanceItem","type":"object","additionalProperties":false,"required":["behavior","status"],"properties":{"behavior":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["not_run","specialist_reported","ci_reported"]}}}},"allowedScope":{"$ref":"common.schema.json#/$defs/LongText"},"excludedChanges":{"$ref":"common.schema.json#/$defs/LongText"},"uncertainties":{"type":"array","maxItems":16,"items":{"$ref":"common.schema.json#/$defs/ShortText"}},"audience":{"enum":["private_download","private_issue","public_issue"]},"bodyMarkdown":{"type":"string","minLength":1,"maxLength":65536},"bodyHash":{"$ref":"common.schema.json#/$defs/Sha256"},"preparedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"publication":{"title":"Publication","type":"object","additionalProperties":false,"required":["status"],"properties":{"status":{"enum":["prepared","exported","approved","published","outcome_unknown"]},"issueUrl":{"type":"string","maxLength":512,"pattern":"^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"},"receiptId":{"$ref":"common.schema.json#/$defs/Id"}}}}};
+const pattern71 = new RegExp("^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$", "u");
 
-function validate63(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate64(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="handoff.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate63.evaluated;
+const evaluated0 = validate64.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -4026,7 +4403,7 @@ vErrors.push(err13);
 errors++;
 }
 for(const key0 in data){
-if(!(func11.call(schema183.properties, key0))){
+if(!(func11.call(schema189.properties, key0))){
 const err14 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err14];
@@ -4461,7 +4838,7 @@ errors++;
 if(data9.kind !== undefined){
 let data12 = data9.kind;
 if(!(((data12 === "constraint") || (data12 === "rejected_approach")) || (data12 === "correction"))){
-const err51 = {instancePath:instancePath+"/constraints/" + i0+"/kind",schemaPath:"#/properties/constraints/items/properties/kind/enum",keyword:"enum",params:{allowedValues: schema183.properties.constraints.items.properties.kind.enum},message:"must be equal to one of the allowed values"};
+const err51 = {instancePath:instancePath+"/constraints/" + i0+"/kind",schemaPath:"#/properties/constraints/items/properties/kind/enum",keyword:"enum",params:{allowedValues: schema189.properties.constraints.items.properties.kind.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err51];
 }
@@ -4757,7 +5134,7 @@ errors++;
 if(data20.status !== undefined){
 let data22 = data20.status;
 if(!(((data22 === "not_run") || (data22 === "specialist_reported")) || (data22 === "ci_reported"))){
-const err75 = {instancePath:instancePath+"/acceptance/" + i3+"/status",schemaPath:"#/properties/acceptance/items/properties/status/enum",keyword:"enum",params:{allowedValues: schema183.properties.acceptance.items.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err75 = {instancePath:instancePath+"/acceptance/" + i3+"/status",schemaPath:"#/properties/acceptance/items/properties/status/enum",keyword:"enum",params:{allowedValues: schema189.properties.acceptance.items.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err75];
 }
@@ -4925,7 +5302,7 @@ errors++;
 if(data.audience !== undefined){
 let data27 = data.audience;
 if(!(((data27 === "private_download") || (data27 === "private_issue")) || (data27 === "public_issue"))){
-const err89 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema183.properties.audience.enum},message:"must be equal to one of the allowed values"};
+const err89 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema189.properties.audience.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err89];
 }
@@ -5048,7 +5425,7 @@ errors++;
 if(data31.status !== undefined){
 let data32 = data31.status;
 if(!(((((data32 === "prepared") || (data32 === "exported")) || (data32 === "approved")) || (data32 === "published")) || (data32 === "outcome_unknown"))){
-const err99 = {instancePath:instancePath+"/publication/status",schemaPath:"#/properties/publication/properties/status/enum",keyword:"enum",params:{allowedValues: schema183.properties.publication.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err99 = {instancePath:instancePath+"/publication/status",schemaPath:"#/properties/publication/properties/status/enum",keyword:"enum",params:{allowedValues: schema189.properties.publication.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err99];
 }
@@ -5071,7 +5448,7 @@ vErrors.push(err100);
 }
 errors++;
 }
-if(!pattern68.test(data33)){
+if(!pattern71.test(data33)){
 const err101 = {instancePath:instancePath+"/publication/issueUrl",schemaPath:"#/properties/publication/properties/issueUrl/pattern",keyword:"pattern",params:{pattern: "^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"},message:"must match pattern \""+"^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"+"\""};
 if(vErrors === null){
 vErrors = [err101];
@@ -5161,20 +5538,20 @@ vErrors.push(err108);
 }
 errors++;
 }
-validate63.errors = vErrors;
+validate64.errors = vErrors;
 return errors === 0;
 }
-validate63.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate64.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Investigation = validate40;
-const schema114 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"investigation.schema.json","title":"Investigation","type":"object","additionalProperties":false,"required":["investigationId","question","snapshotIds","revision","status","createdAt"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"question":{"$ref":"common.schema.json#/$defs/LongText"},"snapshotIds":{"type":"array","minItems":1,"maxItems":8,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"revision":{"$ref":"common.schema.json#/$defs/Revision"},"status":{"enum":["open","awaiting_human","closed","source_unavailable"]},"acceptedFindings":{"type":"array","maxItems":64,"items":{"$ref":"finding.schema.json"}},"decisions":{"type":"array","maxItems":64,"items":{"$ref":"decision.schema.json"}},"currentRunId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"latestHandoffId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"createdAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"page":{"title":"InvestigationPage","description":"Present when findings or decisions were paged. Absent means the arrays are complete for this revision.","type":"object","additionalProperties":false,"required":["nextCursor","truncated"],"properties":{"nextCursor":{"anyOf":[{"$ref":"common.schema.json#/$defs/Cursor"},{"type":"null"}]},"truncated":{"$ref":"envelope.schema.json#/properties/truncated"}}}}};
-const schema131 = {"title":"Truncation","type":"object","additionalProperties":false,"required":["is"],"properties":{"is":{"type":"boolean"},"reason":{"enum":["page_limit","byte_limit","time_limit","response_cap"]}}};
+export const Investigation = validate41;
+const schema120 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"investigation.schema.json","title":"Investigation","type":"object","additionalProperties":false,"required":["investigationId","question","snapshotIds","revision","status","createdAt"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"question":{"$ref":"common.schema.json#/$defs/LongText"},"snapshotIds":{"type":"array","minItems":1,"maxItems":8,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"revision":{"$ref":"common.schema.json#/$defs/Revision"},"status":{"enum":["open","awaiting_human","closed","source_unavailable"]},"acceptedFindings":{"type":"array","maxItems":64,"items":{"$ref":"finding.schema.json"}},"decisions":{"type":"array","maxItems":64,"items":{"$ref":"decision.schema.json"}},"currentRunId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"latestHandoffId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"createdAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"page":{"title":"InvestigationPage","description":"Present when findings or decisions were paged. Absent means the arrays are complete for this revision.","type":"object","additionalProperties":false,"required":["nextCursor","truncated"],"properties":{"nextCursor":{"anyOf":[{"$ref":"common.schema.json#/$defs/Cursor"},{"type":"null"}]},"truncated":{"$ref":"envelope.schema.json#/properties/truncated"}}}}};
+const schema137 = {"title":"Truncation","type":"object","additionalProperties":false,"required":["is"],"properties":{"is":{"type":"boolean"},"reason":{"enum":["page_limit","byte_limit","time_limit","response_cap"]}}};
 
-function validate40(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate41(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="investigation.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate40.evaluated;
+const evaluated0 = validate41.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -5243,7 +5620,7 @@ vErrors.push(err5);
 errors++;
 }
 for(const key0 in data){
-if(!(func11.call(schema114.properties, key0))){
+if(!(func11.call(schema120.properties, key0))){
 const err6 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err6];
@@ -5463,7 +5840,7 @@ errors++;
 if(data.status !== undefined){
 let data5 = data.status;
 if(!((((data5 === "open") || (data5 === "awaiting_human")) || (data5 === "closed")) || (data5 === "source_unavailable"))){
-const err24 = {instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema114.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err24 = {instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema120.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err24];
 }
@@ -5520,8 +5897,8 @@ errors++;
 }
 const len2 = data8.length;
 for(let i3=0; i3<len2; i3++){
-if(!(validate42(data8[i3], {instancePath:instancePath+"/decisions/" + i3,parentData:data8,parentDataProperty:i3,rootData,dynamicAnchors}))){
-vErrors = vErrors === null ? validate42.errors : vErrors.concat(validate42.errors);
+if(!(validate43(data8[i3], {instancePath:instancePath+"/decisions/" + i3,parentData:data8,parentDataProperty:i3,rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate43.errors : vErrors.concat(validate43.errors);
 errors = vErrors.length;
 }
 }
@@ -5879,7 +6256,7 @@ errors++;
 if(data15.reason !== undefined){
 let data17 = data15.reason;
 if(!((((data17 === "page_limit") || (data17 === "byte_limit")) || (data17 === "time_limit")) || (data17 === "response_cap"))){
-const err54 = {instancePath:instancePath+"/page/truncated/reason",schemaPath:"envelope.schema.json#/properties/truncated/properties/reason/enum",keyword:"enum",params:{allowedValues: schema131.properties.reason.enum},message:"must be equal to one of the allowed values"};
+const err54 = {instancePath:instancePath+"/page/truncated/reason",schemaPath:"envelope.schema.json#/properties/truncated/properties/reason/enum",keyword:"enum",params:{allowedValues: schema137.properties.reason.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err54];
 }
@@ -5924,10 +6301,10 @@ vErrors.push(err57);
 }
 errors++;
 }
-validate40.errors = vErrors;
+validate41.errors = vErrors;
 return errors === 0;
 }
-validate40.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate41.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const ListProjectsRequest = validate23;
 const schema40 = {"title":"ListProjectsRequest","type":"object","additionalProperties":false,"properties":{"workspaceId":{"$ref":"common.schema.json#/$defs/Id"},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}};
@@ -6051,13 +6428,13 @@ return errors === 0;
 }
 validate23.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const OpenInvestigationRequest = validate39;
-const schema110 = {"title":"OpenInvestigationRequest","type":"object","additionalProperties":false,"required":["question","snapshotIds","requestKey"],"properties":{"question":{"$ref":"common.schema.json#/$defs/LongText"},"snapshotIds":{"type":"array","minItems":1,"maxItems":8,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+export const OpenInvestigationRequest = validate40;
+const schema116 = {"title":"OpenInvestigationRequest","type":"object","additionalProperties":false,"required":["question","snapshotIds","requestKey"],"properties":{"question":{"$ref":"common.schema.json#/$defs/LongText"},"snapshotIds":{"type":"array","minItems":1,"maxItems":8,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
 
-function validate39(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate40(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate39.evaluated;
+const evaluated0 = validate40.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -6289,19 +6666,19 @@ vErrors.push(err18);
 }
 errors++;
 }
-validate39.errors = vErrors;
+validate40.errors = vErrors;
 return errors === 0;
 }
-validate39.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate40.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const OperationError = validate66;
-const schema202 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"error.schema.json","title":"OperationError","type":"object","additionalProperties":false,"required":["code","message"],"properties":{"code":{"enum":["invalid_request","unauthenticated","forbidden","not_found","revision_conflict","request_key_conflict","cursor_invalid","source_unavailable","unsupported","limit_exceeded","capability_disabled","external_outcome_unknown","internal"]},"message":{"type":"string","maxLength":512},"currentRevision":{"$ref":"common.schema.json#/$defs/Revision"},"details":{"type":"array","maxItems":16,"items":{"type":"object","additionalProperties":false,"required":["path","problem"],"properties":{"path":{"type":"string","maxLength":256},"problem":{"type":"string","maxLength":256}}}}},"description":"forbidden and not_found must be indistinguishable to a caller without a grant: never leak existence."};
+export const OperationError = validate67;
+const schema208 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"error.schema.json","title":"OperationError","type":"object","additionalProperties":false,"required":["code","message"],"properties":{"code":{"enum":["invalid_request","unauthenticated","forbidden","not_found","revision_conflict","request_key_conflict","cursor_invalid","source_unavailable","unsupported","limit_exceeded","capability_disabled","external_outcome_unknown","internal"]},"message":{"type":"string","maxLength":512},"currentRevision":{"$ref":"common.schema.json#/$defs/Revision"},"details":{"type":"array","maxItems":16,"items":{"type":"object","additionalProperties":false,"required":["path","problem"],"properties":{"path":{"type":"string","maxLength":256},"problem":{"type":"string","maxLength":256}}}}},"description":"forbidden and not_found must be indistinguishable to a caller without a grant: never leak existence."};
 
-function validate66(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate67(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="error.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate66.evaluated;
+const evaluated0 = validate67.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -6344,7 +6721,7 @@ errors++;
 if(data.code !== undefined){
 let data0 = data.code;
 if(!(((((((((((((data0 === "invalid_request") || (data0 === "unauthenticated")) || (data0 === "forbidden")) || (data0 === "not_found")) || (data0 === "revision_conflict")) || (data0 === "request_key_conflict")) || (data0 === "cursor_invalid")) || (data0 === "source_unavailable")) || (data0 === "unsupported")) || (data0 === "limit_exceeded")) || (data0 === "capability_disabled")) || (data0 === "external_outcome_unknown")) || (data0 === "internal"))){
-const err3 = {instancePath:instancePath+"/code",schemaPath:"#/properties/code/enum",keyword:"enum",params:{allowedValues: schema202.properties.code.enum},message:"must be equal to one of the allowed values"};
+const err3 = {instancePath:instancePath+"/code",schemaPath:"#/properties/code/enum",keyword:"enum",params:{allowedValues: schema208.properties.code.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err3];
 }
@@ -6538,18 +6915,18 @@ vErrors.push(err18);
 }
 errors++;
 }
-validate66.errors = vErrors;
+validate67.errors = vErrors;
 return errors === 0;
 }
-validate66.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate67.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const PrepareHandoffRequest = validate62;
-const schema178 = {"title":"PrepareHandoffRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","targetRepositoryId","audience","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"targetRepositoryId":{"$ref":"common.schema.json#/$defs/Id"},"audience":{"enum":["private_download","private_issue","public_issue"]},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+export const PrepareHandoffRequest = validate63;
+const schema184 = {"title":"PrepareHandoffRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","targetRepositoryId","audience","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"targetRepositoryId":{"$ref":"common.schema.json#/$defs/Id"},"audience":{"enum":["private_download","private_issue","public_issue"]},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
 
-function validate62(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate63(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate62.evaluated;
+const evaluated0 = validate63.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -6737,7 +7114,7 @@ errors++;
 if(data.audience !== undefined){
 let data3 = data.audience;
 if(!(((data3 === "private_download") || (data3 === "private_issue")) || (data3 === "public_issue"))){
-const err16 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema178.properties.audience.enum},message:"must be equal to one of the allowed values"};
+const err16 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema184.properties.audience.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err16];
 }
@@ -6793,10 +7170,10 @@ vErrors.push(err20);
 }
 errors++;
 }
-validate62.errors = vErrors;
+validate63.errors = vErrors;
 return errors === 0;
 }
-validate62.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate63.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const Project = validate26;
 const schema49 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"project.schema.json","title":"Project","type":"object","additionalProperties":false,"required":["repositoryId","displayName","provider","syncStatus","snapshots"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"displayName":{"$ref":"common.schema.json#/$defs/ShortText"},"provider":{"enum":["local-git","github"]},"syncStatus":{"enum":["ready","syncing","failed","revoked"]},"dataLabel":{"enum":["synthetic","public","private"],"description":"Demonstration data must say what it is."},"snapshots":{"type":"array","maxItems":16,"items":{"title":"SnapshotSummary","type":"object","additionalProperties":false,"required":["snapshotId","commit","hashAlgorithm","rootTreeId","indexedAt","coverage"],"properties":{"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"commit":{"$ref":"common.schema.json#/$defs/CommitId"},"hashAlgorithm":{"$ref":"common.schema.json#/$defs/HashAlgorithm"},"rootTreeId":{"$ref":"common.schema.json#/$defs/ObjectId"},"resolvedFromRef":{"type":"string","maxLength":256,"description":"Branch/tag name resolved ONCE at selection time."},"indexedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"coverage":{"enum":["complete","partial","not_indexed"]}}}}}};
@@ -7294,14 +7671,14 @@ return errors === 0;
 }
 validate26.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Proposal = validate49;
-const schema142 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"proposal.schema.json","title":"Proposal","description":"Tentative, evidence-backed comparison from a host or backend driver. Accepted = shape, references and authority validated, not that the reasoning is proven.","type":"object","additionalProperties":false,"required":["investigationId","baseRevision","claims"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"runId":{"$ref":"common.schema.json#/$defs/Id"},"baseRevision":{"$ref":"common.schema.json#/$defs/Revision"},"claims":{"type":"array","minItems":1,"maxItems":16,"items":{"title":"Claim","type":"object","additionalProperties":false,"required":["statement","evidenceClass","refs"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"evidenceClass":{"enum":["model_hypothesis","observed_literal","observed_structural","observed_history"]},"refs":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"source-ref.schema.json"}},"unknowns":{"type":"array","maxItems":8,"items":{"$ref":"common.schema.json#/$defs/ShortText"}}}}},"composition":{"$ref":"composition.schema.json"}}};
+export const Proposal = validate50;
+const schema148 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"proposal.schema.json","title":"Proposal","description":"Tentative, evidence-backed comparison from a host or backend driver. Accepted = shape, references and authority validated, not that the reasoning is proven.","type":"object","additionalProperties":false,"required":["investigationId","baseRevision","claims"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"runId":{"$ref":"common.schema.json#/$defs/Id"},"baseRevision":{"$ref":"common.schema.json#/$defs/Revision"},"claims":{"type":"array","minItems":1,"maxItems":16,"items":{"title":"Claim","type":"object","additionalProperties":false,"required":["statement","evidenceClass","refs"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"evidenceClass":{"enum":["model_hypothesis","observed_literal","observed_structural","observed_history"]},"refs":{"type":"array","minItems":1,"maxItems":8,"items":{"$ref":"source-ref.schema.json"}},"unknowns":{"type":"array","maxItems":8,"items":{"$ref":"common.schema.json#/$defs/ShortText"}}}}},"composition":{"$ref":"composition.schema.json"}}};
 
-function validate49(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate50(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="proposal.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate49.evaluated;
+const evaluated0 = validate50.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -7573,7 +7950,7 @@ errors++;
 if(data4.evidenceClass !== undefined){
 let data6 = data4.evidenceClass;
 if(!((((data6 === "model_hypothesis") || (data6 === "observed_literal")) || (data6 === "observed_structural")) || (data6 === "observed_history"))){
-const err23 = {instancePath:instancePath+"/claims/" + i0+"/evidenceClass",schemaPath:"#/properties/claims/items/properties/evidenceClass/enum",keyword:"enum",params:{allowedValues: schema142.properties.claims.items.properties.evidenceClass.enum},message:"must be equal to one of the allowed values"};
+const err23 = {instancePath:instancePath+"/claims/" + i0+"/evidenceClass",schemaPath:"#/properties/claims/items/properties/evidenceClass/enum",keyword:"enum",params:{allowedValues: schema148.properties.claims.items.properties.evidenceClass.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err23];
 }
@@ -7711,8 +8088,8 @@ errors++;
 }
 }
 if(data.composition !== undefined){
-if(!(validate51(data.composition, {instancePath:instancePath+"/composition",parentData:data,parentDataProperty:"composition",rootData,dynamicAnchors}))){
-vErrors = vErrors === null ? validate51.errors : vErrors.concat(validate51.errors);
+if(!(validate52(data.composition, {instancePath:instancePath+"/composition",parentData:data,parentDataProperty:"composition",rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate52.errors : vErrors.concat(validate52.errors);
 errors = vErrors.length;
 }
 }
@@ -7727,18 +8104,18 @@ vErrors.push(err34);
 }
 errors++;
 }
-validate49.errors = vErrors;
+validate50.errors = vErrors;
 return errors === 0;
 }
-validate49.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate50.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const ReadGuidanceRequest = validate37;
-const schema101 = {"title":"ReadGuidanceRequest","type":"object","additionalProperties":false,"properties":{"recipeId":{"$ref":"common.schema.json#/$defs/Id"}}};
+export const ReadGuidanceRequest = validate38;
+const schema107 = {"title":"ReadGuidanceRequest","type":"object","additionalProperties":false,"properties":{"recipeId":{"$ref":"common.schema.json#/$defs/Id"}}};
 
-function validate37(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate38(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate37.evaluated;
+const evaluated0 = validate38.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -7814,18 +8191,18 @@ vErrors.push(err5);
 }
 errors++;
 }
-validate37.errors = vErrors;
+validate38.errors = vErrors;
 return errors === 0;
 }
-validate37.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate38.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const ReadHandoffRequest = validate65;
-const schema200 = {"title":"ReadHandoffRequest","type":"object","additionalProperties":false,"required":["handoffId"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}};
+export const ReadHandoffRequest = validate66;
+const schema206 = {"title":"ReadHandoffRequest","type":"object","additionalProperties":false,"required":["handoffId"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}};
 
-function validate65(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate66(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate65.evaluated;
+const evaluated0 = validate66.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -7936,10 +8313,10 @@ vErrors.push(err8);
 }
 errors++;
 }
-validate65.errors = vErrors;
+validate66.errors = vErrors;
 return errors === 0;
 }
-validate65.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate66.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const ReadHistoryRequest = validate36;
 const schema97 = {"title":"ReadHistoryRequest","type":"object","additionalProperties":false,"required":["snapshotId"],"properties":{"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"entryId":{"$ref":"common.schema.json#/$defs/Id"},"maxCommits":{"type":"integer","minimum":1,"maximum":20},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}};
@@ -8153,13 +8530,13 @@ return errors === 0;
 }
 validate36.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const ReadInvestigationRequest = validate45;
-const schema132 = {"title":"ReadInvestigationRequest","type":"object","additionalProperties":false,"required":["investigationId"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"detail":{"enum":["summary","full"]},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}};
+export const ReadInvestigationRequest = validate46;
+const schema138 = {"title":"ReadInvestigationRequest","type":"object","additionalProperties":false,"required":["investigationId"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"detail":{"enum":["summary","full"]},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}};
 
-function validate45(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate46(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate45.evaluated;
+const evaluated0 = validate46.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -8237,7 +8614,7 @@ errors++;
 if(data.detail !== undefined){
 let data1 = data.detail;
 if(!((data1 === "summary") || (data1 === "full"))){
-const err6 = {instancePath:instancePath+"/detail",schemaPath:"#/properties/detail/enum",keyword:"enum",params:{allowedValues: schema132.properties.detail.enum},message:"must be equal to one of the allowed values"};
+const err6 = {instancePath:instancePath+"/detail",schemaPath:"#/properties/detail/enum",keyword:"enum",params:{allowedValues: schema138.properties.detail.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err6];
 }
@@ -8293,10 +8670,10 @@ vErrors.push(err10);
 }
 errors++;
 }
-validate45.errors = vErrors;
+validate46.errors = vErrors;
 return errors === 0;
 }
-validate45.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate46.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const ReadSourceRequest = validate29;
 const schema66 = {"title":"ReadSourceRequest","type":"object","additionalProperties":false,"required":["snapshotId","entryId"],"properties":{"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"entryId":{"$ref":"common.schema.json#/$defs/Id"},"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"},"lineRange":{"$ref":"source-ref.schema.json#/properties/lineRange"},"maxBytes":{"type":"integer","minimum":1,"maximum":16384}}};
@@ -8680,14 +9057,14 @@ return errors === 0;
 }
 validate29.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Recipe = validate38;
-const schema103 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"recipe.schema.json","title":"Recipe","description":"One trusted guidance recipe: when to use a capability, what it does not do, its limits and how to read its results. Entry schema for readGuidance (decisions/0001). Recipes are operator-authored and reviewed; a recipe is never derived from ingested source, and reading one has no effect on any repository.","type":"object","additionalProperties":false,"required":["recipeId","title","appliesTo","summary","contentHash"],"properties":{"recipeId":{"$ref":"common.schema.json#/$defs/Id"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"appliesTo":{"$ref":"common.schema.json#/$defs/ShortText","description":"Which operation and mode this recipe covers, as written by the reviewer."},"summary":{"$ref":"common.schema.json#/$defs/ShortText"},"body":{"$ref":"common.schema.json#/$defs/LongText","description":"Full Markdown guidance. Omitted from catalog listings, present when one recipe is requested."},"contentHash":{"$ref":"common.schema.json#/$defs/Sha256","description":"sha256 of the exact recipe file bytes, so guidance quoted in a brief stays attributable to the reviewed revision."}}};
+export const Recipe = validate39;
+const schema109 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"recipe.schema.json","title":"Recipe","description":"One trusted guidance recipe: when to use a capability, what it does not do, its limits and how to read its results. Entry schema for readGuidance (decisions/0001). Recipes are operator-authored and reviewed; a recipe is never derived from ingested source, and reading one has no effect on any repository.","type":"object","additionalProperties":false,"required":["recipeId","title","appliesTo","summary","contentHash"],"properties":{"recipeId":{"$ref":"common.schema.json#/$defs/Id"},"title":{"$ref":"common.schema.json#/$defs/ShortText"},"appliesTo":{"$ref":"common.schema.json#/$defs/ShortText","description":"Which operation and mode this recipe covers, as written by the reviewer."},"summary":{"$ref":"common.schema.json#/$defs/ShortText"},"body":{"$ref":"common.schema.json#/$defs/LongText","description":"Full Markdown guidance. Omitted from catalog listings, present when one recipe is requested."},"contentHash":{"$ref":"common.schema.json#/$defs/Sha256","description":"sha256 of the exact recipe file bytes, so guidance quoted in a brief stays attributable to the reviewed revision."}}};
 
-function validate38(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate39(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="recipe.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate38.evaluated;
+const evaluated0 = validate39.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -8978,18 +9355,18 @@ vErrors.push(err24);
 }
 errors++;
 }
-validate38.errors = vErrors;
+validate39.errors = vErrors;
 return errors === 0;
 }
-validate38.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate39.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const RecordDecisionRequest = validate46;
-const schema135 = {"title":"RecordDecisionRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","kind","statement","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"kind":{"enum":["correction","constraint","rejection","acceptance"]},"statement":{"$ref":"common.schema.json#/$defs/LongText"},"targetFindingId":{"$ref":"common.schema.json#/$defs/Id"},"refs":{"type":"array","maxItems":16,"items":{"$ref":"source-ref.schema.json"}},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+export const RecordDecisionRequest = validate47;
+const schema141 = {"title":"RecordDecisionRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","kind","statement","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"kind":{"enum":["correction","constraint","rejection","acceptance"]},"statement":{"$ref":"common.schema.json#/$defs/LongText"},"targetFindingId":{"$ref":"common.schema.json#/$defs/Id"},"refs":{"type":"array","maxItems":16,"items":{"$ref":"source-ref.schema.json"}},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
 
-function validate46(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate47(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate46.evaluated;
+const evaluated0 = validate47.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -9132,7 +9509,7 @@ errors++;
 if(data.kind !== undefined){
 let data2 = data.kind;
 if(!((((data2 === "correction") || (data2 === "constraint")) || (data2 === "rejection")) || (data2 === "acceptance"))){
-const err12 = {instancePath:instancePath+"/kind",schemaPath:"#/properties/kind/enum",keyword:"enum",params:{allowedValues: schema135.properties.kind.enum},message:"must be equal to one of the allowed values"};
+const err12 = {instancePath:instancePath+"/kind",schemaPath:"#/properties/kind/enum",keyword:"enum",params:{allowedValues: schema141.properties.kind.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err12];
 }
@@ -9300,19 +9677,19 @@ vErrors.push(err25);
 }
 errors++;
 }
-validate46.errors = vErrors;
+validate47.errors = vErrors;
 return errors === 0;
 }
-validate46.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate47.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const RequestAnalysisRequest = validate58;
-const schema159 = {"title":"RequestAnalysisRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","purpose","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"purpose":{"$ref":"common.schema.json#/$defs/ShortText"},"budget":{"$ref":"run.schema.json#/properties/budget"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
-const schema171 = {"title":"RunBudget","type":"object","additionalProperties":false,"properties":{"maxModelCalls":{"type":"integer","minimum":0,"maximum":4},"maxOutputTokens":{"type":"integer","minimum":1}}};
+export const RequestAnalysisRequest = validate59;
+const schema165 = {"title":"RequestAnalysisRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","purpose","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"purpose":{"$ref":"common.schema.json#/$defs/ShortText"},"budget":{"$ref":"run.schema.json#/properties/budget"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+const schema177 = {"title":"RunBudget","type":"object","additionalProperties":false,"properties":{"maxModelCalls":{"type":"integer","minimum":0,"maximum":4},"maxOutputTokens":{"type":"integer","minimum":1}}};
 
-function validate58(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate59(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate58.evaluated;
+const evaluated0 = validate59.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -9610,10 +9987,10 @@ vErrors.push(err24);
 }
 errors++;
 }
-validate58.errors = vErrors;
+validate59.errors = vErrors;
 return errors === 0;
 }
-validate58.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate59.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const ResultEnvelope = validate25;
 const schema44 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"envelope.schema.json","title":"ResultEnvelope","description":"Wrapper for every discovery response. Never infer totals from a capped page.","type":"object","additionalProperties":false,"required":["kind","scope","entries","coverage","nextCursor","truncated"],"properties":{"kind":{"enum":["projects","tree","search","history","investigation","handoff","guidance"]},"scope":{"title":"Scope","type":"object","additionalProperties":false,"required":["snapshotIds"],"properties":{"workspaceId":{"$ref":"common.schema.json#/$defs/Id"},"snapshotIds":{"type":"array","maxItems":8,"items":{"$ref":"common.schema.json#/$defs/Id"}}}},"entries":{"type":"array","maxItems":100,"items":{"type":"object"}},"coverage":{"title":"Coverage","type":"object","additionalProperties":false,"required":["status"],"properties":{"status":{"enum":["complete","partial","not_indexed"]},"filesScanned":{"type":"integer","minimum":0},"bytesScanned":{"type":"integer","minimum":0},"notIndexed":{"type":"integer","minimum":0},"unsupportedLanguage":{"type":"integer","minimum":0},"parseFailed":{"type":"integer","minimum":0},"byteLimited":{"type":"boolean"},"timeLimited":{"type":"boolean"},"excluded":{"type":"integer","minimum":0}}},"nextCursor":{"anyOf":[{"$ref":"common.schema.json#/$defs/Cursor"},{"type":"null"}]},"freshness":{"title":"Freshness","type":"object","additionalProperties":false,"required":["indexedAt"],"properties":{"indexedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"stale":{"type":"boolean"}}},"truncated":{"title":"Truncation","type":"object","additionalProperties":false,"required":["is"],"properties":{"is":{"type":"boolean"},"reason":{"enum":["page_limit","byte_limit","time_limit","response_cap"]}}}}};
@@ -10357,14 +10734,14 @@ return errors === 0;
 }
 validate25.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Run = validate59;
-const schema163 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"run.schema.json","title":"Run","type":"object","additionalProperties":false,"required":["runId","investigationId","baseRevision","driver","status","admittedAt"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"baseRevision":{"$ref":"common.schema.json#/$defs/Revision"},"driver":{"enum":["host","backend"]},"purpose":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["admitted","running","published","superseded","cancelled","failed","external_outcome_unknown"]},"budget":{"title":"RunBudget","type":"object","additionalProperties":false,"properties":{"maxModelCalls":{"type":"integer","minimum":0,"maximum":4},"maxOutputTokens":{"type":"integer","minimum":1}}},"sanitizedOutcome":{"$ref":"common.schema.json#/$defs/ShortText"},"admittedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"finishedAt":{"anyOf":[{"$ref":"common.schema.json#/$defs/TimestampMs"},{"type":"null"}]}}};
+export const Run = validate60;
+const schema169 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"run.schema.json","title":"Run","type":"object","additionalProperties":false,"required":["runId","investigationId","baseRevision","driver","status","admittedAt"],"properties":{"runId":{"$ref":"common.schema.json#/$defs/Id"},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"baseRevision":{"$ref":"common.schema.json#/$defs/Revision"},"driver":{"enum":["host","backend"]},"purpose":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["admitted","running","published","superseded","cancelled","failed","external_outcome_unknown"]},"budget":{"title":"RunBudget","type":"object","additionalProperties":false,"properties":{"maxModelCalls":{"type":"integer","minimum":0,"maximum":4},"maxOutputTokens":{"type":"integer","minimum":1}}},"sanitizedOutcome":{"$ref":"common.schema.json#/$defs/ShortText"},"admittedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"finishedAt":{"anyOf":[{"$ref":"common.schema.json#/$defs/TimestampMs"},{"type":"null"}]}}};
 
-function validate59(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate60(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="run.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate59.evaluated;
+const evaluated0 = validate60.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -10433,7 +10810,7 @@ vErrors.push(err5);
 errors++;
 }
 for(const key0 in data){
-if(!(func11.call(schema163.properties, key0))){
+if(!(func11.call(schema169.properties, key0))){
 const err6 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err6];
@@ -10562,7 +10939,7 @@ errors++;
 if(data.driver !== undefined){
 let data3 = data.driver;
 if(!((data3 === "host") || (data3 === "backend"))){
-const err17 = {instancePath:instancePath+"/driver",schemaPath:"#/properties/driver/enum",keyword:"enum",params:{allowedValues: schema163.properties.driver.enum},message:"must be equal to one of the allowed values"};
+const err17 = {instancePath:instancePath+"/driver",schemaPath:"#/properties/driver/enum",keyword:"enum",params:{allowedValues: schema169.properties.driver.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err17];
 }
@@ -10610,7 +10987,7 @@ errors++;
 if(data.status !== undefined){
 let data5 = data.status;
 if(!(((((((data5 === "admitted") || (data5 === "running")) || (data5 === "published")) || (data5 === "superseded")) || (data5 === "cancelled")) || (data5 === "failed")) || (data5 === "external_outcome_unknown"))){
-const err21 = {instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema163.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err21 = {instancePath:instancePath+"/status",schemaPath:"#/properties/status/enum",keyword:"enum",params:{allowedValues: schema169.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err21];
 }
@@ -10842,10 +11219,10 @@ vErrors.push(err38);
 }
 errors++;
 }
-validate59.errors = vErrors;
+validate60.errors = vErrors;
 return errors === 0;
 }
-validate59.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate60.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const SearchSourcesRequest = validate33;
 const schema82 = {"title":"SearchSourcesRequest","description":"Discriminated on mode: the query shape must match the mode.","oneOf":[{"title":"LiteralSearchRequest","type":"object","additionalProperties":false,"required":["snapshotIds","mode","query"],"properties":{"snapshotIds":{"type":"array","minItems":1,"maxItems":2,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"mode":{"const":"literal"},"query":{"title":"LiteralQuery","type":"object","additionalProperties":false,"required":["text"],"properties":{"text":{"type":"string","minLength":1,"maxLength":256},"caseSensitive":{"type":"boolean"}}},"pathPrefixEntryId":{"$ref":"common.schema.json#/$defs/Id"},"languages":{"type":"array","maxItems":8,"items":{"type":"string","maxLength":32}},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}},{"title":"StructuralSearchRequest","type":"object","additionalProperties":false,"required":["snapshotIds","mode","query"],"properties":{"snapshotIds":{"type":"array","minItems":1,"maxItems":2,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"mode":{"const":"structural"},"query":{"title":"StructuralQuery","type":"object","additionalProperties":false,"required":["ruleId"],"properties":{"ruleId":{"$ref":"common.schema.json#/$defs/Id"}}},"pathPrefixEntryId":{"$ref":"common.schema.json#/$defs/Id"},"languages":{"type":"array","maxItems":8,"items":{"type":"string","maxLength":32}},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}}]};
@@ -12140,13 +12517,13 @@ validate28.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const SourceRef = validate30;
 
-export const SubmitProposalRequest = validate48;
-const schema141 = {"title":"SubmitProposalRequest","type":"object","additionalProperties":false,"required":["proposal","requestKey"],"properties":{"proposal":{"$ref":"proposal.schema.json"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
+export const SubmitProposalRequest = validate49;
+const schema147 = {"title":"SubmitProposalRequest","type":"object","additionalProperties":false,"required":["proposal","requestKey"],"properties":{"proposal":{"$ref":"proposal.schema.json"},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
 
-function validate48(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate49(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate48.evaluated;
+const evaluated0 = validate49.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -12187,8 +12564,8 @@ errors++;
 }
 }
 if(data.proposal !== undefined){
-if(!(validate49(data.proposal, {instancePath:instancePath+"/proposal",parentData:data,parentDataProperty:"proposal",rootData,dynamicAnchors}))){
-vErrors = vErrors === null ? validate49.errors : vErrors.concat(validate49.errors);
+if(!(validate50(data.proposal, {instancePath:instancePath+"/proposal",parentData:data,parentDataProperty:"proposal",rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate50.errors : vErrors.concat(validate50.errors);
 errors = vErrors.length;
 }
 }
@@ -12238,7 +12615,7 @@ vErrors.push(err6);
 }
 errors++;
 }
-validate48.errors = vErrors;
+validate49.errors = vErrors;
 return errors === 0;
 }
-validate48.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate49.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};

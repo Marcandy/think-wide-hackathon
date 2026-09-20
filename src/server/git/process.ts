@@ -17,6 +17,7 @@ export function runGit(
 	directory: string,
 	args: readonly string[],
 	maximum = 2 ** 20,
+	timeoutMs = 5000,
 ) {
 	return new Promise<Buffer>((resolve, reject) => {
 		const child = spawn(
@@ -69,7 +70,7 @@ export function runGit(
 				}
 			}
 		}
-		const timer = setTimeout(stop, 5000);
+		const timer = setTimeout(stop, Math.max(1, Math.min(timeoutMs, 5000)));
 		child.stdout.on("data", (chunk: Buffer) => {
 			size += chunk.length;
 			if (size > maximum) {

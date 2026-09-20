@@ -21,12 +21,20 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 | Item | Owner | Interim rule |
 |---|---|---|
 | `readHandoff` needs an exact ranged body read (brief up to 64K chars vs 16 KiB result cap) | T09 | `prepareHandoff` refuses an over-cap brief with `limit_exceeded`. Never truncate. |
-| Entry schema for `readHistory` | T05 | `entriesType: null` until the git reader defines the commit record |
+| Entry schema for `readHistory` | T05 | Implemented by `commit-record.schema.json`; first-parent metadata and bounded changed paths, enforced by the operation pipeline |
 | Entry schema for `readGuidance` | T07 | same, defined with the first recipe |
 | Reject inverted byte/line ranges | T05 `readSource` handler | JSON Schema cannot express end >= start |
 | `scripts/check-drift.ts` should recurse | T02 part 2 | `generated/` is flat today |
 | Object id length must match `hashAlgorithm` (issue #10) | contract 0.1.1 | T05 git reader rejects a mismatch with `invalid_request` |
 | `searchModes` lists `semantic`/`type` with no request branch (issue #10) | contract 0.1.1 | `getCapabilities` returns only `literal` / `structural` |
 | Optional `category` on `Decision`, `RecordDecisionRequest`, `HandoffConstraint` (issue #14, decision 0003) | contract 0.2.0 | 0.1.0 validators reject `category`; do not send it until 0.2.0 lands |
-| Source refs are authorized by snapshot membership but not checked for existence (PR #12 review) | T05 integration (#11) | stored refs are *authorized, not verified*; findings stay `verification: "unverified"` |
+| Source ref existence (PR #12 review) | T05 integration (#11) | Resolve the indexed snapshot/entry and verify repository, commit, blob and byte bounds. Exact reads verify digests; metadata checks alone never promote findings to bytes_verified. |
 | `src/server/config.ts` (mode, refuse local-demo in production) | T02 part 2 | — |
+
+## T05 history entry behavior
+
+`readHistory` now validates every entry as generated `CommitRecord`. It reports pinned
+first-parent commits, all parent IDs, subject, timestamp, first-parent comparison ID
+(null for roots), and exact changed paths. Limits reject oversized records rather than
+shortening source-derived text; bounded prefixes remain explicitly partial. No request
+shape or decision category is changed. Contract review remains with @heyoub.

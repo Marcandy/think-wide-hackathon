@@ -69,6 +69,7 @@
 			"request": "requests.schema.json#/$defs/ReadHistoryRequest",
 			"response": "envelope.schema.json",
 			"envelopeKind": "history",
+			"entries": "commit-record.schema.json",
 			"effect": "read",
 			"exposure": ["http", "mcp"],
 			"approval": false,
