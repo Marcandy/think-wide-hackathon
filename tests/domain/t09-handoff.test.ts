@@ -94,7 +94,7 @@ describe("T09 deterministic private implementation brief", () => {
 			"constraint",
 		]);
 		for (const entry of decisions)
-			expect(first.bodyMarkdown).toContain(JSON.stringify(entry, null, 2));
+			expect(first.bodyMarkdown).toContain(JSON.stringify(entry.statement));
 		expect(first.evidence[0].ref).toEqual(ref);
 		expect(first.bodyMarkdown).toContain("a".repeat(40));
 		expect(first.bodyMarkdown).toContain("## Allowed scope");
@@ -112,6 +112,38 @@ describe("T09 deterministic private implementation brief", () => {
 		expect(result.evidence).toEqual(before.evidence);
 		expect(result.bodyMarkdown).not.toContain("changed while hashing");
 		expect(fields).not.toHaveProperty("bodyHash");
+	});
+
+	test("equivalent object key orders yield identical Markdown and hashes", async () => {
+		const normal = input();
+		const reversedRef = Object.fromEntries(
+			Object.entries(ref).reverse(),
+		) as SourceRef;
+		const reordered = {
+			...normal,
+			targetRepository: {
+				baseCommit: normal.targetRepository.baseCommit,
+				repositoryId: normal.targetRepository.repositoryId,
+			},
+			evidence: [{ note: normal.evidence[0].note, ref: reversedRef }],
+		};
+		const reorderedDecisions = decisions.map(({ statement, ...rest }) => ({
+			statement,
+			...rest,
+		}));
+		const first = await freezeHandoff(normal, decisions);
+		const second = await freezeHandoff(reordered, reorderedDecisions);
+		expect(second.bodyMarkdown).toBe(first.bodyMarkdown);
+		expect(second.bodyHash).toBe(first.bodyHash);
+	});
+
+	test("rejects lossy Unicode conversion instead of hashing replacement bytes", async () => {
+		await expect(
+			freezeHandoff(
+				{ ...input(), objective: "invalid \ud800 text" },
+				decisions,
+			),
+		).rejects.toMatchObject({ code: "invalid_request" });
 	});
 
 	test("keeps embedded fences and HTML as literal input", async () => {

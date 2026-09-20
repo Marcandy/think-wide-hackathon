@@ -8,6 +8,7 @@ import type { Decision } from "../../generated/types";
 import {
 	appendDecisionPage,
 	decisionCommand,
+	investigationAddress,
 	operationError,
 	workbenchError,
 } from "../../src/components/behavior/workbench";
@@ -227,5 +228,70 @@ describe("T09 workbench commands against real protected handlers", () => {
 		expect(workbenchError(new Error("secret-provider-payload"))).not.toContain(
 			"secret-provider-payload",
 		);
+	});
+
+	test("a draft cannot override the selected investigation or revision", async () => {
+		const { actor, investigation } = await setup();
+		const injectedDraft = {
+			kind: "constraint" as const,
+			statement: "Stay in scope",
+			investigationId: "foreign",
+			expectedRevision: 50,
+		};
+		const request = decisionCommand(
+			investigation,
+			injectedDraft,
+			"t09-draft-injection",
+		);
+		expect(request.investigationId).toBe(investigation.investigationId);
+		expect(request.expectedRevision).toBe(0);
+		const decision = await actor.mutation(api.decisions.recordDecision, {
+			request,
+		});
+		expect(decision.investigationId).toBe(investigation.investigationId);
+	});
+
+	test("rejects an empty continuation and inconsistent continuation metadata", async () => {
+		const { actor, investigation } = await setup();
+		await actor.mutation(api.decisions.recordDecision, {
+			request: decisionCommand(
+				investigation,
+				{ kind: "constraint", statement: "Keep me" },
+				"t09-empty-page",
+			),
+		});
+		const page = await actor.query(api.investigations.readInvestigation, {
+			request: { investigationId: investigation.investigationId },
+		});
+		for (const malformed of [
+			{
+				...page,
+				decisions: [],
+				page: { nextCursor: "cursor_next", truncated: { is: true } },
+			},
+			{
+				...page,
+				page: { nextCursor: "cursor_next", truncated: { is: false } },
+			},
+			{ ...page, page: { nextCursor: "cursor_next", truncated: { is: true } } },
+		]) {
+			expect(() => appendDecisionPage([], malformed, page)).toThrow();
+		}
+	});
+
+	test("navigation accepts opaque IDs and rejects URLs and traversal", () => {
+		expect(investigationAddress(" investigation_alpha ")).toBe(
+			"investigation_alpha",
+		);
+		for (const value of [
+			"",
+			"../private",
+			"https://example.com",
+			"javascript:alert(1)",
+			"alpha/beta",
+			"x\u0000y",
+		]) {
+			expect(investigationAddress(value)).toBeUndefined();
+		}
 	});
 });

@@ -7,7 +7,9 @@ import type {
 } from "../../../generated/types";
 import {
 	RecordDecisionRequest as isDecisionRequest,
+	Investigation as isInvestigation,
 	OperationError as isOperationError,
+	ReadInvestigationRequest as isReadInvestigationRequest,
 } from "../../../generated/validators.js";
 
 export const decisionLabels = {
@@ -31,7 +33,8 @@ export function decisionCommand(
 	const request: RecordDecisionRequest = {
 		investigationId: investigation.investigationId,
 		expectedRevision: investigation.revision,
-		...draft,
+		kind: draft.kind,
+		statement: draft.statement,
 		requestKey,
 	};
 	if (!draft.statement.trim() || !isDecisionRequest(request)) {
@@ -40,6 +43,13 @@ export function decisionCommand(
 		);
 	}
 	return request;
+}
+
+export function investigationAddress(value: string): string | undefined {
+	const investigationId = value.trim();
+	return isReadInvestigationRequest({ investigationId })
+		? investigationId
+		: undefined;
 }
 
 /** Only expose validated public errors; transport exceptions may contain URLs or payloads. */
@@ -85,6 +95,9 @@ export function appendDecisionPage(
 	page: Investigation,
 	expected: Pick<Investigation, "investigationId" | "revision">,
 ): Decision[] {
+	if (!isInvestigation(page)) {
+		throw new Error("Invalid investigation page");
+	}
 	if (
 		page.investigationId !== expected.investigationId ||
 		page.revision !== expected.revision
@@ -93,6 +106,11 @@ export function appendDecisionPage(
 	}
 	const next = [...current, ...(page.decisions ?? [])];
 	if (
+		next.length > expected.revision ||
+		(!!page.page?.nextCursor &&
+			(!page.decisions?.length ||
+				!page.page.truncated.is ||
+				next.length >= expected.revision)) ||
 		next.some(
 			(decision, index) =>
 				decision.investigationId !== expected.investigationId ||

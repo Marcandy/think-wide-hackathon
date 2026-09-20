@@ -8,6 +8,7 @@ import {
 	Decision as isDecision,
 	Handoff as isHandoff,
 } from "../generated/validators.js";
+import { canonicalArguments } from "./receipts";
 
 export class HandoffError extends Error {
 	constructor(
@@ -27,6 +28,52 @@ function literal(value: string): string {
 	const runs = value.match(/`+/g) ?? [];
 	const fence = "`".repeat(Math.max(3, ...runs.map((run) => run.length + 1)));
 	return `${fence}text\n${value}\n${fence}`;
+}
+
+function literalJson(value: unknown): string {
+	try {
+		return literal(
+			JSON.stringify(JSON.parse(canonicalArguments(value)), null, 2),
+		);
+	} catch {
+		throw new HandoffError(
+			"invalid_request",
+			"Brief contains unsupported JSON values",
+		);
+	}
+}
+
+/** Hash the bytes that a UTF-8 download will contain, refusing lossy conversion. */
+export async function handoffBodyHash(body: string): Promise<string> {
+	const bytes = new TextEncoder().encode(body);
+	if (
+		new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes) !==
+		body
+	) {
+		throw new HandoffError(
+			"invalid_request",
+			"Brief text cannot be represented exactly as UTF-8",
+		);
+	}
+	const hash = await crypto.subtle.digest("SHA-256", bytes);
+	return Array.from(new Uint8Array(hash), (byte) =>
+		byte.toString(16).padStart(2, "0"),
+	).join("");
+}
+
+/** Integrity is not authorization. Call only after a fresh authorized read. */
+export async function verifyHandoffBody(value: unknown): Promise<Handoff> {
+	if (!isHandoff(value)) {
+		throw new HandoffError("invalid_request", "Invalid saved brief");
+	}
+	const handoff = structuredClone(value) as Handoff;
+	if ((await handoffBodyHash(handoff.bodyMarkdown)) !== handoff.bodyHash) {
+		throw new HandoffError(
+			"source_unavailable",
+			"Brief hash mismatch; export refused",
+		);
+	}
+	return handoff;
 }
 
 /** Project a complete authorized decision ledger, never just a response page.
@@ -136,6 +183,8 @@ export async function freezeHandoff(
 		const length = ref.hashAlgorithm === "sha1" ? 40 : 64;
 		if (
 			!ref.snapshotId ||
+			!Number.isSafeInteger(ref.byteRange.start) ||
+			!Number.isSafeInteger(ref.byteRange.end) ||
 			ref.byteRange.end < ref.byteRange.start ||
 			(ref.lineRange && ref.lineRange.end < ref.lineRange.start) ||
 			ref.commit.length !== length ||
@@ -154,7 +203,7 @@ export async function freezeHandoff(
 		"## Objective",
 		literal(handoff.objective),
 		"## Target repository and base commit",
-		literal(JSON.stringify(handoff.targetRepository, null, 2)),
+		literalJson(handoff.targetRepository),
 		"## Allowed scope",
 		literal(
 			handoff.allowedScope ?? "Not specified; resolve before implementation.",
@@ -169,20 +218,20 @@ export async function freezeHandoff(
 			.sort((a, b) => a.resultingRevision - b.resultingRevision)
 			.flatMap((decision) => [
 				`### Revision ${decision.resultingRevision}: ${decision.kind}`,
-				literal(JSON.stringify(decision, null, 2)),
+				literalJson(decision),
 			]),
 		...(decisions.length ? [] : ["No human decisions recorded."]),
 		"## Constraints and rejected approaches",
-		literal(JSON.stringify(handoff.constraints, null, 2)),
+		literalJson(handoff.constraints),
 		"## Exact evidence references",
 		"References retain exact byte ranges and digests. This formatter does not verify source availability or reconstruct quotations.",
-		literal(JSON.stringify(handoff.evidence, null, 2)),
+		literalJson(handoff.evidence),
 		"## Likely files (suggestions)",
-		literal(JSON.stringify(handoff.likelyFiles ?? [], null, 2)),
+		literalJson(handoff.likelyFiles ?? []),
 		"## Uncertainties",
-		literal(JSON.stringify(handoff.uncertainties ?? [], null, 2)),
+		literalJson(handoff.uncertainties ?? []),
 		"## Acceptance (not run)",
-		literal(JSON.stringify(handoff.acceptance, null, 2)),
+		literalJson(handoff.acceptance),
 		"## Execution boundary",
 		"Think-Wide supplies evidence and this brief. Implementation and testing belong to the specialist; Think-Wide has not run target code.",
 	];
@@ -192,13 +241,7 @@ export async function freezeHandoff(
 			"limit_exceeded",
 			"Brief exceeds the contract body limit; nothing was truncated",
 		);
-	const hash = await crypto.subtle.digest(
-		"SHA-256",
-		new TextEncoder().encode(handoff.bodyMarkdown),
-	);
-	handoff.bodyHash = Array.from(new Uint8Array(hash), (byte) =>
-		byte.toString(16).padStart(2, "0"),
-	).join("");
+	handoff.bodyHash = await handoffBodyHash(handoff.bodyMarkdown);
 	if (!isHandoff(handoff))
 		throw new HandoffError("invalid_request", "Invalid prepared handoff");
 	if (new TextEncoder().encode(JSON.stringify(handoff)).length > 16384)
