@@ -17,7 +17,7 @@
 	--destructive: #dc322f;
 	--destructive-foreground: #ffffff;
 	--border: #839496;
-	--input: #839496;
+	--input: #657b83; /* control boundary: 4.13:1 on background, 3.64:1 on card (WCAG 1.4.11 needs 3:1) */
 	--ring: #d33682;
 	--chart-1: #268bd2;
 	--chart-2: #2aa198;
@@ -82,8 +82,8 @@
 	--destructive: #dc322f;
 	--destructive-foreground: #ffffff;
 	--border: #586e75;
-	--input: #586e75;
-	--ring: #d33682;
+	--input: #839496; /* control boundary: 4.75:1 on background, 4.11:1 on card */
+	--ring: #e0609b; /* focus: 4.52:1 on background, 3.91:1 on card; the brand pink is 2.86:1 on card */
 	--chart-1: #268bd2;
 	--chart-2: #2aa198;
 	--chart-3: #d33682;

@@ -76,12 +76,17 @@
 	select {
 		font: inherit;
 	}
-	:focus-visible {
-		outline: 2px solid var(--ring);
-		outline-offset: 4px;
-	}
 	::selection {
 		background: var(--primary);
 		color: var(--primary-foreground);
 	}
+}
+
+/* Deliberately NOT inside a cascade layer. shadcn controls carry `outline-none`, which lives in
+ * `@layer utilities` and beats anything in `@layer base`; that left Buttons with only a 50%-alpha
+ * ring (about 2:1). Unlayered rules win over every layer, so keyboard focus is a solid 2px
+ * outline on all controls: 4.21:1 light, 4.52:1 dark against the page, 3.7+ on cards. */
+:focus-visible {
+	outline: 2px solid var(--ring);
+	outline-offset: 4px;
 }

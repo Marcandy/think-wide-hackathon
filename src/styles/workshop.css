@@ -480,6 +480,13 @@
 	line-height: 1.7;
 }
 @media (max-width: 760px) {
+	/* iOS Safari zooms the page when a focused control is under 16px. */
+	.form-field select,
+	.form-field textarea,
+	.composition-input {
+		font-size: 16px;
+	}
+
 	.workshop-shell {
 		padding: 0 20px;
 	}

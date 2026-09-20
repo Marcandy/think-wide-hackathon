@@ -104,10 +104,9 @@ export function ConstraintEditor({
 				</form.Field>
 				<form.Field
 					name="text"
-					validators={{
-						onChange: ({ value }) => validateDecisionText(value),
-						onSubmit: ({ value }) => validateDecisionText(value),
-					}}
+					// onChange validators also run on submit (TanStack Form), so a separate onSubmit
+					// validator only duplicated the message.
+					validators={{ onChange: ({ value }) => validateDecisionText(value) }}
 				>
 					{(field) => (
 						<div className="form-field">
@@ -131,7 +130,7 @@ export function ConstraintEditor({
 								reloading clears them.
 							</p>
 							<p id={`${fieldId}-error`} className="field-error" role="alert">
-								{[...new Set(field.state.meta.errors)].join(" ")}
+								{field.state.meta.errors.join(" ")}
 							</p>
 						</div>
 					)}

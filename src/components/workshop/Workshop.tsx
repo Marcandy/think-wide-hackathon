@@ -75,7 +75,7 @@ export function Workshop() {
 				Skip to workshop
 			</a>
 			<header className="workshop-header">
-				<a className="brand" href="/workshop">
+				<a className="brand" href="#workshop-content">
 					<span className="brand-symbol">
 						<Layers3 size={23} aria-hidden="true" />
 					</span>
