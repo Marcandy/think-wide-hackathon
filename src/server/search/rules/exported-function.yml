@@ -1,0 +1,16 @@
+# T07 reviewed rule. Reviewed by: pending @heyoub / @marc.
+#
+# Finds exported function DECLARATIONS, which is what "where is this capability
+# defined" means across two repositories. Deliberately structural: a comment, a string
+# literal or a call with the same name is not a definition, and literal search cannot
+# tell those apart. Matching and non-matching fixtures:
+# tests/fixtures/search/corpus.ts (EXPORTED_FN_MATCH / EXPORTED_FN_NEAR_MISS).
+#
+# No `fix:` key. loadRules() rejects any rule that declares one: this product reads
+# source, it never rewrites it.
+id: exported-function-declaration
+language: TypeScript
+rule:
+  kind: function_declaration
+  inside:
+    kind: export_statement
