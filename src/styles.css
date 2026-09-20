@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap");
+/* Self-hosted via Fontsource (no request to Google, nothing render-blocking off-origin).
+ * Outfit is the variable build: one file covers the 400/500/600/700 the UI uses, and it registers
+ * as "Outfit Variable" (see --font-sans in styles/theme.css). Space Mono is only used at 400. */
+@import "@fontsource-variable/outfit/wght.css";
+@import "@fontsource/space-mono/400.css";
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./styles/theme.css";
