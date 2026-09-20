@@ -87,7 +87,9 @@ const rows = (t: Awaited<ReturnType<typeof fixture>>["t"]) =>
 
 describe("decision categories through the real recordDecision handler", () => {
 	test.each(
-		KINDS.flatMap((kind) => CATEGORIES.map((category) => [kind, category])),
+		KINDS.flatMap((kind) =>
+			CATEGORIES.map((category) => [kind, category] as const),
+		),
 	)("%s x %s is stored and returned", async (kind, category) => {
 		const { t, a, investigationId } = await fixture();
 		const decision = await a.mutation(api.decisions.recordDecision, {
