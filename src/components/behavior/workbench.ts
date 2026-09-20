@@ -19,6 +19,11 @@ export const decisionLabels = {
 	acceptance: "Acceptance",
 } satisfies Record<RecordDecisionRequest["kind"], string>;
 
+export type DecisionDraft = Pick<
+	RecordDecisionRequest,
+	"kind" | "statement" | "category"
+>;
+
 export function isDecisionKind(
 	value: string,
 ): value is RecordDecisionRequest["kind"] {
@@ -27,7 +32,7 @@ export function isDecisionKind(
 
 export function decisionCommand(
 	investigation: Pick<Investigation, "investigationId" | "revision">,
-	draft: Pick<RecordDecisionRequest, "kind" | "statement">,
+	draft: DecisionDraft,
 	requestKey: string,
 ): RecordDecisionRequest {
 	const request: RecordDecisionRequest = {
@@ -35,6 +40,7 @@ export function decisionCommand(
 		expectedRevision: investigation.revision,
 		kind: draft.kind,
 		statement: draft.statement,
+		...(draft.category === undefined ? {} : { category: draft.category }),
 		requestKey,
 	};
 	if (!draft.statement.trim() || !isDecisionRequest(request)) {

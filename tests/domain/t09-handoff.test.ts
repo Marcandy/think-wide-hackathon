@@ -186,10 +186,35 @@ describe("T09 deterministic private implementation brief", () => {
 		});
 	});
 
-	test("refuses extra decision fields rather than silently dropping a future category", () => {
+	test("preserves categories in structured constraints and rejects omitted or changed categories", async () => {
+		const categorized: Decision[] = decisions.map((item, index) => ({
+			...item,
+			...(index === 1 ? {} : { category: "security" as const }),
+		}));
+		const fields = input(categorized);
+		const result = await freezeHandoff(fields, categorized);
+		expect(result.constraints[0].category).toBe("security");
+		expect(result.constraints[1]).not.toHaveProperty("category");
+		expect(result.bodyMarkdown).toContain('"category": "security"');
+		for (const category of [undefined, "architecture"] as const) {
+			const changed = structuredClone(fields);
+			if (category === undefined) delete changed.constraints[0].category;
+			else changed.constraints[0].category = category;
+			await expect(freezeHandoff(changed, categorized)).rejects.toMatchObject({
+				code: "invalid_request",
+			});
+		}
+		const invented = input();
+		invented.constraints[0].category = "architecture";
+		await expect(freezeHandoff(invented, decisions)).rejects.toMatchObject({
+			code: "invalid_request",
+		});
+	});
+
+	test("refuses extra decision fields rather than silently dropping future metadata", () => {
 		const categorized = decisions.map((item) => ({
 			...item,
-			category: "security",
+			futureMetadata: "unsupported",
 		}));
 		expect(() =>
 			projectHandoffDecisions(
@@ -229,7 +254,6 @@ describe("T09 deterministic private implementation brief", () => {
 	test.each([
 		{ ...ref, snapshotId: undefined },
 		{ ...ref, byteRange: { start: 42, end: 9 } },
-		{ ...ref, hashAlgorithm: "sha256" as const },
 	])("rejects a ref with missing exact identity or inconsistent range/hash", async (invalid) => {
 		await expect(
 			freezeHandoff(
@@ -237,6 +261,20 @@ describe("T09 deterministic private implementation brief", () => {
 				decisions,
 			),
 		).rejects.toMatchObject({ code: "source_unavailable" });
+	});
+
+	test("contract 0.2.0 rejects algorithm-mismatched object IDs before formatting", async () => {
+		await expect(
+			freezeHandoff(
+				{
+					...input(),
+					evidence: [
+						{ ref: { ...ref, hashAlgorithm: "sha256" }, note: "Invalid ref" },
+					],
+				},
+				decisions,
+			),
+		).rejects.toMatchObject({ code: "invalid_request" });
 	});
 
 	test("refuses over-cap UTF-8 output without clipping", async () => {

@@ -47,6 +47,46 @@ async function setup() {
 }
 
 describe("T09 workbench commands against real protected handlers", () => {
+	test.each([
+		undefined,
+		"architecture",
+		"security",
+	] as const)("preserves optional category %s through the command, storage, reread and receipt", async (category) => {
+		const { actor, investigation } = await setup();
+		const request = decisionCommand(
+			investigation,
+			{
+				kind: "constraint",
+				statement: "Keep the human-selected subject unchanged.",
+				...(category === undefined ? {} : { category }),
+			},
+			"t09-category-save",
+		);
+		const saved = await actor.mutation(api.decisions.recordDecision, {
+			request,
+		});
+		const reopened = await actor.query(api.investigations.readInvestigation, {
+			request: { investigationId: investigation.investigationId },
+		});
+		expect(reopened.decisions?.[0]).toEqual(saved);
+		expect(saved.category).toBe(category);
+		if (category === undefined) {
+			expect(request).not.toHaveProperty("category");
+			expect(saved).not.toHaveProperty("category");
+		}
+		expect(
+			await actor.mutation(api.decisions.recordDecision, { request }),
+		).toEqual(saved);
+		const changed = {
+			...request,
+			category: category === "security" ? "architecture" : "security",
+		};
+		const error = await actor
+			.mutation(api.decisions.recordDecision, { request: changed })
+			.catch((failure: unknown) => failure);
+		expect(operationError(error)?.code).toBe("request_key_conflict");
+	});
+
 	test("a fresh reader sees correction and prior rejection exactly as saved", async () => {
 		const { t, actor, investigation } = await setup();
 		const first = decisionCommand(

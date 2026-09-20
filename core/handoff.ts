@@ -108,6 +108,9 @@ export function projectHandoffDecisions(
 		.map((decision) => ({
 			decisionId: decision.decisionId,
 			statement: decision.statement,
+			...(decision.category === undefined
+				? {}
+				: { category: decision.category }),
 			kind:
 				decision.kind === "rejection"
 					? "rejected_approach"
@@ -127,7 +130,7 @@ export function projectHandoffDecisions(
  * publish a handoff. The eventual prepareHandoff transaction supplies validated
  * metadata, exact refs, and all decisions at its checked expectedRevision.
  * bodyHash is SHA-256 of the exact UTF-8 body; it is stored beside the body to
- * avoid a circular hash. Contract 0.1.0 cannot return a ranged body yet.
+ * avoid a circular hash. Contract 0.2.0 cannot return a ranged body yet.
  */
 export async function freezeHandoff(
 	input: HandoffInput,
@@ -164,7 +167,8 @@ export async function freezeHandoff(
 			(constraint, index) =>
 				constraint.decisionId !== constraints[index].decisionId ||
 				constraint.statement !== constraints[index].statement ||
-				constraint.kind !== constraints[index].kind,
+				constraint.kind !== constraints[index].kind ||
+				constraint.category !== constraints[index].category,
 		)
 	)
 		throw new HandoffError(
