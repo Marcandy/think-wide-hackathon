@@ -8,6 +8,8 @@ export const recordDecision = operation.mutation(
 		resultId: await ctx.appendDecision({
 			investigationId: request.investigationId,
 			kind: request.kind,
+			// Decision 0003: a chosen category is stored as given; absent stays absent.
+			...(request.category === undefined ? {} : { category: request.category }),
 			statement: request.statement,
 			...(request.targetFindingId === undefined
 				? {}

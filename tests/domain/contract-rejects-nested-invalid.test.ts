@@ -30,7 +30,7 @@ const proposal = (r: unknown) => ({
 	requestKey: "req-00000001",
 });
 
-describe("generated validators (contract 0.1.0)", () => {
+describe("generated validators (contract 0.2.0)", () => {
 	it("accepts a well-formed nested request", () => {
 		expect(v.SubmitProposalRequest(proposal(ref))).toBe(true);
 	});
@@ -193,7 +193,7 @@ describe("generated validators (contract 0.1.0)", () => {
 
 	it("requires an explicit status for every integration", () => {
 		const base = {
-			contractVersion: "0.1.0",
+			contractVersion: "0.2.0",
 			mode: "local-demo",
 			authProfile: "local-fixed-principal",
 			searchModes: ["literal"],
@@ -233,5 +233,29 @@ describe("generated validators (contract 0.1.0)", () => {
 			(x) => x.response !== "envelope.schema.json",
 		))
 			expect("envelopeKind" in o).toBe(false);
+	});
+});
+
+describe("T05 history entry contract", () => {
+	it("accepts observed roots and rejects branch ids, extra fields, and unbounded diffs", () => {
+		const record = {
+			commit: sha,
+			hashAlgorithm: "sha1",
+			parents: [],
+			subject: "Root",
+			committedAt: 0,
+			comparedTo: null,
+			changedPaths: ["src/a.ts"],
+		};
+		expect(v.CommitRecord(record)).toBe(true);
+		expect(v.CommitRecord({ ...record, commit: "main" })).toBe(false);
+		expect(v.CommitRecord({ ...record, actor: "injected" })).toBe(false);
+		expect(
+			v.CommitRecord({ ...record, changedPaths: Array(101).fill("file") }),
+		).toBe(false);
+		expect(
+			OPERATIONS.find((operation) => operation.operationId === "readHistory")
+				?.entriesType,
+		).toBe("CommitRecord");
 	});
 });

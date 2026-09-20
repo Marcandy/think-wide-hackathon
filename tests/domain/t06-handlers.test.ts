@@ -48,6 +48,44 @@ async function fixture() {
 			[identityA.tokenIdentifier, "A"],
 			[identityB.tokenIdentifier, "B"],
 		]) {
+			// T05 now resolves every stored source ref against actual indexed rows.
+			// These are synthetic metadata fixtures; exact bytes are covered by T05.
+			await ctx.db.insert("snapshots", {
+				snapshotId: `snapshot_${suffix}`,
+				repositoryId: `repo_${suffix}`,
+				cursorSecret: `fixture-${suffix}`,
+				registrationDigest: "fixture",
+				project: JSON.stringify({
+					repositoryId: `repo_${suffix}`,
+					displayName: "Synthetic fixture",
+					provider: "local-git",
+					syncStatus: "ready",
+					snapshots: [
+						{
+							snapshotId: `snapshot_${suffix}`,
+							commit: "a".repeat(40),
+							hashAlgorithm: "sha1",
+							rootTreeId: "e".repeat(40),
+							indexedAt: 0,
+							coverage: "not_indexed",
+						},
+					],
+				}),
+			});
+			await ctx.db.insert("entries", {
+				snapshotId: `snapshot_${suffix}`,
+				entryId: `entry_${suffix}`,
+				parentEntryId: null,
+				body: JSON.stringify({
+					snapshotId: `snapshot_${suffix}`,
+					entryId: `entry_${suffix}`,
+					parentEntryId: null,
+					name: "source.ts",
+					kind: "blob",
+					objectId: "b".repeat(40),
+					size: 4096,
+				}),
+			});
 			await ctx.db.insert("grants", {
 				principal,
 				resourceKind: "snapshot",

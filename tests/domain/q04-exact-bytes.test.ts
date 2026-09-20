@@ -10,6 +10,14 @@ import { tmpdir } from "node:os";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
+	ResultEnvelope as validEnvelope,
+	Evidence as validEvidence,
+} from "../../generated/validators.js";
+import { assertObjectId } from "../../src/server/git/process";
+import { readSource } from "../../src/server/git/read-blob";
+import { type GitSnapshot, openSnapshot } from "../../src/server/git/snapshot";
+import { browseSnapshot } from "../../src/server/git/tree";
+import {
 	BYTE_CASES,
 	bundlePath,
 	EMOJI_BYTE_START,
@@ -340,5 +348,231 @@ describe("Q04 path injection inputs", () => {
 			...PATH_INJECTION_INPUTS.map((c) => c.id),
 		];
 		expect(new Set(ids).size).toBe(ids.length);
+	});
+});
+
+describe("T05 real Git reader against the independent Q04 fixtures", () => {
+	let snapshots: Record<"alpha" | "beta", GitSnapshot>;
+	beforeAll(async () => {
+		snapshots = {
+			alpha: await openSnapshot({
+				repositoryId: "alpha",
+				bundlePath: bundlePath("alpha"),
+			}),
+			beta: await openSnapshot({
+				repositoryId: "beta",
+				bundlePath: bundlePath("beta"),
+			}),
+		};
+	});
+	afterAll(async () => {
+		if (snapshots)
+			await Promise.all(
+				Object.values(snapshots).map((snapshot) => snapshot.close()),
+			);
+	});
+
+	it("pins both real commits and their root tree objects", () => {
+		for (const repo of ["alpha", "beta"] as const) {
+			const snapshot = snapshots[repo];
+			expect(snapshot.summary.commit).toBe(manifest.repos[repo].headCommit);
+			expect(snapshot.summary.rootTreeId).toBe(
+				gitIn(repo === "alpha" ? alpha : beta, ["rev-parse", "HEAD^{tree}"]),
+			);
+			expect(snapshot.summary.coverage).toBe("not_indexed");
+		}
+	});
+
+	it("browses immediate children using entry IDs, without flattening descendants", () => {
+		const snapshot = snapshots.alpha;
+		const page = browseSnapshot(snapshot, {
+			snapshotId: snapshot.summary.snapshotId,
+		});
+		expect(validEnvelope(page)).toBe(true);
+		expect(page.entries.every((entry) => entry.parentEntryId === null)).toBe(
+			true,
+		);
+		const src = snapshot.entries.find((entry) => entry.displayPath === "src");
+		expect(src).toBeDefined();
+		const children = browseSnapshot(snapshot, {
+			snapshotId: snapshot.summary.snapshotId,
+			parentEntryId: src?.entryId,
+		});
+		expect(children.entries.map((entry) => entry.name)).toEqual([
+			"alpha.ts",
+			"escape-link.txt",
+			"unicode-crlf.txt",
+			"unicode-lf.txt",
+		]);
+		expect(children.nextCursor).toBeNull();
+	});
+
+	it("returns original bytes, blob identities and digests for all fixture files", async () => {
+		for (const fixture of FIXTURE_FILES) {
+			const snapshot = snapshots[fixture.repo];
+			const entry = snapshot.entries.find(
+				(item) => item.displayPath === fixture.path,
+			);
+			expect(entry).toBeDefined();
+			const evidence = await readSource(snapshot, {
+				snapshotId: snapshot.summary.snapshotId,
+				entryId: String(entry?.entryId),
+			});
+			expect(validEvidence(evidence)).toBe(true);
+			expect(Buffer.from(evidence.content)).toEqual(
+				Buffer.from(fixture.content),
+			);
+			expect(`sha256:${evidence.ref.digest}`).toBe(fixture.sha256);
+			expect(evidence.ref.blobId).toBe(
+				manifest.repos[fixture.repo].files[fixture.path].blob,
+			);
+			expect(evidence.ref.byteRange).toEqual({
+				start: 0,
+				end: fixture.byteLength,
+			});
+		}
+	});
+
+	it("serves Q04 byte windows exactly or rejects split UTF-8 without replacement", async () => {
+		for (const fixture of BYTE_CASES) {
+			if (fixture.expected.kind !== "bytes" || !fixture.range) continue;
+			const snapshot = snapshots[fixture.repo];
+			const entry = snapshot.entries.find(
+				(item) => item.displayPath === fixture.path,
+			);
+			const range = {
+				start: fixture.range.startByte,
+				end: fixture.range.endByte,
+			};
+			const original = Buffer.from(fixtureFile(fixture.path).content).subarray(
+				range.start,
+				range.end,
+			);
+			const pending = readSource(snapshot, {
+				snapshotId: snapshot.summary.snapshotId,
+				entryId: String(entry?.entryId),
+				byteRange: range,
+			});
+			if (!Buffer.from(original.toString("utf8")).equals(original)) {
+				await expect(pending).rejects.toMatchObject({
+					code: "invalid_request",
+				});
+			} else {
+				const evidence = await pending;
+				expect(Buffer.from(evidence.content)).toEqual(original);
+				expect(`sha256:${evidence.ref.digest}`).toBe(fixture.expected.sha256);
+			}
+		}
+	});
+
+	it("preserves CRLF in line windows and labels an explicitly capped response", async () => {
+		const snapshot = snapshots.alpha;
+		const entry = snapshot.entries.find(
+			(item) => item.displayPath === "src/unicode-crlf.txt",
+		);
+		const request = {
+			snapshotId: snapshot.summary.snapshotId,
+			entryId: String(entry?.entryId),
+		};
+		const evidence = await readSource(snapshot, {
+			...request,
+			lineRange: { start: 1, end: 2 },
+		});
+		expect(evidence.content).toBe(
+			`${fixtureFile("src/unicode-crlf.txt")
+				.content.split("\r\n")
+				.slice(0, 2)
+				.join("\r\n")}\r\n`,
+		);
+		const capped = await readSource(snapshot, { ...request, maxBytes: 10 });
+		expect(capped.rangeAdjusted).toBe(true);
+		expect(capped.ref.byteRange).toEqual({ start: 0, end: 10 });
+		expect(capped.nextRange).toEqual({ start: 10, end: capped.blobSize });
+		expect(capped.content).toBe("// SYNTHET");
+	});
+
+	it("rejects inverted, ambiguous, out-of-bounds, foreign and path-shaped requests", async () => {
+		const snapshot = snapshots.alpha;
+		const entry = snapshot.entries.find(
+			(item) => item.displayPath === "src/alpha.ts",
+		);
+		const request = {
+			snapshotId: snapshot.summary.snapshotId,
+			entryId: String(entry?.entryId),
+		};
+		for (const override of [
+			{ byteRange: { start: 9, end: 2 } },
+			{ lineRange: { start: 3, end: 1 } },
+			{ byteRange: { start: 0, end: 99999 } },
+			{ lineRange: { start: 1, end: 99999 } },
+			{ byteRange: { start: 0, end: 1 }, lineRange: { start: 1, end: 1 } },
+		])
+			await expect(
+				readSource(snapshot, { ...request, ...override }),
+			).rejects.toMatchObject({ code: "invalid_request" });
+		for (const input of PATH_INJECTION_INPUTS) {
+			await expect(
+				readSource(snapshot, { ...request, entryId: input.path }),
+			).rejects.toMatchObject({ code: "invalid_request" });
+		}
+		await expect(
+			readSource(snapshot, {
+				...request,
+				snapshotId: snapshots.beta.summary.snapshotId,
+			}),
+		).rejects.toMatchObject({ code: "source_unavailable" });
+		expect(() => assertObjectId("a".repeat(40), "sha256")).toThrow();
+	});
+
+	it("does not follow the fixture symlink or invent a missing source", async () => {
+		const snapshot = snapshots.alpha;
+		const link = snapshot.entries.find(
+			(entry) => entry.displayPath === ESCAPE_LINK_PATH,
+		);
+		expect(link?.indexStatus).toBe("excluded");
+		await expect(
+			readSource(snapshot, {
+				snapshotId: snapshot.summary.snapshotId,
+				entryId: String(link?.entryId),
+			}),
+		).rejects.toMatchObject({ code: "unsupported" });
+		await expect(
+			readSource(snapshot, {
+				snapshotId: snapshot.summary.snapshotId,
+				entryId: "missing",
+			}),
+		).rejects.toMatchObject({ code: "source_unavailable" });
+	});
+
+	it("rejects forged cursors, revision expressions and unavailable object stores", async () => {
+		const snapshot = snapshots.alpha;
+		expect(() =>
+			browseSnapshot(snapshot, {
+				snapshotId: snapshot.summary.snapshotId,
+				cursor: `100:${"a".repeat(64)}`,
+			}),
+		).toThrow();
+		await expect(
+			openSnapshot({
+				repositoryId: "alpha",
+				bundlePath: bundlePath("alpha"),
+				ref: "HEAD~1",
+			}),
+		).rejects.toMatchObject({ code: "invalid_request" });
+		const temporary = await openSnapshot({
+			repositoryId: "alpha",
+			bundlePath: bundlePath("alpha"),
+		});
+		const entry = temporary.entries.find((item) => item.kind === "blob");
+		await temporary.close();
+		await expect(
+			readSource(temporary, {
+				snapshotId: temporary.summary.snapshotId,
+				entryId: String(entry?.entryId),
+			}),
+		).rejects.toMatchObject({ code: "source_unavailable" });
+		expect(() =>
+			browseSnapshot(temporary, { snapshotId: temporary.summary.snapshotId }),
+		).toThrow();
 	});
 });
