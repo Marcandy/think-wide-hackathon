@@ -58,9 +58,7 @@ Andrew (@adiesh2) reviews the diff and browser evidence before acceptance and in
 
 ## Theme provenance
 
-User-supplied tweakcn `message.txt` SHA-256: `8f5d23726b04b6888297ef33441b9d410eb78921d9e871f8952e7605584c47a3`. Token values are preserved. Outfit and Space Mono use Google Fonts with fallback fonts; browser font loading is unverified.
-
-Static contrast calculations: foreground/background 12.05:1 light, 5.61:1 dark; card text 10.61:1 light, 4.86:1 dark; primary white/pink 4.55:1. Secondary pair 3.16:1 and dark muted pair 2.01:1 are not used for body text; check before adding components that use those pairings. This is not a rendered accessibility audit.
+User-supplied tweakcn `message.txt` SHA-256: `8f5d23726b04b6888297ef33441b9d410eb78921d9e871f8952e7605584c47a3`. Token values were preserved as supplied until the QA follow-up below, which changes the ones listed there. The Google Fonts import and the static contrast figures first recorded here are superseded by that section.
 
 ## Pre-PR completion pass
 
@@ -77,3 +75,62 @@ Static contrast calculations: foreground/background 12.05:1 light, 5.61:1 dark; 
 Confirmation run completed over all 28 local files with `outcome: completed` and no unreviewed files reported (`/tmp/think-wide-t03-pr-review-confirm.ndjson`). It did not repeat the documentation finding. One minor finding remains explicitly deferred to T03 issue #3's theme review: the supplied secondary background/foreground pair is 3.16:1, below 4.5:1 for normal text. No workshop/catalog/route uses `variant="secondary"`, `bg-secondary`, or `text-secondary`; the supplied tokens are preserved. Interim rule: correct this pair with the theme reviewer before introducing any secondary variant or normal text using it. This is a documented unused-token limitation, not a claim of full accessibility compliance.
 
 No source-code changes followed the completed reviews or the 164-test verification run. Only this outcome record was finalized before the commit.
+
+## QA follow-up: self-hosted fonts, contrast, repo sync (September 20, 2026)
+
+Status level for everything in this section: **fixtures only**, computed or fetched with curl. No browser was opened. `origin/main` (T06 backend) was merged into the branch first; the merged state passed `bun run verify` (13 files, 224 tests) before any change.
+
+### Fonts
+
+`src/styles.css` no longer imports `fonts.googleapis.com`. Outfit comes from `@fontsource-variable/outfit` 5.3.0 (`wght.css`; one variable file covers the 400/500/600/700 in use; the family registers as `"Outfit Variable"`, so `--font-sans` is now `"Outfit Variable", Outfit, sans-serif`). Space Mono comes from `@fontsource/space-mono` 5.3.0 (`400.css` only; 700 and italic were requested from Google but nothing in `src/` uses them). Outfit has no italic; `.connection-caveat` was and still is a synthesized oblique.
+
+Checked: after `vite build`, `.output/public/assets/styles-*.css` contains five `@font-face` rules whose `src` is `/assets/*.woff2`; five `.woff2` files (plus three `.woff` fallbacks for Space Mono) are emitted; `grep -r "fonts.googleapis\|fonts.gstatic" .output/public src` returns nothing. Dev server on port 3101: `GET /workshop` 200 and `GET /src/styles.css` 200, neither contains an external font host; the Outfit `.woff2` URL from the served CSS returned 200 `font/woff2` (32292 bytes). The server was stopped afterwards.
+
+### Contrast, recomputed from the current tokens
+
+WCAG 2.x relative luminance; `token/NN` is composited over the backdrop it is actually painted on. "Before" is the branch as of `3f66c61`. The earlier pass measured the dark outline Button at 4.24:1 and then lightened dark `--input` to `#839496`, which lightened the `input/30` fill; the real figure before this fix was 3.56 (page) and 3.18 (card).
+
+| Pair | Light before | Light now | Dark before | Dark now | Needs | Pass |
+|---|---|---|---|---|---|---|
+| Body text on page | 12.05 | 12.05 | 5.61 | 8.07 | 4.5 | yes |
+| Text on a card | 10.61 | 10.61 | 4.86 | 6.99 | 4.5 | yes |
+| Primary Button, `::selection` | 4.55 | 5.20 | 4.55 | 4.55 | 4.5 | yes |
+| Primary Button hover (`primary/90` over page) | **4.01** | 4.55 | 5.28 | 5.28 | 4.5 | yes |
+| Outline Button text, page (dark: `input/30` over page) | 12.05 | 12.05 | **3.56** | 5.12 | 4.5 | yes |
+| Outline Button text, card (dark: `input/30` over card) | 12.05 | 12.05 | **3.18** | 4.57 | 4.5 | yes |
+| Outline Button hover, page / card | 4.61 / 4.61 | 4.61 / 4.61 | 6.83 / 6.30 | 6.83 / 6.30 | 4.5 | yes |
+| Ghost Button hover, page / card | 4.61 / 4.61 | 4.61 / 4.61 | 9.49 / 8.82 | 9.49 / 8.82 | 4.5 | yes |
+| Textarea text and placeholder | 12.05 | 12.05 | **3.56** | 5.12 | 4.5 | yes |
+| Secondary Button (unused) | **3.16** | 4.75 | **3.16** | 4.63 | 4.5 | yes |
+| Secondary Button hover (unused) | **2.53** | 5.94 | **4.20** | 5.82 | 4.5 | yes |
+| Muted surface (unused) | 4.86 | 4.86 | **2.01** | 4.90 | 4.5 | yes |
+| Pink headline accent, brand dot (large text) | 4.21 | 4.82 | 3.30 | 4.52 | 3 | yes |
+| `.note-number` on the intro card (large text) | 3.71 | 4.25 | **2.86** | 3.91 | 3 | yes |
+| Pink icons on the page | 4.21 | 4.82 | 3.30 | 4.52 | 3 | yes |
+| Field and outline Button border, page | 4.13 (field), **2.93** (Button) | 4.13 | 4.75 | 4.75 | 3 | yes |
+| Outline Button border, card | **2.58** | 3.64 | 4.11 | 4.11 | 3 | yes |
+| Invalid field border | 4.29 | 4.29 | 3.25 | 3.25 | 3 | yes |
+| Focus ring, page / card | 4.21 / 3.71 | 4.21 / 3.71 | 4.52 / 3.91 | 4.52 / 3.91 | 3 | yes |
+
+Links, eyebrows, pills, labels, field help and field errors all inherit `--foreground`, so they are the first two rows. Disabled controls are exempt.
+
+Token changes (`src/styles/theme.css`, each with its ratio in a comment): light `--primary` `#d33682` to `#c72b76`; light `--secondary-foreground` `#ffffff` to `#002b36`; dark `--foreground`, `--card-foreground`, `--popover-foreground`, `--muted-foreground` `#93a1a1` to `#b6c0c0`; dark `--secondary` `#2aa198` to `#21827a`; dark `--muted` `#586e75` to `#0a4f61`; new `--primary-text` (light `#c72b76`, dark `#e0609b`). In dark no single pink is both 4.5:1 under white text and 3:1 on a card, so the five `color: var(--primary)` uses in `workshop.css` now use `--primary-text`; dark `--primary` itself is unchanged. One rule a token cannot express: `globals.css` puts the outline Button border on `--input` in light as well as dark. The dark text colour is the most visible change: it is lighter than Solarized base1, because no darker value reaches 4.5:1 on shadcn's `input/30` control fill.
+
+Enforcement: `tests/render/theme-contrast.test.ts` parses `:root` and `.dark`, composites alpha, and asserts the 24 pairs above plus the presence of the two CSS rules they rely on. Restoring the old dark `--foreground` and light `--primary` was tried and fails four tests. `CONTRAST_TABLE=1 bunx vitest run tests/render/theme-contrast.test.ts` prints the table. This is arithmetic on tokens, not a rendered accessibility audit.
+
+### Repo sync
+
+Removed the `generate-routes` script (`tsr generate` rewrites `src/routeTree.gen.ts` without the `declare module '@tanstack/react-start'` footer that the `tanstackStart()` Vite plugin emits) and the `@tanstack/router-cli` devDependency, which nothing else referenced. `tsr.config.json` stays: `@tanstack/router-generator`'s `getConfig`, which the Start Vite plugin calls, reads it. After the removal `vite build` left `src/routeTree.gen.ts` unchanged. `docs/REPO_MAP.md` now lists the styles split, the workshop files, `registry.tsx` and the four T03 tests.
+
+### Verification
+
+`bun run verify` exit 0 on the final state: frozen install, no contract drift, Biome, TypeScript, 250 tests in 14 files, production build.
+
+### Still UNVERIFIED (NOT RUN in a browser)
+
+- Hydration and console errors on `/` and `/workshop`.
+- Rendered focus appearance (outline visibility on every control, both themes) and hover colours.
+- Real font loading and rendering in a browser, including the fallback swap and offline behaviour.
+- Mobile layout in both themes.
+- iOS Safari focus zoom on the select and textareas.
+- Everything in the "Remaining manual checklist" above.

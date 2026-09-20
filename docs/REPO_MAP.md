@@ -87,26 +87,34 @@ src/routes/index.tsx                    T09  portfolio
 src/routes/projects.$projectId.tsx      T09
 src/routes/investigations.$investigationId.tsx   T09
 src/routes/handoffs.$handoffId.tsx      T09
-src/routes/workshop.tsx                 T03  component workshop
+src/routes/workshop.tsx                 EXISTS  T03  component workshop
 src/routes/callback.tsx                 I01  WorkOS redirect
 src/routes/api/ops.$operationId.ts      T08  HTTP adapter
 src/routes/api/mcp.ts                   T08  MCP streamable HTTP endpoint
 
 src/lib/utils.ts                        TOOL: shadcn
 src/components/ui/*                     TOOL: shadcn add
-src/components/catalog/EvidencePair.tsx        T03
-src/components/catalog/ConnectionCard.tsx      T03
-src/components/catalog/ConstraintEditor.tsx    T03
-src/components/catalog/HandoffPreview.tsx      T03
-src/components/catalog/Stack.tsx               T03
-src/components/catalog/Section.tsx             T03
-src/components/catalog/registry.ts             T03  closed component list
-src/components/catalog/validate-composition.ts T03
+src/components/catalog/EvidencePair.tsx        EXISTS  T03
+src/components/catalog/ConnectionCard.tsx      EXISTS  T03
+src/components/catalog/ConstraintEditor.tsx    EXISTS  T03
+src/components/catalog/HandoffPreview.tsx      EXISTS  T03
+src/components/catalog/Stack.tsx               EXISTS  T03
+src/components/catalog/Section.tsx             EXISTS  T03
+src/components/catalog/registry.tsx            EXISTS  T03  closed component list -> fixed React bindings
+src/components/catalog/validate-composition.ts EXISTS  T03
+src/components/workshop/Workshop.tsx           EXISTS  T03  /workshop page: views, inspector, theme toggle
+src/components/workshop/fixtures.ts            EXISTS  T03  synthetic sources and compositions (not Git observations)
+src/components/workshop/state.ts               EXISTS  T03  view/draft state transitions, pure
 src/components/shell/PortfolioNav.tsx          T09
 src/components/shell/SourceViewer.tsx          T09
 src/components/shell/AuthIndicator.tsx         I01
 src/components/shell/ApprovalDialog.tsx        I03
-src/styles.css                          TOOL, then T03 (may split into src/styles/theme.css tokens + globals.css mappings)
+src/styles.css                          EXISTS  TOOL, then T03  entry: imports only (Fontsource fonts, tailwindcss, the three files below)
+src/styles/theme.css                    EXISTS  T03  colour/font tokens for :root and .dark; ratios enforced by tests/render/theme-contrast.test.ts
+src/styles/globals.css                  EXISTS  T03  @theme mappings, base rules, focus outline
+src/styles/workshop.css                 EXISTS  T03  workshop, catalog and home layout
+                                        components.json still names src/styles.css as the Tailwind CSS file, so a `shadcn add` that
+                                        injects CSS variables writes them there; move them into src/styles/theme.css before committing.
 
 src/server/config.ts                    T02  mode: local-demo | connected; refuse local-demo in production
 src/server/convex-client.ts             T06  request-scoped client, no global authed client
@@ -144,7 +152,10 @@ tests/domain/q06-stale-proposal.test.ts
 tests/domain/q07-duplicate-command.test.ts
 tests/domain/contract-rejects-nested-invalid.test.ts   EXISTS  contract 0.1.0, 12 cases
 tests/domain/t06-*.test.ts              T06  real handlers via convex-test, identities A and B
-tests/adapter/q08-catalog-composition.test.ts
+tests/adapter/q08-catalog-composition.test.ts   EXISTS  T03  closed catalog, exact refs, size/depth limits
+tests/adapter/workshop-state.test.ts            EXISTS  T03  draft survives view changes and rejection
+tests/render/catalog-smoke.test.tsx             EXISTS  T03  server-rendered bindings, escaping, label/help wiring
+tests/render/theme-contrast.test.ts             EXISTS  T03  WCAG ratios for the token pairs in use, both themes
 tests/boundary/q10-injection.test.ts
 tests/boundary/q13-analyzer-confinement.test.ts
 tests/adapter/q14-same-policy-all-surfaces.test.ts

@@ -7,7 +7,6 @@
   },
   "scripts": {
     "dev": "vite dev --port 3000",
-    "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
     "format": "biome format",
@@ -53,7 +52,6 @@
     "@edge-runtime/vm": "5.0.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "0.8.5",
-    "@tanstack/router-cli": "^1.132.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
