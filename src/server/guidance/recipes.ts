@@ -25,16 +25,22 @@ function parseFrontmatter(text: string): {
 	header: Record<string, string>;
 	body: string;
 } {
-	if (!text.startsWith("---\n"))
+	if (!text.startsWith("---\n")) {
 		throw new Error("recipe is missing its frontmatter header");
+	}
 	const end = text.indexOf("\n---\n", 3);
-	if (end < 0) throw new Error("recipe frontmatter is not terminated");
+	if (end < 0) {
+		throw new Error("recipe frontmatter is not terminated");
+	}
 	const header: Record<string, string> = {};
 	for (const line of text.slice(4, end).split("\n")) {
-		if (!line.trim()) continue;
+		if (!line.trim()) {
+			continue;
+		}
 		const at = line.indexOf(":");
-		if (at < 0)
+		if (at < 0) {
 			throw new Error(`recipe frontmatter line is not a pair: ${line}`);
+		}
 		header[line.slice(0, at).trim()] = line.slice(at + 1).trim();
 	}
 	return { header, body: text.slice(end + 5) };
@@ -44,7 +50,9 @@ function parseFrontmatter(text: string): {
 function firstParagraph(body: string): string {
 	for (const block of body.split("\n\n")) {
 		const text = block.trim();
-		if (!text || text.startsWith("#") || text.startsWith("|")) continue;
+		if (!text || text.startsWith("#") || text.startsWith("|")) {
+			continue;
+		}
 		return text.replace(/\s+/g, " ").slice(0, 512);
 	}
 	throw new Error("recipe has no prose paragraph to summarize");
@@ -62,7 +70,9 @@ export function loadRecipes(withBody = false): readonly Recipe[] {
 			const bytes = readFileSync(join(RECIPES_DIR, file));
 			const { header, body } = parseFrontmatter(bytes.toString("utf8"));
 			for (const key of ["recipeId", "title", "appliesTo"]) {
-				if (!header[key]) throw new Error(`recipe ${file} is missing ${key}`);
+				if (!header[key]) {
+					throw new Error(`recipe ${file} is missing ${key}`);
+				}
 			}
 			const recipe: Recipe = {
 				recipeId: header.recipeId as string,
