@@ -1,0 +1,48 @@
+# Self-hosted Convex for local development.
+# Derived from get-convex/convex-backend self-hosted/docker/docker-compose.yml (fetched 2026-09-20).
+# Changes from upstream: images pinned by digest; every port bound to 127.0.0.1 only.
+# Both images are multi-arch (linux/amd64 + linux/arm64).
+#
+#   up:        docker compose -f infra/docker-compose.yml up -d
+#   admin key: docker compose -f infra/docker-compose.yml exec backend ./generate_admin_key.sh
+#   reset:     docker compose -f infra/docker-compose.yml down -v     (destroys local data)
+name: think-wide
+services:
+  backend:
+    image: ghcr.io/get-convex/convex-backend@sha256:1b0dcd93a3d126400d16e256aea1106a2ee9538882dda545d2c979f28cff1483
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "127.0.0.1:${PORT:-3210}:3210"
+      - "127.0.0.1:${SITE_PROXY_PORT:-3211}:3211"
+    volumes:
+      - data:/convex/data
+    environment:
+      - INSTANCE_NAME
+      - INSTANCE_SECRET
+      - CONVEX_CLOUD_ORIGIN=${CONVEX_CLOUD_ORIGIN:-http://127.0.0.1:${PORT:-3210}}
+      - CONVEX_SITE_ORIGIN=${CONVEX_SITE_ORIGIN:-http://127.0.0.1:${SITE_PROXY_PORT:-3211}}
+      - DISABLE_BEACON=true
+      - DISABLE_METRICS_ENDPOINT=true
+      - DOCUMENT_RETENTION_DELAY=${DOCUMENT_RETENTION_DELAY:-172800}
+      - REDACT_LOGS_TO_CLIENT
+      - RUST_LOG=${RUST_LOG:-info}
+    healthcheck:
+      test: curl -f http://localhost:3210/version
+      interval: 5s
+      start_period: 10s
+
+  dashboard:
+    image: ghcr.io/get-convex/convex-dashboard@sha256:63e94c62940a09acd36464e02e1b0a7589f7ef48227003de78510f9523bb4e6b
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "127.0.0.1:${DASHBOARD_PORT:-6791}:6791"
+    environment:
+      - NEXT_PUBLIC_DEPLOYMENT_URL=${NEXT_PUBLIC_DEPLOYMENT_URL:-http://127.0.0.1:${PORT:-3210}}
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  data:

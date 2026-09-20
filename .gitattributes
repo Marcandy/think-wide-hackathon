@@ -1,0 +1,16 @@
+# One line-ending policy for Linux + macOS + Windows.
+* text=auto eol=lf
+
+# Evidence fixtures are hashed byte-for-byte. Git must never rewrite them.
+tests/fixtures/** -text
+
+# Generated output: collapse in PR diffs.
+generated/** linguist-generated=true
+convex/_generated/** linguist-generated=true
+src/routeTree.gen.ts linguist-generated=true
+bun.lock linguist-generated=true
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

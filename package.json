@@ -1,0 +1,63 @@
+{
+  "name": "think-wide-hackathon",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev --port 3000",
+    "generate-routes": "tsr generate",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "biome format",
+    "lint": "biome lint",
+    "check": "biome check",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "convex:up": "docker compose -f infra/docker-compose.yml up -d --wait",
+    "convex:key": "docker compose -f infra/docker-compose.yml exec backend ./generate_admin_key.sh",
+    "convex:dev": "convex dev",
+    "convex:down": "docker compose -f infra/docker-compose.yml down",
+    "verify": "bun install --frozen-lockfile && biome check && tsc --noEmit && vitest run --passWithNoTests && vite build"
+  },
+  "dependencies": {
+    "@convex-dev/react-query": "0.1.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-devtools": "0.10.12",
+    "@tanstack/react-form": "1.33.5",
+    "@tanstack/react-router": "1.170.38",
+    "@tanstack/react-router-devtools": "1.167.2",
+    "@tanstack/react-start": "1.168.56",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cn": "^0.3.0",
+    "convex": "^1.32.0",
+    "lucide-react": "^0.577.0",
+    "nitro": "3.0.260610-beta",
+    "radix-ui": "^1.6.7",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^4.1.18",
+    "tw-animate-css": "^1.3.6",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.5",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/devtools-vite": "0.8.5",
+    "@tanstack/router-cli": "^1.132.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.1"
+  },
+  "packageManager": "bun@1.4.0",
+  "engines": {
+    "node": ">=22.11.0"
+  }
+}
