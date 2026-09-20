@@ -1,15 +1,12 @@
 import { canonicalArguments, type Principal } from "../../core";
 import type {
-	CancelRunRequest,
-	Decision,
-	GetRunRequest,
-	Investigation,
-	OpenInvestigationRequest,
-	ReadInvestigationRequest,
-	RecordDecisionRequest,
-	RequestAnalysisRequest,
-	Run,
-} from "../../generated/types";
+	ImplementedOperationId,
+	OperationRequestMap,
+	OperationResponseMap,
+	ReadOperationId,
+	StateOperationId,
+} from "../../generated/operations";
+import type { Decision, Investigation, Run } from "../../generated/types";
 import * as validators from "../../generated/validators.js";
 import { mutation, type QueryCtx, query } from "../_generated/server";
 import {
@@ -25,28 +22,12 @@ import {
 	validateResponse,
 } from "./validation";
 
-type Requests = {
-	openInvestigation: OpenInvestigationRequest;
-	readInvestigation: ReadInvestigationRequest;
-	recordDecision: RecordDecisionRequest;
-	requestAnalysis: RequestAnalysisRequest;
-	getRun: GetRunRequest;
-	cancelRun: CancelRunRequest;
-};
-type Responses = {
-	openInvestigation: Investigation;
-	readInvestigation: Investigation;
-	recordDecision: Decision;
-	requestAnalysis: Run;
-	getRun: Run;
-	cancelRun: Run;
-};
-type StateOperation =
-	| "openInvestigation"
-	| "recordDecision"
-	| "requestAnalysis"
-	| "cancelRun";
-type ReadOperation = "readInvestigation" | "getRun";
+// Operation shapes and effect classes come from the registry (generated/operations.ts),
+// restricted to the operations that have a handler binding. Nothing is restated here.
+type Requests = Pick<OperationRequestMap, ImplementedOperationId>;
+type Responses = Pick<OperationResponseMap, ImplementedOperationId>;
+type StateOperation = Extract<StateOperationId, ImplementedOperationId>;
+type ReadOperation = Extract<ReadOperationId, ImplementedOperationId>;
 
 function requestFor<K extends keyof Requests>(
 	id: K,
