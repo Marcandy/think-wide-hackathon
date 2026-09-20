@@ -24,6 +24,7 @@
     "check:drift": "bun scripts/check-drift.ts"
   },
   "dependencies": {
+    "@ast-grep/cli": "0.45.3",
     "@convex-dev/react-query": "0.1.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "0.10.12",
