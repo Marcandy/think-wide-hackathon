@@ -13,6 +13,7 @@ import {
 	readSync,
 	realpathSync,
 	rmSync,
+	statSync,
 	writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -108,6 +109,12 @@ export type AnalyzerProbe = {
 	readonly version: string | null;
 	readonly isolation: Isolation;
 	readonly reason?: string;
+	/**
+	 * How the version run failed, when it ran and failed. Preserved so a caller reports
+	 * `timed_out` or `exit_status` as itself instead of flattening every probe failure
+	 * to `not_found`, which would read as "no analyzer installed".
+	 */
+	readonly failure?: RunFailure;
 };
 
 /** Why a run produced no usable output. "ok" is the only value that may be trusted. */
@@ -277,11 +284,13 @@ function roBindIfPresent(path: string): string[] {
 let isolationCache: Isolation | null = null;
 
 /**
- * Forgets the cached profile so the next call probes again. Tests use this to exercise
- * the cold path; nothing in a request path should need it.
+ * Forgets the cached isolation profile and the cached analyzer probe so the next call
+ * measures both again. Tests use this to exercise the cold path; nothing in a request
+ * path should need it.
  */
 export function resetIsolationCache(): void {
 	isolationCache = null;
+	probeCache = null;
 }
 
 /**
@@ -534,6 +543,33 @@ export function getRule(ruleId: string): Rule {
 	return rule;
 }
 
+/**
+ * Identity of the thing a successful probe describes. A cached version must not outlive
+ * a change of analyzer, so the key covers the resolved file, its size and mtime, the
+ * inputs that select it, and the isolation mode it was probed under.
+ */
+function probeCacheKey(
+	image: AnalyzerImage,
+	isolation: Isolation,
+): string | null {
+	try {
+		const stat = statSync(image.binary);
+		return JSON.stringify({
+			binary: image.binary,
+			size: stat.size,
+			mtimeMs: stat.mtimeMs,
+			extraFiles: image.extraFiles,
+			isolation: isolation.mode,
+			configured: process.env.THINKWIDE_ANALYZER_BIN ?? null,
+			path: process.env.PATH ?? null,
+		});
+	} catch {
+		return null;
+	}
+}
+
+let probeCache: { key: string; probe: AnalyzerProbe } | null = null;
+
 export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 	// One deadline for detection and the version run together: a cold start cannot
 	// spend the budget on detection and then start the subprocess with a fresh copy.
@@ -547,6 +583,15 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 			isolation,
 			reason: `analyzer isolation unavailable: ${isolation.reason}`,
 		};
+
+	// A successful probe is reused, because otherwise every search spends up to 2 s of
+	// its 5 s deadline launching a sandboxed `--version` before staging a single file.
+	// Only successes are cached, and only against the exact analyzer identity: findings
+	// record `extractor.version`, so a stale version would misattribute evidence.
+	const image = resolveAnalyzerImage();
+	const key = image ? probeCacheKey(image, isolation) : null;
+	if (key && probeCache?.key === key) return probeCache.probe;
+
 	const home = mkdtempSync(join(tmpdir(), "twh-sg-probe-"));
 	try {
 		const out = runAnalyzer(["--version"], home, remaining());
@@ -556,6 +601,7 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 				version: null,
 				isolation,
 				reason: out.failure,
+				failure: out.failure,
 			};
 		const version = /ast-grep\s+([0-9][^\s]*)/.exec(out.stdout)?.[1] ?? null;
 		if (!version)
@@ -565,7 +611,9 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 				isolation,
 				reason: "version not reported",
 			};
-		return { available: true, version, isolation };
+		const probe: AnalyzerProbe = { available: true, version, isolation };
+		if (key) probeCache = { key, probe };
+		return probe;
 	} finally {
 		rmSync(home, { recursive: true, force: true });
 	}
@@ -687,11 +735,14 @@ export function structuralSearch(
 			nextCursor: null,
 			truncated: outOfTime ? { is: true, reason: "time_limit" } : { is: false },
 			analyzer: probe,
+			// The probe's own failure is reported as itself. Flattening timed_out or
+			// exit_status to not_found would read as "no analyzer is installed", which
+			// is a different thing to go and fix.
 			failure: outOfTime
 				? "timed_out"
 				: probe.isolation.mode === "none"
 					? "isolation_unavailable"
-					: "not_found",
+					: (probe.failure ?? "not_found"),
 		};
 	}
 

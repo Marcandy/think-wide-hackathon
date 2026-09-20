@@ -7,6 +7,7 @@ import {
 	mkdtempSync,
 	readdirSync,
 	readFileSync,
+	realpathSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs";
@@ -50,6 +51,17 @@ import { CORPUS } from "../fixtures/search/corpus.ts";
 /** Deliberately larger than the runner's address-space ceiling. */
 const ISOLATION_OVER_LIMIT = 4 * 1024 * 1024 * 1024;
 
+/**
+ * The interpreter for the instrumented executables, taken from the process actually
+ * running the suite rather than assumed at /usr/bin/node.
+ *
+ * Coordinator review reproduced 9 failures on a host where bwrap works but node is
+ * installed by mise, because these scripts hardcoded `#!/usr/bin/node`. The sandbox
+ * mounts a script's interpreter at its own absolute path, so whatever is running the
+ * tests is what gets mounted.
+ */
+const INTERPRETER = realpathSync(process.execPath);
+
 const isolation = detectIsolation();
 const confined = isolation.mode === "bwrap";
 const probe = probeAnalyzer();
@@ -88,7 +100,7 @@ function withInstrumentedAnalyzer<T>(
 	mkdirSync(scanDir);
 	writeFileSync(join(scanDir, "a.ts"), "export function a() {}\n");
 	const file = join(bin, "ast-grep");
-	writeFileSync(file, `#!/usr/bin/node\n${script}\n`);
+	writeFileSync(file, `#!${INTERPRETER}\n${script}\n`);
 	chmodSync(file, 0o755);
 	// A file that happens to sit beside the analyzer. It is not a selected input, so
 	// the sandbox must not expose it just because the analyzer lives in that directory.
@@ -102,7 +114,7 @@ function withInstrumentedAnalyzer<T>(
 		const wrapper = join(bin, "bwrap");
 		writeFileSync(
 			wrapper,
-			`#!/usr/bin/node\nconst end = Date.now() + ${extra.slowBwrapMs}; while (Date.now() < end) {}\nrequire("node:child_process").spawnSync(${JSON.stringify(realBwrap)}, process.argv.slice(2), { stdio: "inherit" })\n`,
+			`#!${INTERPRETER}\nconst end = Date.now() + ${extra.slowBwrapMs}; while (Date.now() < end) {}\nrequire("node:child_process").spawnSync(${JSON.stringify(realBwrap)}, process.argv.slice(2), { stdio: "inherit" })\n`,
 		);
 		chmodSync(wrapper, 0o755);
 	}
@@ -118,7 +130,49 @@ function withInstrumentedAnalyzer<T>(
 	}
 }
 
+/**
+ * Can an instrumented executable actually run inside the sandbox on this host?
+ *
+ * The sandbox mounts a script's interpreter as a single file. If that interpreter
+ * cannot start there — a statically odd build, an interpreter needing files we do not
+ * mount — the fault-injection cases cannot be performed, and coordinator review was
+ * explicit that they must then SKIP with a stated reason rather than fail. The reason
+ * is asserted below so a skip is visible instead of silent.
+ */
+function probeInstrumentation(): { usable: boolean; reason: string } {
+	if (!confined)
+		return { usable: false, reason: "no isolation profile on this host" };
+	try {
+		const out = withInstrumentedAnalyzer(
+			'process.stdout.write("INSTRUMENTATION_OK")',
+			(scanDir) => runAnalyzer(["--version"], scanDir, 15_000),
+		);
+		if (out.failure === "ok" && out.stdout.includes("INSTRUMENTATION_OK"))
+			return { usable: true, reason: "" };
+		return {
+			usable: false,
+			reason: `interpreter ${INTERPRETER} could not run inside the sandbox (${out.failure})`,
+		};
+	} catch (error) {
+		return { usable: false, reason: (error as Error).message };
+	}
+}
+
+const instrumentation = probeInstrumentation();
+const instrumentable = instrumentation.usable;
+
 describe("Q13 analyzer argv", () => {
+	it("states whether fault injection can run on this host", () => {
+		// Not an assertion about confinement: it records why the injected-executable
+		// cases below run or skip, so an empty run is never mistaken for a passing one.
+		if (instrumentable) {
+			expect(instrumentation.reason).toBe("");
+		} else {
+			expect(instrumentation.reason.length).toBeGreaterThan(0);
+			console.warn(`Q13 fault injection skipped: ${instrumentation.reason}`);
+		}
+	});
+
 	it("refuses rewrite, update and interactive flags", () => {
 		for (const bad of [
 			"-U",
@@ -197,7 +251,7 @@ describe("Q13 isolation profile", () => {
 		},
 	);
 
-	it.runIf(confined)(
+	it.runIf(instrumentable)(
 		"charges isolation setup to the same budget as the run that follows it",
 		() => {
 			// Review measured a 1,500 ms budget taking 2,510 ms and returning success:
@@ -226,7 +280,7 @@ describe("Q13 isolation profile", () => {
 	);
 });
 
-describe.runIf(confined)(
+describe.runIf(instrumentable)(
 	"Q13 confinement, through the production runner",
 	() => {
 		it("hands the analyzer exactly PATH, HOME and LANG", () => {
@@ -334,7 +388,7 @@ describe.runIf(confined)(
 					'setTimeout(() => { process.stdout.write("DENIED:timeout"); process.exit(0) }, 2000)',
 				].join("\n");
 
-				const control = execFileSync("/usr/bin/node", ["-e", connectScript], {
+				const control = execFileSync(INTERPRETER, ["-e", connectScript], {
 					encoding: "utf8",
 					timeout: 10_000,
 				});
@@ -456,7 +510,7 @@ describe.runIf(probe.available)("Q13 real-binary behavior", () => {
 	});
 });
 
-describe.runIf(confined)(
+describe.runIf(instrumentable)(
 	"Q13 failure honesty, through the production runner",
 	() => {
 		const knownMatch = [

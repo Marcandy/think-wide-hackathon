@@ -4,7 +4,7 @@
 # defined" means across two repositories. Deliberately structural: a comment, a string
 # literal or a call with the same name is not a definition, and literal search cannot
 # tell those apart. Matching and non-matching fixtures:
-# tests/fixtures/search/corpus.ts (EXPORTED_FN_MATCH / EXPORTED_FN_NEAR_MISS).
+# tests/fixtures/search/corpus.ts (ALPHA_TS matches, NEAR_MISS_TS must not).
 #
 # No `fix:` key. loadRules() rejects any rule that declares one: this product reads
 # source, it never rewrites it.
