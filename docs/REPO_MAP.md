@@ -27,7 +27,7 @@ contracts/schemas/requests.schema.json      EXISTS  one $def per operation input
 contracts/schemas/error.schema.json         EXISTS  code + message; forbidden and not_found must be indistinguishable
 contracts/schemas/{capabilities,project,snapshot-entry,finding,investigation,decision,proposal,run,handoff,composition}.schema.json   EXISTS
 contracts/schemas/commit-record.schema.json T05  entries for readHistory
-contracts/schemas/recipe.schema.json        T07  entries for readGuidance
+contracts/schemas/recipe.schema.json        EXISTS  entries for readGuidance (T07, PR #15)
 ```
 No `openapi.yaml` and no `operations.registry.ts`: the schemas plus `operations.json` are canonical.
 
@@ -39,6 +39,8 @@ generated/validators.js      EXISTS  Ajv standalone, ESM, no require(
 generated/validators.d.ts    EXISTS
 generated/operations.ts      EXISTS  OPERATIONS, OperationId, MCP_EXPOSED, CONTRACT_VERSION, OperationRequestMap, OperationResponseMap,
                                      Read/State/ExternalOperationId, OPERATION_HANDLERS, ImplementedOperationId, UNIMPLEMENTED_OPERATIONS
+generated/mcp-tools.ts       EXISTS  MCP_TOOLS (one descriptor per mcp-exposed operation: name, description, operationId, effect, handler,
+                                     self-contained inputSchema with local #/$defs refs only), MCP_TOOL_NAMES, McpToolName. Data only, no server
 ```
 
 ## `core/` pure TypeScript rules (T06 Eassa, reviewed by Andrew)
@@ -114,7 +116,7 @@ src/server/convex-client.ts             T06  request-scoped client, no global au
 src/server/ops/dispatch.ts              T08  one path: validate -> authorize -> handler (HTTP + MCP + CLI)
 src/server/ops/handlers/*.ts            T05..T09  one file per operationId
 src/server/mcp/server.ts                T08
-src/server/mcp/tools.ts                 T08  built from generated/operations.ts, explicit exposure only
+src/server/mcp/tools.ts                 T08  built from generated/mcp-tools.ts + generated/operations.ts, explicit exposure only; restates nothing
 src/server/auth/workos.ts               I01
 src/server/auth/verify-token.ts         I01  issuer, JWKS, audience
 src/server/git/snapshot.ts              T05  resolve ref once -> full commit id
@@ -147,6 +149,7 @@ tests/domain/contract-rejects-nested-invalid.test.ts   EXISTS  contract 0.1.0 sh
 tests/domain/contract-0.2.0.test.ts     EXISTS  hash binding, invocable search modes, decision categories
 tests/domain/decision-category.test.ts  EXISTS  #14 part 2: real recordDecision handler stores/returns category, replay, conflict, revocation
 tests/domain/operation-handlers.test.ts EXISTS  registry handler bindings name real operation.query/mutation exports, none shared, none unbound
+tests/domain/mcp-tools.test.ts          EXISTS  MCP descriptors = mcp-exposed registry rows; inputSchema self-contained on a fresh strict Ajv and agrees with generated validators
 tests/domain/t06-*.test.ts              T06  real handlers via convex-test, identities A and B
 tests/adapter/q08-catalog-composition.test.ts
 tests/boundary/q10-injection.test.ts
@@ -159,7 +162,7 @@ tests/e2e/q15-full-loop.test.ts         T11
 ## `scripts/` `infra/` `.github/`
 
 ```
-scripts/codegen.ts                      EXISTS  contracts/ -> generated/, no network, no model calls
+scripts/codegen.ts                      EXISTS  contracts/ -> generated/ (validators, types, operations, MCP tool descriptors), no network, no model calls
 scripts/check-drift.ts                  EXISTS  generate twice into clean dirs, compare recursively with committed generated/; docs/OPERATIONS.md must be current
 scripts/operations-doc.ts               EXISTS  generated/operations.ts -> Markdown table; `--write` writes docs/OPERATIONS.md
 package.json "verify" script           EXISTS  frozen install -> drift -> biome -> tsc -> vitest -> vite build (same entry local + CI)
