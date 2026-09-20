@@ -1,0 +1,97 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "investigation.schema.json",
+	"title": "Investigation",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"investigationId",
+		"question",
+		"snapshotIds",
+		"revision",
+		"status",
+		"createdAt"
+	],
+	"properties": {
+		"investigationId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"question": {
+			"$ref": "common.schema.json#/$defs/LongText"
+		},
+		"snapshotIds": {
+			"type": "array",
+			"minItems": 1,
+			"maxItems": 8,
+			"uniqueItems": true,
+			"items": {
+				"$ref": "common.schema.json#/$defs/Id"
+			}
+		},
+		"revision": {
+			"$ref": "common.schema.json#/$defs/Revision"
+		},
+		"status": {
+			"enum": ["open", "awaiting_human", "closed", "source_unavailable"]
+		},
+		"acceptedFindings": {
+			"type": "array",
+			"maxItems": 64,
+			"items": {
+				"$ref": "finding.schema.json"
+			}
+		},
+		"decisions": {
+			"type": "array",
+			"maxItems": 64,
+			"items": {
+				"$ref": "decision.schema.json"
+			}
+		},
+		"currentRunId": {
+			"anyOf": [
+				{
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"latestHandoffId": {
+			"anyOf": [
+				{
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"createdAt": {
+			"$ref": "common.schema.json#/$defs/TimestampMs"
+		},
+		"page": {
+			"title": "InvestigationPage",
+			"description": "Present when findings or decisions were paged. Absent means the arrays are complete for this revision.",
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["nextCursor", "truncated"],
+			"properties": {
+				"nextCursor": {
+					"anyOf": [
+						{
+							"$ref": "common.schema.json#/$defs/Cursor"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				"truncated": {
+					"$ref": "envelope.schema.json#/properties/truncated"
+				}
+			}
+		}
+	}
+}

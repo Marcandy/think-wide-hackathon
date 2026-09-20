@@ -1,0 +1,35 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "evidence.schema.json",
+	"title": "Evidence",
+	"description": "Result of readSource: exact bytes (or a labeled encoding) plus the actual range served.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["ref", "encoding", "content", "blobSize", "evidenceClass"],
+	"properties": {
+		"ref": {
+			"$ref": "source-ref.schema.json"
+		},
+		"encoding": {
+			"enum": ["utf8", "base64"]
+		},
+		"content": {
+			"type": "string",
+			"maxLength": 24576
+		},
+		"blobSize": {
+			"type": "integer",
+			"minimum": 0
+		},
+		"rangeAdjusted": {
+			"type": "boolean",
+			"description": "True when the served range differs from the requested one (e.g. moved to a UTF-8 boundary)."
+		},
+		"nextRange": {
+			"$ref": "source-ref.schema.json#/properties/byteRange"
+		},
+		"evidenceClass": {
+			"$ref": "common.schema.json#/$defs/EvidenceClass"
+		}
+	}
+}

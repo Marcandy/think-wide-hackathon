@@ -1,0 +1,70 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "snapshot-entry.schema.json",
+	"title": "SnapshotEntry",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"entryId",
+		"snapshotId",
+		"parentEntryId",
+		"name",
+		"kind",
+		"objectId"
+	],
+	"properties": {
+		"entryId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"snapshotId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"parentEntryId": {
+			"anyOf": [
+				{
+					"$ref": "common.schema.json#/$defs/Id"
+				},
+				{
+					"type": "null"
+				}
+			]
+		},
+		"name": {
+			"type": "string",
+			"minLength": 1,
+			"maxLength": 1024
+		},
+		"displayPath": {
+			"type": "string",
+			"maxLength": 4096
+		},
+		"kind": {
+			"enum": ["tree", "blob", "symlink", "submodule", "unsupported"]
+		},
+		"mode": {
+			"type": "string",
+			"pattern": "^[0-7]{6}$"
+		},
+		"objectId": {
+			"$ref": "common.schema.json#/$defs/ObjectId"
+		},
+		"size": {
+			"type": "integer",
+			"minimum": 0
+		},
+		"language": {
+			"type": "string",
+			"maxLength": 32
+		},
+		"indexStatus": {
+			"enum": [
+				"indexed",
+				"not_indexed",
+				"unsupported_language",
+				"parse_failed",
+				"excluded",
+				"too_large"
+			]
+		}
+	}
+}

@@ -1,0 +1,144 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "composition.schema.json",
+	"title": "Composition",
+	"description": "Closed UI catalog. The server additionally enforces <=16 nodes, depth <=4, <=32 KiB serialized. No JSX, HTML, CSS, URLs, or handlers.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["catalogVersion", "root"],
+	"properties": {
+		"catalogVersion": {
+			"type": "string",
+			"maxLength": 32
+		},
+		"root": {
+			"$ref": "#/$defs/Node"
+		}
+	},
+	"$defs": {
+		"Node": {
+			"title": "CatalogNode",
+			"oneOf": [
+				{
+					"title": "StackNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "children"],
+					"properties": {
+						"component": {
+							"const": "Stack"
+						},
+						"children": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 8,
+							"items": {
+								"$ref": "#/$defs/Node"
+							}
+						}
+					}
+				},
+				{
+					"title": "SectionNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "title", "children"],
+					"properties": {
+						"component": {
+							"const": "Section"
+						},
+						"title": {
+							"$ref": "common.schema.json#/$defs/ShortText"
+						},
+						"children": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 8,
+							"items": {
+								"$ref": "#/$defs/Node"
+							}
+						}
+					}
+				},
+				{
+					"title": "EvidencePairNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "left", "right"],
+					"properties": {
+						"component": {
+							"const": "EvidencePair"
+						},
+						"left": {
+							"$ref": "source-ref.schema.json"
+						},
+						"right": {
+							"$ref": "source-ref.schema.json"
+						},
+						"caption": {
+							"$ref": "common.schema.json#/$defs/ShortText"
+						}
+					}
+				},
+				{
+					"title": "ConnectionCardNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "findingId", "status"],
+					"properties": {
+						"component": {
+							"const": "ConnectionCard"
+						},
+						"findingId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"status": {
+							"enum": ["tentative", "accepted", "rejected"]
+						},
+						"rationale": {
+							"$ref": "common.schema.json#/$defs/LongText"
+						}
+					}
+				},
+				{
+					"title": "ConstraintEditorNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "investigationId", "expectedRevision"],
+					"properties": {
+						"component": {
+							"const": "ConstraintEditor"
+						},
+						"investigationId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"expectedRevision": {
+							"$ref": "common.schema.json#/$defs/Revision"
+						},
+						"prompt": {
+							"$ref": "common.schema.json#/$defs/ShortText"
+						}
+					}
+				},
+				{
+					"title": "HandoffPreviewNode",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["component", "handoffId", "handoffRevision"],
+					"properties": {
+						"component": {
+							"const": "HandoffPreview"
+						},
+						"handoffId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"handoffRevision": {
+							"type": "integer",
+							"minimum": 1
+						}
+					}
+				}
+			]
+		}
+	}
+}
