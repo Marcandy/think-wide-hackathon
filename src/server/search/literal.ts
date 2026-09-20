@@ -77,10 +77,16 @@ export function lineRange(
 	let line = 1;
 	let startLine = 1;
 	for (let i = 0; i < end && i < bytes.length; i++) {
-		if (i === start) startLine = line;
-		if (bytes[i] === 0x0a) line++;
+		if (i === start) {
+			startLine = line;
+		}
+		if (bytes[i] === 0x0a) {
+			line++;
+		}
 	}
-	if (start >= end) startLine = line;
+	if (start >= end) {
+		startLine = line;
+	}
 	return { start: startLine, end: line };
 }
 
@@ -156,20 +162,24 @@ function decodeCursor(
 		typeof parsed?.b !== "string" ||
 		!Number.isInteger(parsed?.e) ||
 		!Number.isInteger(parsed?.o)
-	)
+	) {
 		throw new CursorConflictError("cursor is malformed");
+	}
 	// A changed query, filter, snapshot set or entry ordering invalidates the position.
-	if (parsed.b !== binding)
+	if (parsed.b !== binding) {
 		throw new CursorConflictError(
 			"cursor does not belong to this query or scope",
 		);
+	}
 	// A position outside the scope is a conflict. Accepting it returns zero hits with
 	// complete coverage, which reads as "nothing here" and is a lie.
-	if (parsed.e < 0 || parsed.e >= entries.length)
+	if (parsed.e < 0 || parsed.e >= entries.length) {
 		throw new CursorConflictError("cursor entry position is out of range");
+	}
 	const entry = entries[parsed.e] as ScanEntry;
-	if (parsed.o < 0 || parsed.o > entry.bytes.byteLength)
+	if (parsed.o < 0 || parsed.o > entry.bytes.byteLength) {
 		throw new CursorConflictError("cursor byte position is out of range");
+	}
 	return parsed;
 }
 
@@ -183,23 +193,27 @@ export function literalSearch(
 	const deadline = started + SEARCH_CAPS.wallClockMs;
 
 	const needleRaw = Buffer.from(query.text, "utf8");
-	if (needleRaw.byteLength === 0)
+	if (needleRaw.byteLength === 0) {
 		throw new SearchInputError("literal query must not be empty");
-	if (needleRaw.byteLength > SEARCH_CAPS.maxQueryBytes)
+	}
+	if (needleRaw.byteLength > SEARCH_CAPS.maxQueryBytes) {
 		throw new SearchInputError(
 			`literal query exceeds ${SEARCH_CAPS.maxQueryBytes} bytes`,
 		);
+	}
 	const caseSensitive = query.caseSensitive !== false;
-	if (!caseSensitive && needleRaw.some((b) => b > 0x7f))
+	if (!caseSensitive && needleRaw.some((b) => b > 0x7f)) {
 		throw new SearchInputError(
 			"case-insensitive literal search is ASCII-only; use caseSensitive for non-ASCII queries",
 		);
+	}
 
 	const snapshotIds = [...new Set(entries.map((e) => e.snapshotId))];
-	if (snapshotIds.length > SEARCH_CAPS.maxSnapshots)
+	if (snapshotIds.length > SEARCH_CAPS.maxSnapshots) {
 		throw new SearchInputError(
 			`at most ${SEARCH_CAPS.maxSnapshots} snapshots per search`,
 		);
+	}
 
 	const binding = queryBinding(query, snapshotIds, entries, options.pathPrefix);
 	const resume = options.cursor
@@ -216,7 +230,9 @@ export function literalSearch(
 	// the same position on the next page.
 	for (let index = 0; index < entries.length; index++) {
 		const entry = entries[index] as ScanEntry;
-		if (resume && index < resume.e) continue;
+		if (resume && index < resume.e) {
+			continue;
+		}
 		if (options.pathPrefix && !entry.path.startsWith(options.pathPrefix)) {
 			coverage.excluded++;
 			continue;
@@ -267,7 +283,9 @@ export function literalSearch(
 		let from = resume && index === resume.e ? resume.o : 0;
 		for (;;) {
 			const at = haystack.indexOf(needle, from);
-			if (at < 0) break;
+			if (at < 0) {
+				break;
+			}
 			if (findings.length >= SEARCH_CAPS.hitsPerPage) {
 				truncatedReason = "page_limit";
 				nextCursor = encodeCursor({ b: binding, e: index, o: at });
@@ -276,7 +294,9 @@ export function literalSearch(
 			findings.push(literalFinding(entry, at, at + needle.byteLength, started));
 			from = at + needle.byteLength; // non-overlapping
 		}
-		if (nextCursor) break;
+		if (nextCursor) {
+			break;
+		}
 	}
 
 	const pageTruncated = truncatedReason !== null;
