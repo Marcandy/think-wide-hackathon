@@ -10,12 +10,16 @@ import type {
 	Decision,
 	Investigation,
 	RecordDecisionRequest,
+	SourceRef,
 } from "../../../generated/types";
 import { DecisionEditor } from "./DecisionEditor";
 import {
 	InvestigationEvidence,
 	SourceReferences,
 } from "./InvestigationEvidence";
+import { OperationPanel } from "./OperationPanel";
+import { PrepareBrief } from "./PrepareBrief";
+import { SnapshotBrowser } from "./SnapshotBrowser";
 import {
 	appendDecisionPage,
 	decisionCommand,
@@ -45,6 +49,8 @@ export function InvestigationWorkbench({
 	const [draft, setDraft] = useState<
 		Pick<RecordDecisionRequest, "kind" | "statement">
 	>({ kind: "constraint", statement: "" });
+	const [references, setReferences] = useState<SourceRef[]>([]);
+	const [sourceSnapshot, setSourceSnapshot] = useState<string>();
 	const [baseRevision, setBaseRevision] = useState<number>();
 	const [pending, setPending] = useState<RecordDecisionRequest>();
 	const [saving, setSaving] = useState(false);
@@ -97,6 +103,7 @@ export function InvestigationWorkbench({
 					{ investigationId, revision: baseRevision ?? investigation.revision },
 					draft,
 					crypto.randomUUID(),
+					references,
 				);
 		} catch {
 			setMessage(
@@ -111,6 +118,7 @@ export function InvestigationWorkbench({
 		try {
 			const saved = await recordDecision({ request });
 			setDraft({ kind: draft.kind, statement: "" });
+			setReferences([]);
 			setBaseRevision(undefined);
 			setPending(undefined);
 			setMessage(
@@ -241,42 +249,64 @@ export function InvestigationWorkbench({
 				</section>
 			</div>
 			<InvestigationEvidence findings={investigation.acceptedFindings ?? []} />
-			<section
-				className="space-y-3 rounded-lg border bg-card p-5"
-				aria-labelledby={`${fieldId}-brief`}
-			>
-				<h2 id={`${fieldId}-brief`} className="text-xl font-semibold">
-					Implementation brief
-				</h2>
-				<p id={`${fieldId}-export-help`}>
-					Brief export will be available when the target snapshot and saved
-					brief operations are connected.
-				</p>
-				<div className="flex flex-wrap gap-3">
-					<button
-						className={button}
-						type="button"
-						disabled
-						aria-describedby={`${fieldId}-export-help`}
+			<section className="space-y-3">
+				<label className="block">
+					Browse investigation source{" "}
+					<select
+						value={sourceSnapshot ?? ""}
+						onChange={(event) =>
+							setSourceSnapshot(event.target.value || undefined)
+						}
 					>
-						Prepare private brief
-					</button>
-					<button
-						className={button}
-						type="button"
-						disabled
-						aria-describedby={`${fieldId}-publish-help`}
-					>
-						Publish GitHub issue
-					</button>
-				</div>
-				<p
-					id={`${fieldId}-publish-help`}
-					className="text-sm text-muted-foreground"
-				>
-					GitHub issue publication is not connected.
-				</p>
+						<option value="">Select a snapshot</option>
+						{investigation.snapshotIds.map((id) => (
+							<option key={id} value={id}>
+								{id}
+							</option>
+						))}
+					</select>
+				</label>
+				{sourceSnapshot ? (
+					<OperationPanel key={sourceSnapshot}>
+						<SnapshotBrowser
+							snapshotId={sourceSnapshot}
+							onUse={
+								saving || pending
+									? undefined
+									: (ref) => {
+											if (references.length >= 16) {
+												setMessage(
+													"A decision can reference at most 16 source windows.",
+												);
+												return;
+											}
+											setReferences([...references, ref]);
+											setBaseRevision(baseRevision ?? investigation.revision);
+										}
+							}
+						/>
+					</OperationPanel>
+				) : null}
+				{references.length ? (
+					<div>
+						<p>
+							{references.length} exact source windows attached to this draft.
+						</p>
+						<SourceReferences references={references} />
+						<button
+							type="button"
+							className={button}
+							disabled={saving || !!pending}
+							onClick={() => setReferences([])}
+						>
+							Clear draft references
+						</button>
+					</div>
+				) : null}
 			</section>
+			<OperationPanel key={`brief:${investigationId}`}>
+				<PrepareBrief investigation={investigation} />
+			</OperationPanel>
 		</div>
 	);
 }

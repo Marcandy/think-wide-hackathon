@@ -1,5 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { InvestigationAccess } from "../components/behavior/InvestigationAccess";
+import { OperationPanel } from "../components/behavior/OperationPanel";
+import { ProjectPortfolio } from "../components/behavior/ProjectPortfolio";
 import { PortfolioNav } from "../components/shell/PortfolioNav";
 
 export const Route = createFileRoute("/")({ component: Home });
@@ -20,11 +22,16 @@ function Home() {
 					});
 				}}
 			/>
-			<p className="field-help">
-				Repository selection for new investigations is awaiting the source
-				connection. The component workshop remains available with clearly
-				labeled synthetic samples.
-			</p>
+			<OperationPanel>
+				<ProjectPortfolio
+					onOpen={(investigationId) => {
+						void navigate({
+							to: "/investigations/$investigationId",
+							params: { investigationId },
+						});
+					}}
+				/>
+			</OperationPanel>
 		</main>
 	);
 }

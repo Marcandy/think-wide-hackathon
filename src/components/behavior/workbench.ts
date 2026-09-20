@@ -4,6 +4,7 @@ import type {
 	Investigation,
 	OperationError,
 	RecordDecisionRequest,
+	SourceRef,
 } from "../../../generated/types";
 import {
 	RecordDecisionRequest as isDecisionRequest,
@@ -34,21 +35,23 @@ export function decisionCommand(
 	investigation: Pick<Investigation, "investigationId" | "revision">,
 	draft: DecisionDraft,
 	requestKey: string,
+	refs: readonly SourceRef[] = [],
 ): RecordDecisionRequest {
-	const request: RecordDecisionRequest = {
+	const request = {
 		investigationId: investigation.investigationId,
 		expectedRevision: investigation.revision,
 		kind: draft.kind,
 		statement: draft.statement,
 		...(draft.category === undefined ? {} : { category: draft.category }),
 		requestKey,
+		...(refs.length ? { refs: structuredClone(refs) } : {}),
 	};
 	if (!draft.statement.trim() || !isDecisionRequest(request)) {
 		throw new Error(
 			"Enter a decision within the contract’s 16,384 character limit.",
 		);
 	}
-	return request;
+	return request as RecordDecisionRequest;
 }
 
 export function investigationAddress(value: string): string | undefined {

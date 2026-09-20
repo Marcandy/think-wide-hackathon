@@ -1,7 +1,12 @@
+import { useState } from "react";
 import type { Finding, SourceRef } from "../../../generated/types";
 import { Section } from "../catalog/Section";
+import { SourceViewer } from "../shell/SourceViewer";
+import { Button } from "../ui/button";
+import { OperationPanel } from "./OperationPanel";
 
 export function SourceReference({ reference }: { reference: SourceRef }) {
+	const [reading, setReading] = useState(false);
 	return (
 		<details className="rounded border p-3 text-sm">
 			<summary className="cursor-pointer break-all">
@@ -12,9 +17,25 @@ export function SourceReference({ reference }: { reference: SourceRef }) {
 				{JSON.stringify(reference, null, 2)}
 			</pre>
 			<p className="field-help">
-				Exact reference metadata. Source bytes are unavailable until the source
-				reader is connected; no quotation is reconstructed here.
+				Exact reference metadata; no quotation is reconstructed here.
 			</p>
+			<Button
+				type="button"
+				variant="outline"
+				disabled={!reference.snapshotId}
+				onClick={() => setReading(!reading)}
+			>
+				{reading ? "Close source" : "Read exact source"}
+			</Button>
+			{reading && reference.snapshotId ? (
+				<OperationPanel>
+					<SourceViewer
+						snapshotId={reference.snapshotId}
+						entryId={reference.entryId}
+						reference={reference}
+					/>
+				</OperationPanel>
+			) : null}
 		</details>
 	);
 }

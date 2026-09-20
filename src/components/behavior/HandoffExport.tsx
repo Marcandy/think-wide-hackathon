@@ -6,9 +6,7 @@ import {
 	readHandoffExport,
 } from "./handoff-export";
 
-/** The saved-handoff route will provide its protected operation adapter after
- * T05/shared handoff storage integration. There is no fixture reader in the app.
- */
+/** The saved-handoff route supplies the protected read operation. */
 export function HandoffExport({
 	selection,
 	read,
