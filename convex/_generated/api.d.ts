@@ -8,7 +8,15 @@
  * @module
  */
 
-import type * as todos from "../todos.js";
+import type * as decisions from "../decisions.js";
+import type * as investigations from "../investigations.js";
+import type * as lib_authz from "../lib/authz.js";
+import type * as lib_operation from "../lib/operation.js";
+import type * as lib_publication from "../lib/publication.js";
+import type * as lib_receipts from "../lib/receipts.js";
+import type * as lib_validation from "../lib/validation.js";
+import type * as receipts from "../receipts.js";
+import type * as runs from "../runs.js";
 
 import type {
   ApiFromModules,
@@ -17,7 +25,15 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  todos: typeof todos;
+  decisions: typeof decisions;
+  investigations: typeof investigations;
+  "lib/authz": typeof lib_authz;
+  "lib/operation": typeof lib_operation;
+  "lib/publication": typeof lib_publication;
+  "lib/receipts": typeof lib_receipts;
+  "lib/validation": typeof lib_validation;
+  receipts: typeof receipts;
+  runs: typeof runs;
 }>;
 
 /**

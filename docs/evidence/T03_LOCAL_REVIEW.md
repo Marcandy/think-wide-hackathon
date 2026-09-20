@@ -77,3 +77,16 @@ Static contrast calculations: foreground/background 12.05:1 light, 5.61:1 dark; 
 Confirmation run completed over all 28 local files with `outcome: completed` and no unreviewed files reported (`/tmp/think-wide-t03-pr-review-confirm.ndjson`). It did not repeat the documentation finding. One minor finding remains explicitly deferred to T03 issue #3's theme review: the supplied secondary background/foreground pair is 3.16:1, below 4.5:1 for normal text. No workshop/catalog/route uses `variant="secondary"`, `bg-secondary`, or `text-secondary`; the supplied tokens are preserved. Interim rule: correct this pair with the theme reviewer before introducing any secondary variant or normal text using it. This is a documented unused-token limitation, not a claim of full accessibility compliance.
 
 No source-code changes followed the completed reviews or the 164-test verification run. Only this outcome record was finalized before the commit.
+
+## Follow-up: T06 integration and inspector feedback
+
+Integrated main at `41e73ad` (PR #12) and Eassa's T03 QA commits `24e53e8` and `3f66c61`. The QA commits supersede the earlier minimum-length and unchanged-theme statements: decisions now require nonempty text, the heading is fixed with agent suggestions labeled separately, and input/focus tokens were adjusted for contrast. Backend, dependencies, and shared instructions match main unchanged.
+
+Marc reported that rejected-composition feedback appeared far above its controls. Both rejection and success feedback now appear inside the inspector, immediately after its buttons. Composition feedback is separate from decision/download feedback; applying or rejecting a layout preserves the draft and decision preview. Help text explains that applying JSON changes only the local layout.
+
+- `bun run verify`: exit 0, 225 tests across 13 files, frozen install, no contract drift, Biome, TypeScript and build passed. Log: `/tmp/think-wide-t03-sync-verify.log`.
+- Own adversarial review: checked integration against main, valid/rejected transitions, stale feedback clearing, draft/preview preservation and accessible feedback placement. No further confirmed defect found in these changes.
+- Safari desktop interaction: clicked Try a rejected view and then Apply composition. Screenshots confirmed rejection directly beneath the buttons and replacement by success feedback; keyboard focus remained visibly outlined. This does not complete the remaining mobile/keyboard/draft acceptance checklist.
+- Additional CodeRabbit integration review was still running when Marc changed the policy to require CodeRabbit at PR readiness rather than every commit. It was stopped before completion; no pass is claimed for this incremental diff. The completed pre-PR reviews above remain the recorded CodeRabbit results for PR #13's original implementation.
+
+Status remains fixtures only for the workshop. T06's integration does not connect this UI to durable decisions. Marc's notes and the separate category proposal remain local and excluded from this PR.

@@ -23,8 +23,10 @@ const workshopViews = [
 
 export function Workshop() {
 	const [dark, setDark] = useState(false);
-	const [{ view, draft, preview, accepted, notice, rejection }, dispatch] =
-		useReducer(workshopReducer, initialWorkshopState);
+	const [
+		{ view, draft, preview, accepted, notice, compositionNotice, rejection },
+		dispatch,
+	] = useReducer(workshopReducer, initialWorkshopState);
 	const [candidate, setCandidate] = useState(initialComposition);
 
 	useEffect(() => {
@@ -155,11 +157,6 @@ export function Workshop() {
 						02 themes
 					</span>
 				</div>
-				{rejection && (
-					<p className="notice rejection" role="alert">
-						{rejection}
-					</p>
-				)}
 				<output className="status-message">{notice}</output>
 				{preview && (
 					<aside
@@ -212,6 +209,11 @@ export function Workshop() {
 						<span>Contract 0.1.0</span>
 					</summary>
 					<div>
+						<p id="composition-help">
+							Edit the JSON, then apply it to change the component layout above.
+							Invalid layouts leave your current view and decision draft intact.
+							This only changes the local preview; it does not save a decision.
+						</p>
 						<p>
 							Only the six registered components and their reviewed properties
 							are accepted. Maximum 16 nodes, depth 4, and 32 KiB. This is a UI
@@ -220,6 +222,7 @@ export function Workshop() {
 						<Label htmlFor="composition-input">Composition JSON</Label>
 						<Textarea
 							id="composition-input"
+							aria-describedby="composition-help"
 							className="composition-input"
 							rows={10}
 							value={candidate}
@@ -253,6 +256,12 @@ export function Workshop() {
 								Restore sample layout
 							</Button>
 						</div>
+						{rejection && (
+							<p className="notice rejection" role="alert">
+								{rejection}
+							</p>
+						)}
+						<output className="status-message">{compositionNotice}</output>
 					</div>
 				</details>
 			</main>

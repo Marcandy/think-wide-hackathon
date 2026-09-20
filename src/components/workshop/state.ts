@@ -14,6 +14,7 @@ type WorkshopState = {
 	preview: DecisionDraft | null;
 	accepted: string;
 	notice: string;
+	compositionNotice: string;
 	rejection: string;
 };
 
@@ -31,6 +32,7 @@ export const initialWorkshopState: WorkshopState = {
 	preview: null,
 	accepted: initialComposition,
 	notice: "",
+	compositionNotice: "",
 	rejection: "",
 };
 
@@ -77,8 +79,8 @@ export function workshopReducer(
 			if (!result.ok) {
 				return {
 					...state,
-					rejection: `${result.reason} Your last valid view and correction draft are preserved.`,
-					notice: "",
+					rejection: `${result.reason} Your last valid view and decision draft are preserved.`,
+					compositionNotice: "",
 				};
 			}
 
@@ -86,7 +88,10 @@ export function workshopReducer(
 				...state,
 				accepted: action.serialized,
 				rejection: "",
-				notice: "Composition accepted for this local preview.",
+				compositionNotice:
+					state.view === "empty"
+						? "Composition accepted. Switch to Comparison to see the layout."
+						: "Composition applied to the local preview above.",
 			};
 		}
 	}
