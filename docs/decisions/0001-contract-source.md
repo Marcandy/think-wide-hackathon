@@ -15,7 +15,7 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 - Identity is never a request field. Every request schema is `additionalProperties: false`.
 - Operations that return the result envelope declare `envelopeKind`; the pipeline rejects a response whose `kind` differs.
 - Every integration in `getCapabilities` reports an explicit status. Unproven means `not_run`, never absent.
-- Contract 0.1.0 froze at `2bb940f` (PR #6). Later changes are 0.1.x follow-ups with a one-line note here.
+- Contract 0.1.0 froze at `2bb940f` (PR #6). The next version is **0.2.0** (issue #10): the 0.1.0 follow-ups below plus decision categories (decision 0003). It is 0.2.0 rather than 0.1.1 because response shapes change.
 
 ## Open items carried by their owning tickets
 | Item | Owner | Interim rule |
@@ -27,4 +27,6 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 | `scripts/check-drift.ts` should recurse | T02 part 2 | `generated/` is flat today |
 | Object id length must match `hashAlgorithm` (issue #10) | contract 0.1.1 | T05 git reader rejects a mismatch with `invalid_request` |
 | `searchModes` lists `semantic`/`type` with no request branch (issue #10) | contract 0.1.1 | `getCapabilities` returns only `literal` / `structural` |
+| Optional `category` on `Decision`, `RecordDecisionRequest`, `HandoffConstraint` (issue #14, decision 0003) | contract 0.2.0 | 0.1.0 validators reject `category`; do not send it until 0.2.0 lands |
+| Source refs are authorized by snapshot membership but not checked for existence (PR #12 review) | T05 integration (#11) | stored refs are *authorized, not verified*; findings stay `verification: "unverified"` |
 | `src/server/config.ts` (mode, refuse local-demo in production) | T02 part 2 | — |
