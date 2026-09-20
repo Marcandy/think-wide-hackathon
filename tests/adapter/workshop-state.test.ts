@@ -77,6 +77,6 @@ describe("human input survives workshop view changes", () => {
 			draft: { kind: "constraint", text: " " },
 		});
 		expect(state.preview).toBeNull();
-		expect(state.notice).toContain("10 characters");
+		expect(state.notice).toContain("Write your decision");
 	});
 });

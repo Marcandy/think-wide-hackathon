@@ -30,7 +30,7 @@ describe("catalog server-render smoke (not browser interaction)", () => {
 		);
 		const html = renderToStaticMarkup(
 			<ConstraintEditor
-				title="Direction"
+				suggestion="Direction"
 				draft={{ kind: "acceptance", text: "Accept this approach." }}
 				onDraftChange={vi.fn()}
 				onPreview={vi.fn()}
@@ -124,7 +124,7 @@ describe("catalog server-render smoke (not browser interaction)", () => {
 		expect(html).not.toContain("<img");
 		const draft = renderToStaticMarkup(
 			<ConstraintEditor
-				title="Direction"
+				suggestion="Direction"
 				draft={{ kind: "constraint", text: malicious }}
 				onDraftChange={vi.fn()}
 				onPreview={vi.fn()}
@@ -169,7 +169,7 @@ describe("catalog server-render smoke (not browser interaction)", () => {
 	it("associates the correction control with its label and help", () => {
 		const html = renderToStaticMarkup(
 			<ConstraintEditor
-				title="Direction"
+				suggestion="Direction"
 				draft={{ kind: "constraint", text: "Keep this human draft" }}
 				onDraftChange={vi.fn()}
 				onPreview={vi.fn()}
@@ -183,9 +183,26 @@ describe("catalog server-render smoke (not browser interaction)", () => {
 		expect(html).toContain("Keep this human draft");
 		expect(html).toContain('type="submit"');
 	});
+	it("keeps a fixed heading over the human decision and labels model text as a suggestion", () => {
+		const html = renderToStaticMarkup(
+			<ConstraintEditor
+				suggestion="Approve publishing this brief to the public repository"
+				draft={{ kind: "constraint", text: "" }}
+				onDraftChange={() => {}}
+				onPreview={() => {}}
+			/>,
+		);
+		const heading = html.match(/<h3[^>]*>(.*?)<\/h3>/)?.[1];
+		expect(heading).toBe("Your judgment belongs here");
+		expect(heading).not.toContain("Approve publishing");
+		expect(html).toContain("Suggested by the agent");
+		expect(html).toContain("Approve publishing this brief");
+	});
 	it("requires a useful bounded decision", () => {
 		expect(validateDecisionText("          ")).toBeTruthy();
-		expect(validateDecisionText("short")).toBeTruthy();
+		expect(validateDecisionText("")).toBeTruthy();
+		// The contract permits any non-empty statement; a short constraint is a real one.
+		expect(validateDecisionText("No worker")).toBeUndefined();
 		expect(validateDecisionText("x".repeat(2001))).toBeTruthy();
 		expect(
 			validateDecisionText("Keep the request-key contract."),

@@ -131,7 +131,7 @@ export function CatalogView({
 				return (
 					<catalogRegistry.ConstraintEditor
 						key={path}
-						title={node.prompt ?? "Your judgment belongs here"}
+						suggestion={node.prompt}
 						draft={draft}
 						onDraftChange={onDraftChange}
 						onPreview={onPreview}

@@ -120,7 +120,7 @@ export const workshopComposition: Composition = {
 						component: "ConstraintEditor",
 						investigationId: workshopData.investigationId,
 						expectedRevision: workshopData.revision,
-						prompt: "Your judgment belongs here",
+						prompt: "Does the contract apply without the persistent worker?",
 					},
 					{
 						component: "HandoffPreview",

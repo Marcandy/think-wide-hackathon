@@ -21,16 +21,22 @@ function isDecisionKind(value: string): value is DecisionDraft["kind"] {
 	return Object.hasOwn(decisionKindLabels, value);
 }
 
+// The heading over the human decision form is fixed product text. Text authored by a model
+// (the composition prompt) is shown beneath it and labeled as a suggestion, because this is
+// the one place a human exercises authority and source text can steer what a model writes.
+export const DECISION_EDITOR_HEADING = "Your judgment belongs here";
+
 type ConstraintEditorProps = {
-	title: string;
+	suggestion?: string;
 	draft: DecisionDraft;
 	onDraftChange: (draft: DecisionDraft) => void;
 	onPreview: (draft: DecisionDraft) => void;
 };
 
 export function validateDecisionText(value: string) {
-	if (value.trim().length < 10) {
-		return "Add at least 10 characters so the decision is useful.";
+	// The contract allows any non-empty statement; "No worker" is a complete constraint.
+	if (value.trim().length === 0) {
+		return "Write your decision before previewing it.";
 	}
 
 	if (value.length > 2000) {
@@ -41,7 +47,7 @@ export function validateDecisionText(value: string) {
 }
 
 export function ConstraintEditor({
-	title,
+	suggestion,
 	draft,
 	onDraftChange,
 	onPreview,
@@ -55,7 +61,12 @@ export function ConstraintEditor({
 	return (
 		<article className="editor-card">
 			<span className="eyebrow">Human direction</span>
-			<h3>{title}</h3>
+			<h3>{DECISION_EDITOR_HEADING}</h3>
+			{suggestion ? (
+				<p className="field-help">
+					<span className="eyebrow">Suggested by the agent</span> {suggestion}
+				</p>
+			) : null}
 			<p>
 				You know the constraints. Give the next comparison a better starting
 				point.
