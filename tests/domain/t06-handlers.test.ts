@@ -864,30 +864,30 @@ describe("T06 real handlers", () => {
 		).toBe("request_key_conflict");
 	});
 
-	test("roles derive permissions from every registered operation", () => {
+	test.each([
+		"investigation",
+		"snapshot",
+	] as const)("roles derive permissions for %s from the registry", (kind) => {
 		for (const role of ["owner", "reader"] as const)
 			for (const operation of OPERATIONS)
 				expect(
-					may(
-						{ id: "A" },
-						operation.operationId,
-						{ kind: "snapshot", id: "snapshot_A" },
-						[
-							{
-								principal: "A",
-								resourceKind: "snapshot",
-								resourceId: "snapshot_A",
-								role,
-								epoch: 1,
-							},
-						],
-					),
+					may({ id: "A" }, operation.operationId, { kind, id: "resource_A" }, [
+						{
+							principal: "A",
+							resourceKind: kind,
+							resourceId: "resource_A",
+							role,
+							epoch: 1,
+						},
+					]),
 				).toBe(
-					role === "owner" || operation.effect === "read" ? "allow" : "deny",
+					kind === "snapshot" || role === "owner" || operation.effect === "read"
+						? "allow"
+						: "deny",
 				);
 	});
 
-	test("reader can read but every public state-changing operation and replay is denied", async () => {
+	test("investigation reader can read but cannot mutate that investigation or replay its creation", async () => {
 		const { t, a } = await fixture();
 		const inv = await a.mutation(api.investigations.openInvestigation, {
 			request: openRequest,
@@ -922,9 +922,6 @@ describe("T06 real handlers", () => {
 		for (const requestKey of [openRequest.requestKey, "reader-new-key"]) {
 			const errors = await Promise.all(
 				[
-					a.mutation(api.investigations.openInvestigation, {
-						request: { ...openRequest, requestKey },
-					}),
 					a.mutation(api.decisions.recordDecision, {
 						request: decisionRequest(inv.investigationId, 0, requestKey),
 					}),
@@ -948,6 +945,15 @@ describe("T06 real handlers", () => {
 					message: "Resource not found",
 				});
 		}
+		expect(
+			(
+				await errorOf(
+					a.mutation(api.investigations.openInvestigation, {
+						request: openRequest,
+					}),
+				)
+			).code,
+		).toBe("not_found");
 		expect(await state(t)).toEqual(before);
 	});
 
@@ -1012,7 +1018,7 @@ describe("T06 real handlers", () => {
 		"revoke",
 		"epoch",
 		"role",
-	])("two-snapshot fence rejects a %s on just one snapshot", async (change) => {
+	])("two-snapshot fence rejects %s of an admitted grant", async (change) => {
 		const { t, a } = await fixture();
 		await t.run(async (ctx) => {
 			await ctx.db.insert("grants", {
@@ -1057,7 +1063,8 @@ describe("T06 real handlers", () => {
 			for (const grant of await ctx.db.query("grants").collect())
 				if (
 					grant.principal === identityA.tokenIdentifier &&
-					grant.resourceId === "snapshot_B"
+					grant.resourceId ===
+						(change === "role" ? inv.investigationId : "snapshot_B")
 				)
 					await ctx.db.patch(
 						grant._id,
@@ -1159,6 +1166,219 @@ describe("T06 real handlers", () => {
 			invalidRef.snapshotId ? "invalid_request" : "source_unavailable",
 		);
 		expect(await state(t)).toEqual(before);
+	});
+
+	describe("F6 read-only snapshot inputs", () => {
+		async function sharedSnapshot() {
+			const setup = await fixture();
+			const snapshotGrant = await setup.t.run((ctx) =>
+				ctx.db.insert("grants", {
+					principal: identityB.tokenIdentifier,
+					resourceKind: "snapshot",
+					resourceId: "snapshot_A",
+					role: "reader",
+					epoch: 7,
+				}),
+			);
+			return { ...setup, snapshotGrant };
+		}
+
+		test("B can open, decide, admit and publish using a reader snapshot grant", async () => {
+			const { t, b, snapshotGrant } = await sharedSnapshot();
+			const inv = await b.mutation(api.investigations.openInvestigation, {
+				request: openRequest,
+			});
+			const decision = await b.mutation(api.decisions.recordDecision, {
+				request: { ...decisionRequest(inv.investigationId), refs: [ref] },
+			});
+			expect(decision.resultingRevision).toBe(1);
+			const run = await b.mutation(api.runs.admitRun, {
+				request: {
+					investigationId: inv.investigationId,
+					expectedRevision: 1,
+					purpose: "compare",
+					requestKey: "shared-run-key",
+				},
+			});
+			expect((await state(t)).runs[0].fences).toContainEqual({
+				grantId: snapshotGrant,
+				epoch: 7,
+			});
+			expect(
+				await t.mutation(internal.runs.publish, {
+					request: {
+						investigationId: inv.investigationId,
+						runId: run.runId,
+						baseRevision: 1,
+						claims: [
+							{
+								statement: "Shared evidence",
+								evidenceClass: "model_hypothesis",
+								refs: [ref],
+							},
+						],
+					},
+				}),
+			).toEqual({ published: true, status: "published" });
+			const view = await b.query(api.investigations.readInvestigation, {
+				request: { investigationId: inv.investigationId },
+			});
+			expect(view.decisions).toEqual([decision]);
+			expect(view.acceptedFindings).toMatchObject([
+				{ refs: [ref], verification: "unverified" },
+			]);
+		});
+
+		test("sharing a snapshot gives B no access to A's investigation", async () => {
+			const { t, a, b } = await sharedSnapshot();
+			const inv = await a.mutation(api.investigations.openInvestigation, {
+				request: openRequest,
+			});
+			const before = await state(t);
+			for (const investigationId of [
+				inv.investigationId,
+				"missing_investigation",
+			])
+				for (const error of await Promise.all(
+					[
+						b.query(api.investigations.readInvestigation, {
+							request: { investigationId },
+						}),
+						b.mutation(api.decisions.recordDecision, {
+							request: decisionRequest(investigationId),
+						}),
+					].map(errorOf),
+				))
+					expect(error).toEqual({
+						code: "not_found",
+						message: "Resource not found",
+					});
+			expect(await state(t)).toEqual(before);
+		});
+
+		test("reader grants on A's investigation and snapshot still deny B decide, admit and cancel", async () => {
+			const { t, a, b } = await sharedSnapshot();
+			const inv = await a.mutation(api.investigations.openInvestigation, {
+				request: openRequest,
+			});
+			const runRequest = {
+				investigationId: inv.investigationId,
+				expectedRevision: 0,
+				purpose: "compare",
+				requestKey: "owner-run-key",
+			};
+			const run = await a.mutation(api.runs.admitRun, { request: runRequest });
+			await t.run((ctx) =>
+				ctx.db.insert("grants", {
+					principal: identityB.tokenIdentifier,
+					resourceKind: "investigation",
+					resourceId: inv.investigationId,
+					role: "reader",
+					epoch: 1,
+				}),
+			);
+			expect(
+				(
+					await b.query(api.investigations.readInvestigation, {
+						request: { investigationId: inv.investigationId },
+					})
+				).revision,
+			).toBe(0);
+			expect(
+				(await b.query(api.runs.getRun, { request: { runId: run.runId } }))
+					.status,
+			).toBe("admitted");
+			const before = await state(t);
+			for (const error of await Promise.all(
+				[
+					b.mutation(api.decisions.recordDecision, {
+						request: decisionRequest(inv.investigationId),
+					}),
+					b.mutation(api.runs.admitRun, { request: runRequest }),
+					b.mutation(api.runs.cancelRun, {
+						request: { runId: run.runId, requestKey: "reader-cancel-key" },
+					}),
+				].map(errorOf),
+			))
+				expect(error).toEqual({
+					code: "not_found",
+					message: "Resource not found",
+				});
+			expect(await state(t)).toEqual(before);
+		});
+
+		test.each([
+			"revocation",
+			"epoch",
+		])("reader snapshot %s fences a previously admitted run", async (change) => {
+			const { t, b, snapshotGrant } = await sharedSnapshot();
+			const inv = await b.mutation(api.investigations.openInvestigation, {
+				request: openRequest,
+			});
+			const run = await b.mutation(api.runs.admitRun, {
+				request: {
+					investigationId: inv.investigationId,
+					expectedRevision: 0,
+					purpose: "compare",
+					requestKey: "shared-run-key",
+				},
+			});
+			await t.run((ctx) =>
+				ctx.db.patch(
+					snapshotGrant,
+					change === "revocation" ? { revokedAt: Date.now() } : { epoch: 8 },
+				),
+			);
+			if (change === "revocation") {
+				const before = await state(t);
+				for (const error of await Promise.all(
+					[
+						b.query(api.investigations.readInvestigation, {
+							request: { investigationId: inv.investigationId },
+						}),
+						b.mutation(api.investigations.openInvestigation, {
+							request: openRequest,
+						}),
+					].map(errorOf),
+				))
+					expect(error.code).toBe("not_found");
+				expect(await state(t)).toEqual(before);
+			}
+			expect(
+				await t.mutation(internal.runs.publish, {
+					request: {
+						investigationId: inv.investigationId,
+						runId: run.runId,
+						baseRevision: 0,
+						claims: [
+							{
+								statement: "Stale shared evidence",
+								evidenceClass: "model_hypothesis",
+								refs: [ref],
+							},
+						],
+					},
+				}),
+			).toEqual({ published: false, status: "superseded" });
+			const rows = await state(t);
+			expect(JSON.parse(rows.runs[0].body).status).toBe("superseded");
+			expect(
+				JSON.parse(rows.investigations[0].body).acceptedFindings,
+			).toBeUndefined();
+		});
+
+		test("no snapshot grant still denies opening an investigation", async () => {
+			const { t, b } = await fixture();
+			const before = await state(t);
+			expect(
+				await errorOf(
+					b.mutation(api.investigations.openInvestigation, {
+						request: openRequest,
+					}),
+				),
+			).toEqual({ code: "not_found", message: "Resource not found" });
+			expect(await state(t)).toEqual(before);
+		});
 	});
 
 	test("envelope kind and entries use operation-specific generated validators", () => {

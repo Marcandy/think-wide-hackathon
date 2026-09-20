@@ -26,10 +26,12 @@ export function may(
 			grant.revokedAt === undefined &&
 			(grant.role === "owner" ||
 				(grant.role === "reader" &&
-					OPERATIONS.some(
-						(operation) =>
-							operation.operationId === action && operation.effect === "read",
-					))),
+					// Snapshots are immutable inputs; state effects modify investigations.
+					(resource.kind === "snapshot" ||
+						OPERATIONS.some(
+							(operation) =>
+								operation.operationId === action && operation.effect === "read",
+						)))),
 	)
 		? "allow"
 		: "deny";
