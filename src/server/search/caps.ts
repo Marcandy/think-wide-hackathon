@@ -1,30 +1,16 @@
 /**
  * T07 · search caps and the shape the search handlers operate on.
  *
- * Caps are the initial policy from issue #7 and 05_SECURITY_AND_CI.md. They live here,
- * not in `core/limits.ts`, because T06 owns that file and it has not landed. When it
- * does, this module should re-export from core rather than keep a second copy.
+ * Caps are the initial policy from issue #7 and 05_SECURITY_AND_CI.md.
+ * The shared constants now live in core/limits.ts so Convex capabilities and
+ * the operation pipeline use the same policy without importing Node code.
  *
- * A cap that is only documented is not a cap. Every value below is read by literal.ts
+ * A cap that is only documented is not a cap. Search values are read by literal.ts
  * or structural.ts and asserted in tests/domain/q05-search.test.ts.
  */
 
-export const SEARCH_CAPS = {
-	/** Snapshots per request. The contract also caps snapshotIds at 2. */
-	maxSnapshots: 2,
-	/** Files opened per request, across all snapshots. */
-	maxFiles: 200,
-	/** Bytes actually scanned per request. */
-	maxScanBytes: 20 * 1024 * 1024,
-	/** Wall clock for one search, including the analyzer subprocess. */
-	wallClockMs: 5_000,
-	/** Hits per page. Never infer a total from a capped page. */
-	hitsPerPage: 20,
-	/** Bytes of source text any single result may carry. */
-	maxResultTextBytes: 16 * 1024,
-	/** Contract bound on the literal query itself. */
-	maxQueryBytes: 256,
-} as const;
+import { SEARCH_CAPS } from "../../../core/limits";
+export { SEARCH_CAPS };
 
 /**
  * One immutable snapshot entry handed to a search. T05 will produce these from real

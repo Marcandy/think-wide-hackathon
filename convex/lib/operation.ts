@@ -1,3 +1,4 @@
+import { OPERATION_LIMITS } from "../../core/limits";
 import { canonicalArguments, type Principal } from "../../core";
 import type {
 	ImplementedOperationId,
@@ -47,7 +48,7 @@ function requestFor<K extends keyof Requests>(
 			],
 		});
 	}
-	if (new TextEncoder().encode(encoded).length > 131072)
+	if (new TextEncoder().encode(encoded).length > OPERATION_LIMITS.requestBytes)
 		fail("invalid_request", "Request exceeds size limit", {
 			details: [
 				{ path: "/request", problem: "Maximum request size is 128 KiB" },
@@ -101,7 +102,7 @@ function responseFor<K extends keyof Responses>(
 	response: unknown,
 ): Responses[K] {
 	validateResponse(id, response);
-	if (new TextEncoder().encode(JSON.stringify(response)).length > 16384)
+	if (new TextEncoder().encode(JSON.stringify(response)).length > OPERATION_LIMITS.resultBytes)
 		fail("limit_exceeded", "Operation response exceeds 16 KiB");
 	return response as Responses[K];
 }

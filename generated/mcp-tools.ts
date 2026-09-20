@@ -9,7 +9,7 @@ export const MCP_TOOLS = [
 		"description": "Actual enabled modes, limits, versions, integration status",
 		"operationId": "getCapabilities",
 		"effect": "read",
-		"handler": null,
+		"handler": "capabilities:getCapabilities",
 		"inputSchema": {
 			"title": "GetCapabilitiesRequest",
 			"type": "object",

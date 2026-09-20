@@ -30,6 +30,7 @@ export const CONTRACT_VERSION = "0.2.0" as const;
 export const OPERATIONS = [
 	{
 		"operationId": "getCapabilities",
+		"handler": "capabilities:getCapabilities",
 		"summary": "Actual enabled modes, limits, versions, integration status",
 		"request": "requests.schema.json#/$defs/GetCapabilitiesRequest",
 		"response": "capabilities.schema.json",
@@ -367,6 +368,7 @@ export type ExternalOperationId = never;
 
 /** "<convexModule>:<exportName>" of the Convex function implementing each operation. */
 export const OPERATION_HANDLERS = {
+	"getCapabilities": "capabilities:getCapabilities",
 	"openInvestigation": "investigations:openInvestigation",
 	"readInvestigation": "investigations:readInvestigation",
 	"recordDecision": "decisions:recordDecision",
@@ -378,7 +380,6 @@ export type ImplementedOperationId = keyof typeof OPERATION_HANDLERS;
 
 /** Registered operations with no handler binding yet. */
 export const UNIMPLEMENTED_OPERATIONS = [
-	"getCapabilities",
 	"listProjects",
 	"browseSnapshot",
 	"readSource",

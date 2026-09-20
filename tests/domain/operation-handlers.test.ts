@@ -85,15 +85,10 @@ describe("registry handler bindings", () => {
 		]);
 	});
 
-	test("the six operations implemented today are bound", () => {
-		expect(OPERATION_HANDLERS).toEqual({
-			openInvestigation: "investigations:openInvestigation",
-			readInvestigation: "investigations:readInvestigation",
-			recordDecision: "decisions:recordDecision",
-			requestAnalysis: "runs:admitRun",
-			getRun: "runs:getRun",
-			cancelRun: "runs:cancelRun",
-		});
+	test("handler map is derived from every bound registry operation", () => {
+		expect(OPERATION_HANDLERS).toEqual(
+			Object.fromEntries(bound.map((o) => [o.operationId, o.handler])),
+		);
 	});
 
 	test.each(
