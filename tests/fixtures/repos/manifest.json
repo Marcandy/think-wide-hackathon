@@ -1,0 +1,45 @@
+{
+	"generator": "scripts/make-fixture-repos.ts",
+	"note": "Synthetic operator-authored fixtures. Commit and blob IDs are pinned; bundle bytes are not.",
+	"repos": {
+		"alpha": {
+			"bundle": "alpha.bundle",
+			"headCommit": "b2fccd63dfa868448ab1f5c38bc6cda11139dcec",
+			"staleCommit": "2c6c80439e383bb2985d0353ff4a6c5e7267fc27",
+			"branch": "main",
+			"files": {
+				"src/alpha.ts": {
+					"blob": "0db526728ba042b69d7853fc66fc213c9395cbd7",
+					"sha256": "sha256:7d6d687a581d818e492d5d434dd963f7d9936c14729d8fa00b20eabcc3609b97",
+					"byteLength": 158
+				},
+				"src/unicode-lf.txt": {
+					"blob": "0b3a08ad826533ab9a8670c3a0154bf060329279",
+					"sha256": "sha256:8414f4a686f0eb232722cc652e1cccb6bd23a6524e436490b45e87b83fffbfcb",
+					"byteLength": 101
+				},
+				"src/unicode-crlf.txt": {
+					"blob": "e47ab03c917245dd70224a4303cffce961d73162",
+					"sha256": "sha256:d31dfd64dbb74a08bf7e790d792b839e4e4f9f2d2d70ff26452c111b11024a8d",
+					"byteLength": 105
+				}
+			},
+			"symlinks": {
+				"src/escape-link.txt": "../../../../etc/passwd"
+			}
+		},
+		"beta": {
+			"bundle": "beta.bundle",
+			"headCommit": "28c8c4e1d38565109b1f9853c678b50351dc2705",
+			"staleCommit": null,
+			"branch": "main",
+			"files": {
+				"lib/beta.ts": {
+					"blob": "52dbc526b1e5622c1294d7f9dfd0a2dca88a5fdb",
+					"sha256": "sha256:aa3ffa9b2e527a6fb8b83ccc68783ac9c8b7bc1197cd35b9a98a709b12a241e4",
+					"byteLength": 145
+				}
+			}
+		}
+	}
+}
