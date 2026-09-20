@@ -54,7 +54,7 @@
 					"minimum": 0
 				}
 			},
-			"description": "[start,end) in bytes of the blob."
+			"description": "[start,end) in bytes of the blob. end MUST be >= start; handlers reject inverted ranges with invalid_request."
 		},
 		"lineRange": {
 			"title": "LineRange",
@@ -71,7 +71,7 @@
 					"minimum": 1
 				}
 			},
-			"description": "1-based inclusive, presentation only."
+			"description": "1-based inclusive, presentation only. end MUST be >= start; handlers reject inverted ranges with invalid_request."
 		},
 		"digest": {
 			"$ref": "common.schema.json#/$defs/Sha256",

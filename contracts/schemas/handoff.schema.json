@@ -163,7 +163,8 @@
 				},
 				"issueUrl": {
 					"type": "string",
-					"maxLength": 512
+					"maxLength": 512,
+					"pattern": "^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"
 				},
 				"receiptId": {
 					"$ref": "common.schema.json#/$defs/Id"

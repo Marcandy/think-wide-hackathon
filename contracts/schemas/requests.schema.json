@@ -74,26 +74,27 @@
 		},
 		"SearchSourcesRequest": {
 			"title": "SearchSourcesRequest",
-			"type": "object",
-			"additionalProperties": false,
-			"required": ["snapshotIds", "mode", "query"],
-			"properties": {
-				"snapshotIds": {
-					"type": "array",
-					"minItems": 1,
-					"maxItems": 2,
-					"uniqueItems": true,
-					"items": {
-						"$ref": "common.schema.json#/$defs/Id"
-					}
-				},
-				"mode": {
-					"enum": ["literal", "structural"]
-				},
-				"query": {
-					"title": "SearchQuery",
-					"oneOf": [
-						{
+			"description": "Discriminated on mode: the query shape must match the mode.",
+			"oneOf": [
+				{
+					"title": "LiteralSearchRequest",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["snapshotIds", "mode", "query"],
+					"properties": {
+						"snapshotIds": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 2,
+							"uniqueItems": true,
+							"items": {
+								"$ref": "common.schema.json#/$defs/Id"
+							}
+						},
+						"mode": {
+							"const": "literal"
+						},
+						"query": {
 							"title": "LiteralQuery",
 							"type": "object",
 							"additionalProperties": false,
@@ -109,7 +110,41 @@
 								}
 							}
 						},
-						{
+						"pathPrefixEntryId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"languages": {
+							"type": "array",
+							"maxItems": 8,
+							"items": {
+								"type": "string",
+								"maxLength": 32
+							}
+						},
+						"cursor": {
+							"$ref": "common.schema.json#/$defs/Cursor"
+						}
+					}
+				},
+				{
+					"title": "StructuralSearchRequest",
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["snapshotIds", "mode", "query"],
+					"properties": {
+						"snapshotIds": {
+							"type": "array",
+							"minItems": 1,
+							"maxItems": 2,
+							"uniqueItems": true,
+							"items": {
+								"$ref": "common.schema.json#/$defs/Id"
+							}
+						},
+						"mode": {
+							"const": "structural"
+						},
+						"query": {
 							"title": "StructuralQuery",
 							"type": "object",
 							"additionalProperties": false,
@@ -119,24 +154,24 @@
 									"$ref": "common.schema.json#/$defs/Id"
 								}
 							}
+						},
+						"pathPrefixEntryId": {
+							"$ref": "common.schema.json#/$defs/Id"
+						},
+						"languages": {
+							"type": "array",
+							"maxItems": 8,
+							"items": {
+								"type": "string",
+								"maxLength": 32
+							}
+						},
+						"cursor": {
+							"$ref": "common.schema.json#/$defs/Cursor"
 						}
-					]
-				},
-				"pathPrefixEntryId": {
-					"$ref": "common.schema.json#/$defs/Id"
-				},
-				"languages": {
-					"type": "array",
-					"maxItems": 8,
-					"items": {
-						"type": "string",
-						"maxLength": 32
 					}
-				},
-				"cursor": {
-					"$ref": "common.schema.json#/$defs/Cursor"
 				}
-			}
+			]
 		},
 		"ReadHistoryRequest": {
 			"title": "ReadHistoryRequest",

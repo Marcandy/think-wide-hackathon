@@ -51,7 +51,25 @@ for (const op of registry.operations)
 const sortedRefs = Object.fromEntries(
 	Object.entries(validatorRefs).sort(([a], [b]) => a.localeCompare(b)),
 );
-const validatorsJs = banner + standaloneCode(ajv, sortedRefs);
+// Ajv standalone emits CommonJS `require("ajv/dist/runtime/<name>").default` even in ESM mode.
+// A bare require is not safe in Convex or browser bundles, so hoist each one into an ESM import.
+// The runtime files are CommonJS with `exports.default = fn`: Node's ESM interop hands back the
+// module.exports object, while bundlers honouring __esModule hand back fn itself. Accept both.
+const runtimeRequire =
+	/^const (\w+) = require\("(ajv\/dist\/runtime\/\w+)"\)\.default;$/gm;
+const runtimeImports: string[] = [];
+const standaloneEsm = standaloneCode(ajv, sortedRefs).replace(
+	runtimeRequire,
+	(_line, local: string, specifier: string) => {
+		runtimeImports.push(`import ${local}_mod from "${specifier}.js";\n`);
+		return `const ${local} = typeof ${local}_mod === "function" ? ${local}_mod : ${local}_mod.default;`;
+	},
+);
+const validatorsJs = banner + runtimeImports.sort().join("") + standaloneEsm;
+if (validatorsJs.includes("require("))
+	throw new Error(
+		"codegen: generated validators still contain require(); extend the runtime import rewrite",
+	);
 const validatorsDts = `${banner}import type { ErrorObject } from "ajv";
 export interface Validator { (data: unknown): boolean; errors?: ErrorObject[] | null }
 ${Object.keys(sortedRefs)

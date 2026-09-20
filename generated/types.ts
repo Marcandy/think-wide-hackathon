@@ -37,7 +37,10 @@ export type Revision = number
 export type TimestampMs = number
 export type EvidenceClass = ("observed_literal" | "observed_structural" | "observed_history" | "source_reported" | "model_hypothesis" | "human_decision" | "specialist_reported")
 export type Sha2561 = string
-export type SearchQuery = (LiteralQuery | StructuralQuery)
+/**
+ * Discriminated on mode: the query shape must match the mode.
+ */
+export type SearchSourcesRequest = (LiteralSearchRequest | StructuralSearchRequest)
 
 export interface ThinkWideContract {
 BrowseSnapshotRequest?: BrowseSnapshotRequest
@@ -155,14 +158,14 @@ lineRange?: LineRange
 digest: Sha256
 }
 /**
- * [start,end) in bytes of the blob.
+ * [start,end) in bytes of the blob. end MUST be >= start; handlers reject inverted ranges with invalid_request.
  */
 export interface ByteRange {
 start: number
 end: number
 }
 /**
- * 1-based inclusive, presentation only.
+ * 1-based inclusive, presentation only. end MUST be >= start; handlers reject inverted ranges with invalid_request.
  */
 export interface LineRange {
 start: number
@@ -927,14 +930,14 @@ sanitizedOutcome?: ShortText
 admittedAt: TimestampMs
 finishedAt?: (TimestampMs | null)
 }
-export interface SearchSourcesRequest {
+export interface LiteralSearchRequest {
 /**
  * @minItems 1
  * @maxItems 2
  */
 snapshotIds: [Id]|[Id, Id]
-mode: ("literal" | "structural")
-query: SearchQuery
+mode: "literal"
+query: LiteralQuery
 pathPrefixEntryId?: Id
 /**
  * @maxItems 8
@@ -945,6 +948,21 @@ cursor?: Cursor
 export interface LiteralQuery {
 text: string
 caseSensitive?: boolean
+}
+export interface StructuralSearchRequest {
+/**
+ * @minItems 1
+ * @maxItems 2
+ */
+snapshotIds: [Id]|[Id, Id]
+mode: "structural"
+query: StructuralQuery
+pathPrefixEntryId?: Id
+/**
+ * @maxItems 8
+ */
+languages?: []|[string]|[string, string]|[string, string, string]|[string, string, string, string]|[string, string, string, string, string]|[string, string, string, string, string, string]|[string, string, string, string, string, string, string]|[string, string, string, string, string, string, string, string]
+cursor?: Cursor
 }
 export interface StructuralQuery {
 ruleId: Id
