@@ -90,9 +90,17 @@ describe("Q14: MCP and dispatch use real operation handlers", () => {
 			expect(await call("requestAnalysis", {})).toMatchObject({
 				code: "capability_disabled",
 			});
-			expect(await call("listProjects", {})).toMatchObject({
+			const disabled = await client.callTool({
+				name: "listProjects",
+				arguments: {},
+			});
+			expect(disabled.isError).toBe(true);
+			expect(disabled.structuredContent).toMatchObject({
 				code: "capability_disabled",
 			});
+			expect(
+				await client.callTool({ name: "getCapabilities", arguments: {} }),
+			).toMatchObject({ isError: false });
 			expect(await call("getCapabilities", {})).toMatchObject({
 				searchModes: [],
 				integrations: { remoteMcp: "not_run", hostedIdentity: "not_run" },

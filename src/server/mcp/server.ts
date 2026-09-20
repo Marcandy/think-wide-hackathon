@@ -10,9 +10,7 @@ import { dispatch } from "../ops/dispatch";
 
 /** Low-level SDK registration preserves the generated JSON Schemas verbatim;
  * the high-level registerTool API requires another authored Zod shape. */
-export function createMcpServer(
-	token: () => Promise<string>,
-) {
+export function createMcpServer(token: () => Promise<string>) {
 	const server = new Server(
 		{ name: "think-wide", version: CONTRACT_VERSION },
 		{ capabilities: { tools: {} } },
@@ -29,15 +27,25 @@ export function createMcpServer(
 		if (!response || typeof response !== "object" || Array.isArray(response)) {
 			throw new Error("Invalid operation result");
 		}
+		const summary = Object.fromEntries(
+			Object.entries(response).filter(
+				([, value]) =>
+					value === null ||
+					typeof value === "number" ||
+					typeof value === "boolean" ||
+					(typeof value === "string" && value.length <= 128),
+			),
+		);
+		const text = isError
+			? JSON.stringify(response)
+			: `${JSON.stringify(summary)}\nComplete result is in structuredContent.`;
 		return {
 			isError,
 			structuredContent: { ...response },
 			content: [
 				{
 					type: "text",
-					text: isError
-						? JSON.stringify(response)
-						: "Result available in structuredContent.",
+					text,
 				},
 			],
 		};
