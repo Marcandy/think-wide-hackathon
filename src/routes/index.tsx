@@ -1,14 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button } from "#/components/ui/button";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
 	return (
-		<div className="p-8">
-			<h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-			<p className="mt-4 text-lg">
-				Edit <code>src/routes/index.tsx</code> to get started.
+		<main className="home-intro">
+			<p className="eyebrow">Cross-project perspective</p>
+			<h1>Think-wide</h1>
+			<p>Evidence, human decisions, and clearer implementation briefs.</p>
+			<Button asChild>
+				<Link to="/workshop">Open the component workshop</Link>
+			</Button>
+			<p className="field-help">
+				The workshop uses synthetic samples. The connected workbench is still
+				being built.
 			</p>
-		</div>
+		</main>
 	);
 }
