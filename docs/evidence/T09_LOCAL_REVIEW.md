@@ -1,5 +1,6 @@
 # T09 preparatory implementation and blockers
 
+Current state: [integrated T09 review](T09_INTEGRATED_REVIEW.md) supersedes the historical blockers below. T05/main are integrated; protected handoff persistence and source UI are implemented.
 Date: 2026-09-20. Ticket status: **PARTIAL / BLOCKED for completion**, ready for review of this slice. Reviewer: Andrew. Nothing here establishes acceptance or integration into trunk.
 
 Branch: `feat/t09-persistent-workbench` in `/private/tmp/think-wide-t09`.

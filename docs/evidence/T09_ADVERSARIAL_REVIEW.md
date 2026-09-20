@@ -1,5 +1,6 @@
 # T09 continuation: adversarial review and focused commits
 
+Current state: [integrated T09 review](T09_INTEGRATED_REVIEW.md) supersedes the historical blockers below. T05/main are integrated; protected handoff persistence and source UI are implemented.
 Date: 2026-09-20. **PARTIAL / BLOCKED for completion.** This is preparatory code, not ticket acceptance or trunk integration. Marc requested continuing independent T09 work until T05 merges, doing an adversarial review without CodeRabbit, and committing each logical change separately.
 
 Branch: `feat/t09-persistent-workbench`, isolated worktree `/private/tmp/think-wide-t09`.
