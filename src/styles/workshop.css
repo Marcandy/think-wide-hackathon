@@ -24,10 +24,10 @@
 .brand-symbol {
 	display: inline-flex;
 	padding: 8px;
-	color: var(--primary);
+	color: var(--primary-text);
 }
 .brand-dot {
-	color: var(--primary);
+	color: var(--primary-text);
 	margin-left: -8px;
 }
 .header-actions {
@@ -79,7 +79,7 @@
 	margin: 0;
 }
 .workshop-intro h1 span {
-	color: var(--primary);
+	color: var(--primary-text);
 }
 .intro-copy {
 	font-size: 16px;
@@ -104,7 +104,7 @@
 }
 .note-number {
 	display: block;
-	color: var(--primary);
+	color: var(--primary-text);
 	font: 400 55px / 1 var(--font-mono);
 	letter-spacing: -0.08em;
 	margin-bottom: 25px;
@@ -269,7 +269,7 @@
 	height: 40px;
 	display: grid;
 	place-items: center;
-	color: var(--primary);
+	color: var(--primary-text);
 }
 .connection-card h3 {
 	font-size: 21px;

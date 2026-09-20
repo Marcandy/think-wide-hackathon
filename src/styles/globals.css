@@ -82,6 +82,16 @@
 	}
 }
 
+/* shadcn's outline Button takes --border in light (2.93:1 on the page, 2.58:1 on a card) and
+ * --input only in dark. --input is the control-boundary token in both themes (3.64:1 or better).
+ * In the components layer so `focus-visible:border-ring` and `aria-invalid:border-destructive`
+ * utilities still win. */
+@layer components {
+	[data-slot="button"][data-variant="outline"] {
+		border-color: var(--input);
+	}
+}
+
 /* Deliberately NOT inside a cascade layer. shadcn controls carry `outline-none`, which lives in
  * `@layer utilities` and beats anything in `@layer base`; that left Buttons with only a 50%-alpha
  * ring (about 2:1). Unlayered rules win over every layer, so keyboard focus is a solid 2px
