@@ -81,6 +81,7 @@
 			"request": "requests.schema.json#/$defs/ReadGuidanceRequest",
 			"response": "envelope.schema.json",
 			"envelopeKind": "guidance",
+			"entries": "recipe.schema.json",
 			"effect": "read",
 			"exposure": ["http", "mcp"],
 			"approval": false,

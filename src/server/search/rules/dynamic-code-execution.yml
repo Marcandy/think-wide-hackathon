@@ -1,0 +1,13 @@
+# T07 reviewed rule. Reviewed by: pending @heyoub / @marc.
+#
+# Finds direct `eval(...)` calls: a real cross-project question ("does either service
+# execute text at runtime?") where a literal search for "eval" also returns `evaluate`,
+# `evalRules`, the word in a comment and the word in a string. Those near misses are in
+# the non-matching fixture on purpose.
+#
+# A match is structural evidence that the call exists at that byte range. It is not a
+# judgement that the call is exploitable; that stays a human decision.
+id: dynamic-code-execution
+language: TypeScript
+rule:
+  pattern: eval($$$ARGS)
