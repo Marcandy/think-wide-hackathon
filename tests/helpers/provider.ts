@@ -1,5 +1,5 @@
-import type { EffectLedger, ProviderDispatch } from './effects.ts'
-import { digestArguments } from './effects.ts'
+import type { EffectLedger, ProviderDispatch } from "./effects.ts";
+import { digestArguments } from "./effects.ts";
 
 /**
  * T04 · delayed provider stub with an observable dispatch effect.
@@ -24,154 +24,176 @@ import { digestArguments } from './effects.ts'
  */
 
 export type ProviderOutcome =
-	| { readonly kind: 'completed'; readonly dispatchId: string; readonly body: string }
-	| { readonly kind: 'failed'; readonly dispatchId: string; readonly error: string }
 	| {
-			readonly kind: 'external_outcome_unknown'
-			readonly dispatchId: string
-			/** Dispatched, no confirmed outcome. Reconcile; never blind-retry. */
-			readonly elapsedMs: number | null
+			readonly kind: "completed";
+			readonly dispatchId: string;
+			readonly body: string;
 	  }
+	| {
+			readonly kind: "failed";
+			readonly dispatchId: string;
+			readonly error: string;
+	  }
+	| {
+			readonly kind: "external_outcome_unknown";
+			readonly dispatchId: string;
+			/** Dispatched, no confirmed outcome. Reconcile; never blind-retry. */
+			readonly elapsedMs: number | null;
+	  };
 
 export type ScriptedResponse = {
-	readonly latencyMs: number
+	readonly latencyMs: number;
 	readonly result:
-		| { readonly kind: 'completed'; readonly body: string }
-		| { readonly kind: 'failed'; readonly error: string }
-}
+		| { readonly kind: "completed"; readonly body: string }
+		| { readonly kind: "failed"; readonly error: string };
+};
 
 /** Releases a call that is deliberately left outstanding. */
 export type PendingHandle = {
-	complete: (body: string) => void
-	fail: (error: string) => void
+	complete: (body: string) => void;
+	fail: (error: string) => void;
 	/** Dispatched, then gave up waiting. Neither success nor failure. */
-	timeout: () => void
-	readonly settled: boolean
-}
+	timeout: () => void;
+	readonly settled: boolean;
+};
 
 export type ProviderCall = {
-	readonly provider?: string
-	readonly model?: string
-	readonly args: unknown
-}
+	readonly provider?: string;
+	readonly model?: string;
+	readonly args: unknown;
+};
 
 export type DelayedProvider = {
 	/** Queues a response with virtual latency. Calls consume the queue in order. */
-	enqueue: (response: ScriptedResponse) => void
+	enqueue: (response: ScriptedResponse) => void;
 	/** Queues a call that stays pending until the returned handle releases it. */
-	enqueuePending: () => PendingHandle
-	call: (input: ProviderCall) => Promise<ProviderOutcome>
+	enqueuePending: () => PendingHandle;
+	call: (input: ProviderCall) => Promise<ProviderOutcome>;
 	/** Every dispatch this stub made, including ones that timed out or are outstanding. */
-	dispatches: () => readonly ProviderDispatch[]
-	callCount: () => number
+	dispatches: () => readonly ProviderDispatch[];
+	callCount: () => number;
 	/** Calls dispatched but not yet settled. */
-	pendingCount: () => number
-}
+	pendingCount: () => number;
+};
 
 type Settlement =
-	| { kind: 'completed'; body: string }
-	| { kind: 'failed'; error: string }
-	| { kind: 'external_outcome_unknown' }
+	| { kind: "completed"; body: string }
+	| { kind: "failed"; error: string }
+	| { kind: "external_outcome_unknown" };
 
-type QueueEntry = { kind: 'scripted'; response: ScriptedResponse } | { kind: 'pending'; wait: Promise<Settlement> }
+type QueueEntry =
+	| { kind: "scripted"; response: ScriptedResponse }
+	| { kind: "pending"; wait: Promise<Settlement> };
 
 export function createDelayedProvider(config: {
-	ledger: EffectLedger
-	timeoutMs: number
-	defaultProvider?: string
-	defaultModel?: string
+	ledger: EffectLedger;
+	timeoutMs: number;
+	defaultProvider?: string;
+	defaultModel?: string;
 	/** Used when the queue is empty. Defaults to an immediate completion. */
-	fallback?: ScriptedResponse
+	fallback?: ScriptedResponse;
 }): DelayedProvider {
-	const queue: QueueEntry[] = []
-	const made: ProviderDispatch[] = []
-	let calls = 0
-	let pending = 0
+	const queue: QueueEntry[] = [];
+	const made: ProviderDispatch[] = [];
+	let calls = 0;
+	let pending = 0;
 
-	const provider = config.defaultProvider ?? 'fixture-provider'
-	const model = config.defaultModel ?? 'fixture-model-v0'
+	const provider = config.defaultProvider ?? "fixture-provider";
+	const model = config.defaultModel ?? "fixture-model-v0";
 	const fallback: ScriptedResponse = config.fallback ?? {
 		latencyMs: 0,
-		result: { kind: 'completed', body: 'SYNTHETIC_PROVIDER_BODY' },
-	}
+		result: { kind: "completed", body: "SYNTHETIC_PROVIDER_BODY" },
+	};
 
-	function toOutcome(settlement: Settlement, dispatchId: string): ProviderOutcome {
-		if (settlement.kind === 'completed') return { kind: 'completed', dispatchId, body: settlement.body }
-		if (settlement.kind === 'failed') return { kind: 'failed', dispatchId, error: settlement.error }
-		return { kind: 'external_outcome_unknown', dispatchId, elapsedMs: null }
+	function toOutcome(
+		settlement: Settlement,
+		dispatchId: string,
+	): ProviderOutcome {
+		if (settlement.kind === "completed")
+			return { kind: "completed", dispatchId, body: settlement.body };
+		if (settlement.kind === "failed")
+			return { kind: "failed", dispatchId, error: settlement.error };
+		return { kind: "external_outcome_unknown", dispatchId, elapsedMs: null };
 	}
 
 	return {
 		enqueue(response) {
-			queue.push({ kind: 'scripted', response })
+			queue.push({ kind: "scripted", response });
 		},
 
 		enqueuePending() {
-			let release: (s: Settlement) => void = () => {}
+			let release: (s: Settlement) => void = () => {};
 			const wait = new Promise<Settlement>((resolve) => {
-				release = resolve
-			})
-			queue.push({ kind: 'pending', wait })
+				release = resolve;
+			});
+			queue.push({ kind: "pending", wait });
 
-			let settled = false
+			let settled = false;
 			const settleOnce = (s: Settlement) => {
-				if (settled) return
-				settled = true
-				release(s)
-			}
+				if (settled) return;
+				settled = true;
+				release(s);
+			};
 			return {
-				complete: (body: string) => settleOnce({ kind: 'completed', body }),
-				fail: (error: string) => settleOnce({ kind: 'failed', error }),
-				timeout: () => settleOnce({ kind: 'external_outcome_unknown' }),
+				complete: (body: string) => settleOnce({ kind: "completed", body }),
+				fail: (error: string) => settleOnce({ kind: "failed", error }),
+				timeout: () => settleOnce({ kind: "external_outcome_unknown" }),
 				get settled() {
-					return settled
+					return settled;
 				},
-			}
+			};
 		},
 
 		async call(input) {
-			calls += 1
-			const digest = digestArguments(input.args)
+			calls += 1;
+			const digest = digestArguments(input.args);
 			// Recorded first, exactly once: a request that never returns was still sent.
 			const dispatch = config.ledger.recordDispatch({
 				provider: input.provider ?? provider,
 				model: input.model ?? model,
 				digest,
-			})
-			made.push(dispatch)
-			const dispatchId = `${digest}#${calls}`
+			});
+			made.push(dispatch);
+			const dispatchId = `${digest}#${calls}`;
 
-			const entry = queue.shift() ?? { kind: 'scripted' as const, response: fallback }
+			const entry = queue.shift() ?? {
+				kind: "scripted" as const,
+				response: fallback,
+			};
 
-			if (entry.kind === 'pending') {
-				pending += 1
+			if (entry.kind === "pending") {
+				pending += 1;
 				try {
-					return toOutcome(await entry.wait, dispatchId)
+					return toOutcome(await entry.wait, dispatchId);
 				} finally {
-					pending -= 1
+					pending -= 1;
 				}
 			}
 
-			const scripted = entry.response
+			const scripted = entry.response;
 			if (scripted.latencyMs > config.timeoutMs) {
-				return { kind: 'external_outcome_unknown', dispatchId, elapsedMs: config.timeoutMs }
+				return {
+					kind: "external_outcome_unknown",
+					dispatchId,
+					elapsedMs: config.timeoutMs,
+				};
 			}
-			if (scripted.result.kind === 'failed') {
-				return { kind: 'failed', dispatchId, error: scripted.result.error }
+			if (scripted.result.kind === "failed") {
+				return { kind: "failed", dispatchId, error: scripted.result.error };
 			}
-			return { kind: 'completed', dispatchId, body: scripted.result.body }
+			return { kind: "completed", dispatchId, body: scripted.result.body };
 		},
 
 		dispatches() {
-			return Object.freeze([...made])
+			return Object.freeze([...made]);
 		},
 
 		callCount() {
-			return calls
+			return calls;
 		},
 
 		pendingCount() {
-			return pending
+			return pending;
 		},
-	}
+	};
 }
