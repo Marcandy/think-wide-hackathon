@@ -8,6 +8,8 @@ Initial verified code commit: `6a5fef06245df81d7d07b57eeafcb39cd60be61c`.
 Latest integrated upstream: `2c14b9988fcf7b812eac71cbf0595600c82f973a`, including T03 merge `73459b0`, T07, pinned ast-grep, and the main lint fix.
 Contract: **0.1.0**. Draft PR: [#20](https://github.com/freebatteryfactory/think-wide-hackathon/pull/20).
 
+Current continuation: [T09 adversarial review and focused commits](T09_ADVERSARIAL_REVIEW.md). Verified code is now `48faaf301e006a9e5b750236b52426672d11ae70`: T03 UI/navigation integration, pure snapshot projection, and disconnected export preparation are implemented. The new full gate passes **320 tests, 25 skipped**. Sections below retain the initial slice/sync evidence; the continuation supersedes their pending-work status where explicitly stated. T05 is now open as [PR #23](https://github.com/freebatteryfactory/think-wide-hackathon/pull/23), still unmerged at the final check.
+
 ## Upstream sync after T03 merged
 
 **DONE:** T03's merged theme, catalog, workshop, fonts, tests and root/homepage are now in this T09 branch. `/workshop` and `/investigations/$investigationId` both appear in the regenerated route tree. T03 is no longer an external merge blocker; adapting its preview editor to the persistent command behavior remains T09 implementation work.
