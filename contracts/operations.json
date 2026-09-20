@@ -1,5 +1,5 @@
 {
-	"contractVersion": "0.1.0",
+	"contractVersion": "0.2.0",
 	"note": "Canonical operation registry. HTTP, MCP and any CLI dispatch through the same handler and policy. A new operation is NOT agent-exposed unless 'mcp' is listed here. Operations that return the result envelope declare envelopeKind; the operation pipeline rejects a response whose kind differs.",
 	"operations": [
 		{

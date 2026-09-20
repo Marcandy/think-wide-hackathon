@@ -30,7 +30,7 @@ const proposal = (r: unknown) => ({
 	requestKey: "req-00000001",
 });
 
-describe("generated validators (contract 0.1.0)", () => {
+describe("generated validators (contract 0.2.0)", () => {
 	it("accepts a well-formed nested request", () => {
 		expect(v.SubmitProposalRequest(proposal(ref))).toBe(true);
 	});
@@ -193,7 +193,7 @@ describe("generated validators (contract 0.1.0)", () => {
 
 	it("requires an explicit status for every integration", () => {
 		const base = {
-			contractVersion: "0.1.0",
+			contractVersion: "0.2.0",
 			mode: "local-demo",
 			authProfile: "local-fixed-principal",
 			searchModes: ["literal"],

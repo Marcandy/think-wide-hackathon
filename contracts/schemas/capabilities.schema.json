@@ -31,8 +31,9 @@
 			"type": "array",
 			"uniqueItems": true,
 			"items": {
-				"enum": ["literal", "structural", "semantic", "type"]
-			}
+				"enum": ["literal", "structural"]
+			},
+			"description": "Only modes that have a SearchSourcesRequest branch. Re-add a mode together with its request branch."
 		},
 		"limits": {
 			"title": "Limits",
