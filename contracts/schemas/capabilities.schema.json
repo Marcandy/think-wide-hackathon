@@ -98,7 +98,16 @@
 				"outcomeIngestion": {
 					"$ref": "#/$defs/Status"
 				}
-			}
+			},
+			"required": [
+				"hostedIdentity",
+				"remoteMcp",
+				"githubApp",
+				"issuePublish",
+				"backendReasoning",
+				"outcomeIngestion"
+			],
+			"description": "Every integration reports an explicit status. Omission is not allowed: an unproven capability says not_run."
 		}
 	},
 	"$defs": {

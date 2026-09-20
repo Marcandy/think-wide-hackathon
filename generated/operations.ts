@@ -24,6 +24,7 @@ export const OPERATIONS = [
 		"summary": "Authorized projects with compact snapshot and coverage records",
 		"request": "requests.schema.json#/$defs/ListProjectsRequest",
 		"response": "envelope.schema.json",
+		"envelopeKind": "projects",
 		"entries": "project.schema.json",
 		"effect": "read",
 		"exposure": [
@@ -42,6 +43,7 @@ export const OPERATIONS = [
 		"summary": "Direct children of a tree node with metadata and exact source handles",
 		"request": "requests.schema.json#/$defs/BrowseSnapshotRequest",
 		"response": "envelope.schema.json",
+		"envelopeKind": "tree",
 		"entries": "snapshot-entry.schema.json",
 		"effect": "read",
 		"exposure": [
@@ -77,6 +79,7 @@ export const OPERATIONS = [
 		"summary": "Literal or reviewed structural search over a fixed snapshot set",
 		"request": "requests.schema.json#/$defs/SearchSourcesRequest",
 		"response": "envelope.schema.json",
+		"envelopeKind": "search",
 		"entries": "finding.schema.json",
 		"effect": "read",
 		"exposure": [
@@ -95,6 +98,7 @@ export const OPERATIONS = [
 		"summary": "Bounded commit records for a snapshot or verified path",
 		"request": "requests.schema.json#/$defs/ReadHistoryRequest",
 		"response": "envelope.schema.json",
+		"envelopeKind": "history",
 		"effect": "read",
 		"exposure": [
 			"http",
@@ -112,6 +116,7 @@ export const OPERATIONS = [
 		"summary": "Trusted recipe catalog, or one recipe's full guidance",
 		"request": "requests.schema.json#/$defs/ReadGuidanceRequest",
 		"response": "envelope.schema.json",
+		"envelopeKind": "guidance",
 		"effect": "read",
 		"exposure": [
 			"http",

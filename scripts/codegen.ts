@@ -43,6 +43,20 @@ for (const s of schemas) {
 		for (const k of Object.keys(s.$defs))
 			validatorRefs[k] = `${s.$id}#/$defs/${k}`;
 }
+const envelopeKinds: string[] = schemas.find(
+	(s) => s.$id === "envelope.schema.json",
+).properties.kind.enum;
+for (const op of registry.operations) {
+	const isEnvelope = op.response === "envelope.schema.json";
+	if (isEnvelope && !envelopeKinds.includes(op.envelopeKind))
+		throw new Error(
+			`${op.operationId}: envelope response needs envelopeKind in [${envelopeKinds}]`,
+		);
+	if (!isEnvelope && op.envelopeKind !== undefined)
+		throw new Error(
+			`${op.operationId}: envelopeKind is only valid on envelope responses`,
+		);
+}
 for (const op of registry.operations)
 	for (const ref of [op.request, op.response, op.entries].filter(Boolean))
 		if (!ajv.getSchema(ref))

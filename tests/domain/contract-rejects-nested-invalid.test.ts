@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { OPERATIONS } from "../../generated/operations";
 import * as v from "../../generated/validators.js";
 
 const sha = "a".repeat(40);
@@ -188,5 +189,49 @@ describe("generated validators (contract 0.1.0)", () => {
 			"utf8",
 		);
 		expect(source).not.toContain("require(");
+	});
+
+	it("requires an explicit status for every integration", () => {
+		const base = {
+			contractVersion: "0.1.0",
+			mode: "local-demo",
+			authProfile: "local-fixed-principal",
+			searchModes: ["literal"],
+			limits: {
+				searchHitsPerPage: 20,
+				treeChildrenPerPage: 100,
+				resultTextBytes: 16384,
+				exactWindowBytes: 16384,
+			},
+		};
+		const all = {
+			hostedIdentity: "not_run",
+			remoteMcp: "not_run",
+			githubApp: "disabled",
+			issuePublish: "disabled",
+			backendReasoning: "not_run",
+			outcomeIngestion: "disabled",
+		};
+		expect(v.Capabilities({ ...base, integrations: all })).toBe(true);
+		expect(v.Capabilities({ ...base, integrations: {} })).toBe(false);
+		const { remoteMcp: _omitted, ...missingOne } = all;
+		expect(v.Capabilities({ ...base, integrations: missingOne })).toBe(false);
+	});
+
+	it("binds every envelope operation to exactly one envelope kind", () => {
+		const envelopeOps = OPERATIONS.filter(
+			(o) => o.response === "envelope.schema.json",
+		);
+		expect(envelopeOps.length).toBe(5);
+		for (const o of envelopeOps)
+			expect((o as { envelopeKind?: string }).envelopeKind).toBeTruthy();
+		const kinds = envelopeOps.map(
+			(o) => (o as { envelopeKind?: string }).envelopeKind,
+		);
+		expect(new Set(kinds).size).toBe(kinds.length);
+		for (const o of OPERATIONS.filter(
+			(x) => x.response !== "envelope.schema.json",
+		))
+			expect("envelopeKind" in o).toBe(false);
 	});
 });

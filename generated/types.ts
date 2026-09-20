@@ -101,13 +101,16 @@ scanMaxFiles?: number
 scanMaxBytes?: number
 scanMaxMs?: number
 }
+/**
+ * Every integration reports an explicit status. Omission is not allowed: an unproven capability says not_run.
+ */
 export interface IntegrationStatus {
-hostedIdentity?: CapabilityStatus
-remoteMcp?: CapabilityStatus
-githubApp?: CapabilityStatus
-issuePublish?: CapabilityStatus
-backendReasoning?: CapabilityStatus
-outcomeIngestion?: CapabilityStatus
+hostedIdentity: CapabilityStatus
+remoteMcp: CapabilityStatus
+githubApp: CapabilityStatus
+issuePublish: CapabilityStatus
+backendReasoning: CapabilityStatus
+outcomeIngestion: CapabilityStatus
 }
 /**
  * Closed UI catalog. The server additionally enforces <=16 nodes, depth <=4, <=32 KiB serialized. No JSX, HTML, CSS, URLs, or handlers.

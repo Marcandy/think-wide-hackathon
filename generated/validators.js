@@ -366,7 +366,7 @@ return errors === 0;
 validate60.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const Capabilities = validate22;
-const schema33 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"capabilities.schema.json","title":"Capabilities","type":"object","additionalProperties":false,"required":["contractVersion","mode","authProfile","searchModes","limits","integrations"],"properties":{"contractVersion":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},"catalogVersion":{"type":"string","maxLength":32},"mode":{"enum":["local-demo","connected"]},"authProfile":{"enum":["local-fixed-principal","workos-authkit","workos-mcp-resource"]},"searchModes":{"type":"array","uniqueItems":true,"items":{"enum":["literal","structural","semantic","type"]}},"limits":{"title":"Limits","type":"object","additionalProperties":false,"required":["searchHitsPerPage","treeChildrenPerPage","resultTextBytes","exactWindowBytes"],"properties":{"searchHitsPerPage":{"type":"integer","minimum":1},"treeChildrenPerPage":{"type":"integer","minimum":1},"resultTextBytes":{"type":"integer","minimum":1},"exactWindowBytes":{"type":"integer","minimum":1},"scanMaxFiles":{"type":"integer","minimum":1},"scanMaxBytes":{"type":"integer","minimum":1},"scanMaxMs":{"type":"integer","minimum":1}}},"integrations":{"title":"IntegrationStatus","type":"object","additionalProperties":false,"properties":{"hostedIdentity":{"$ref":"#/$defs/Status"},"remoteMcp":{"$ref":"#/$defs/Status"},"githubApp":{"$ref":"#/$defs/Status"},"issuePublish":{"$ref":"#/$defs/Status"},"backendReasoning":{"$ref":"#/$defs/Status"},"outcomeIngestion":{"$ref":"#/$defs/Status"}}}},"$defs":{"Status":{"title":"CapabilityStatus","enum":["not_run","disabled","local_only","live"]}}};
+const schema33 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"capabilities.schema.json","title":"Capabilities","type":"object","additionalProperties":false,"required":["contractVersion","mode","authProfile","searchModes","limits","integrations"],"properties":{"contractVersion":{"type":"string","pattern":"^[0-9]+\\.[0-9]+\\.[0-9]+$"},"catalogVersion":{"type":"string","maxLength":32},"mode":{"enum":["local-demo","connected"]},"authProfile":{"enum":["local-fixed-principal","workos-authkit","workos-mcp-resource"]},"searchModes":{"type":"array","uniqueItems":true,"items":{"enum":["literal","structural","semantic","type"]}},"limits":{"title":"Limits","type":"object","additionalProperties":false,"required":["searchHitsPerPage","treeChildrenPerPage","resultTextBytes","exactWindowBytes"],"properties":{"searchHitsPerPage":{"type":"integer","minimum":1},"treeChildrenPerPage":{"type":"integer","minimum":1},"resultTextBytes":{"type":"integer","minimum":1},"exactWindowBytes":{"type":"integer","minimum":1},"scanMaxFiles":{"type":"integer","minimum":1},"scanMaxBytes":{"type":"integer","minimum":1},"scanMaxMs":{"type":"integer","minimum":1}}},"integrations":{"title":"IntegrationStatus","type":"object","additionalProperties":false,"properties":{"hostedIdentity":{"$ref":"#/$defs/Status"},"remoteMcp":{"$ref":"#/$defs/Status"},"githubApp":{"$ref":"#/$defs/Status"},"issuePublish":{"$ref":"#/$defs/Status"},"backendReasoning":{"$ref":"#/$defs/Status"},"outcomeIngestion":{"$ref":"#/$defs/Status"}},"required":["hostedIdentity","remoteMcp","githubApp","issuePublish","backendReasoning","outcomeIngestion"],"description":"Every integration reports an explicit status. Omission is not allowed: an unproven capability says not_run."}},"$defs":{"Status":{"title":"CapabilityStatus","enum":["not_run","disabled","local_only","live"]}}};
 const schema34 = {"title":"CapabilityStatus","enum":["not_run","disabled","local_only","live"]};
 const pattern4 = new RegExp("^[0-9]+\\.[0-9]+\\.[0-9]+$", "u");
 const func0 = typeof func0_mod === "function" ? func0_mod : func0_mod.default;
@@ -825,9 +825,8 @@ errors++;
 if(data.integrations !== undefined){
 let data14 = data.integrations;
 if(data14 && typeof data14 == "object" && !Array.isArray(data14)){
-for(const key2 in data14){
-if(!((((((key2 === "hostedIdentity") || (key2 === "remoteMcp")) || (key2 === "githubApp")) || (key2 === "issuePublish")) || (key2 === "backendReasoning")) || (key2 === "outcomeIngestion"))){
-const err36 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2},message:"must NOT have additional properties"};
+if(data14.hostedIdentity === undefined){
+const err36 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "hostedIdentity"},message:"must have required property '"+"hostedIdentity"+"'"};
 if(vErrors === null){
 vErrors = [err36];
 }
@@ -836,11 +835,8 @@ vErrors.push(err36);
 }
 errors++;
 }
-}
-if(data14.hostedIdentity !== undefined){
-let data15 = data14.hostedIdentity;
-if(!((((data15 === "not_run") || (data15 === "disabled")) || (data15 === "local_only")) || (data15 === "live"))){
-const err37 = {instancePath:instancePath+"/integrations/hostedIdentity",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(data14.remoteMcp === undefined){
+const err37 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "remoteMcp"},message:"must have required property '"+"remoteMcp"+"'"};
 if(vErrors === null){
 vErrors = [err37];
 }
@@ -849,11 +845,8 @@ vErrors.push(err37);
 }
 errors++;
 }
-}
-if(data14.remoteMcp !== undefined){
-let data16 = data14.remoteMcp;
-if(!((((data16 === "not_run") || (data16 === "disabled")) || (data16 === "local_only")) || (data16 === "live"))){
-const err38 = {instancePath:instancePath+"/integrations/remoteMcp",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(data14.githubApp === undefined){
+const err38 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "githubApp"},message:"must have required property '"+"githubApp"+"'"};
 if(vErrors === null){
 vErrors = [err38];
 }
@@ -862,11 +855,8 @@ vErrors.push(err38);
 }
 errors++;
 }
-}
-if(data14.githubApp !== undefined){
-let data17 = data14.githubApp;
-if(!((((data17 === "not_run") || (data17 === "disabled")) || (data17 === "local_only")) || (data17 === "live"))){
-const err39 = {instancePath:instancePath+"/integrations/githubApp",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(data14.issuePublish === undefined){
+const err39 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "issuePublish"},message:"must have required property '"+"issuePublish"+"'"};
 if(vErrors === null){
 vErrors = [err39];
 }
@@ -875,11 +865,8 @@ vErrors.push(err39);
 }
 errors++;
 }
-}
-if(data14.issuePublish !== undefined){
-let data18 = data14.issuePublish;
-if(!((((data18 === "not_run") || (data18 === "disabled")) || (data18 === "local_only")) || (data18 === "live"))){
-const err40 = {instancePath:instancePath+"/integrations/issuePublish",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(data14.backendReasoning === undefined){
+const err40 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "backendReasoning"},message:"must have required property '"+"backendReasoning"+"'"};
 if(vErrors === null){
 vErrors = [err40];
 }
@@ -888,11 +875,8 @@ vErrors.push(err40);
 }
 errors++;
 }
-}
-if(data14.backendReasoning !== undefined){
-let data19 = data14.backendReasoning;
-if(!((((data19 === "not_run") || (data19 === "disabled")) || (data19 === "local_only")) || (data19 === "live"))){
-const err41 = {instancePath:instancePath+"/integrations/backendReasoning",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(data14.outcomeIngestion === undefined){
+const err41 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/required",keyword:"required",params:{missingProperty: "outcomeIngestion"},message:"must have required property '"+"outcomeIngestion"+"'"};
 if(vErrors === null){
 vErrors = [err41];
 }
@@ -901,11 +885,9 @@ vErrors.push(err41);
 }
 errors++;
 }
-}
-if(data14.outcomeIngestion !== undefined){
-let data20 = data14.outcomeIngestion;
-if(!((((data20 === "not_run") || (data20 === "disabled")) || (data20 === "local_only")) || (data20 === "live"))){
-const err42 = {instancePath:instancePath+"/integrations/outcomeIngestion",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+for(const key2 in data14){
+if(!((((((key2 === "hostedIdentity") || (key2 === "remoteMcp")) || (key2 === "githubApp")) || (key2 === "issuePublish")) || (key2 === "backendReasoning")) || (key2 === "outcomeIngestion"))){
+const err42 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err42];
 }
@@ -915,9 +897,10 @@ vErrors.push(err42);
 errors++;
 }
 }
-}
-else {
-const err43 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(data14.hostedIdentity !== undefined){
+let data15 = data14.hostedIdentity;
+if(!((((data15 === "not_run") || (data15 === "disabled")) || (data15 === "local_only")) || (data15 === "live"))){
+const err43 = {instancePath:instancePath+"/integrations/hostedIdentity",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err43];
 }
@@ -927,14 +910,91 @@ vErrors.push(err43);
 errors++;
 }
 }
-}
-else {
-const err44 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(data14.remoteMcp !== undefined){
+let data16 = data14.remoteMcp;
+if(!((((data16 === "not_run") || (data16 === "disabled")) || (data16 === "local_only")) || (data16 === "live"))){
+const err44 = {instancePath:instancePath+"/integrations/remoteMcp",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err44];
 }
 else {
 vErrors.push(err44);
+}
+errors++;
+}
+}
+if(data14.githubApp !== undefined){
+let data17 = data14.githubApp;
+if(!((((data17 === "not_run") || (data17 === "disabled")) || (data17 === "local_only")) || (data17 === "live"))){
+const err45 = {instancePath:instancePath+"/integrations/githubApp",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err45];
+}
+else {
+vErrors.push(err45);
+}
+errors++;
+}
+}
+if(data14.issuePublish !== undefined){
+let data18 = data14.issuePublish;
+if(!((((data18 === "not_run") || (data18 === "disabled")) || (data18 === "local_only")) || (data18 === "live"))){
+const err46 = {instancePath:instancePath+"/integrations/issuePublish",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err46];
+}
+else {
+vErrors.push(err46);
+}
+errors++;
+}
+}
+if(data14.backendReasoning !== undefined){
+let data19 = data14.backendReasoning;
+if(!((((data19 === "not_run") || (data19 === "disabled")) || (data19 === "local_only")) || (data19 === "live"))){
+const err47 = {instancePath:instancePath+"/integrations/backendReasoning",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err47];
+}
+else {
+vErrors.push(err47);
+}
+errors++;
+}
+}
+if(data14.outcomeIngestion !== undefined){
+let data20 = data14.outcomeIngestion;
+if(!((((data20 === "not_run") || (data20 === "disabled")) || (data20 === "local_only")) || (data20 === "live"))){
+const err48 = {instancePath:instancePath+"/integrations/outcomeIngestion",schemaPath:"#/$defs/Status/enum",keyword:"enum",params:{allowedValues: schema34.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err48];
+}
+else {
+vErrors.push(err48);
+}
+errors++;
+}
+}
+}
+else {
+const err49 = {instancePath:instancePath+"/integrations",schemaPath:"#/properties/integrations/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err49];
+}
+else {
+vErrors.push(err49);
+}
+errors++;
+}
+}
+}
+else {
+const err50 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err50];
+}
+else {
+vErrors.push(err50);
 }
 errors++;
 }
