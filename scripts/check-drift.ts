@@ -55,9 +55,25 @@ for (const n of [...names].sort()) {
 }
 rmSync(a, { recursive: true });
 rmSync(b, { recursive: true });
+// docs/OPERATIONS.md is a projection of generated/operations.ts; a stale copy is drift too.
+const doc = spawnSync("bun", [join(root, "scripts/operations-doc.ts")], {
+	cwd: root,
+	encoding: "utf8",
+});
+if (doc.status !== 0) throw new Error(doc.stderr);
+let committedDoc: string | null = null;
+try {
+	committedDoc = readFileSync(join(root, "docs/OPERATIONS.md"), "utf8");
+} catch {}
+if (committedDoc !== doc.stdout)
+	problems.push(
+		"docs/OPERATIONS.md: stale, missing or hand-edited (run: bun scripts/operations-doc.ts --write, then regenerate docs/MANIFEST.sha256)",
+	);
 if (problems.length) {
 	console.error(`contract drift:\n  ${problems.join("\n  ")}`);
 	process.exit(1);
 }
 const fileCount = [...names].filter((n) => !n.endsWith("/")).length;
-console.log(`contract drift: none (${fileCount} files, generated twice)`);
+console.log(
+	`contract drift: none (${fileCount} files, generated twice; docs/OPERATIONS.md current)`,
+);
