@@ -13,13 +13,14 @@ export type Cursor = string
  */
 export type RequestKey = string
 export type CapabilityStatus = ("not_run" | "disabled" | "local_only" | "live")
-export type CatalogNode = (StackNode | SectionNode | EvidencePairNode | ConnectionCardNode | ConstraintEditorNode | HandoffPreviewNode)
-export type ShortText = string
 /**
  * Full Git object id, never a branch name.
  */
 export type CommitId = string
 export type HashAlgorithm = ("sha1" | "sha256")
+export type TimestampMs = number
+export type CatalogNode = (StackNode | SectionNode | EvidencePairNode | ConnectionCardNode | ConstraintEditorNode | HandoffPreviewNode)
+export type ShortText = string
 export type ObjectId = string
 /**
  * Opaque identifier. An address, never a permission.
@@ -38,7 +39,6 @@ export type Revision = number
  * Subject of a human decision (decision 0003). User metadata only: never a role, trust label or security guarantee. Absent means uncategorized; never null.
  */
 export type DecisionCategory = ("architecture" | "security")
-export type TimestampMs = number
 export type EvidenceClass = ("observed_literal" | "observed_structural" | "observed_history" | "source_reported" | "model_hypothesis" | "human_decision" | "specialist_reported")
 export type Sha2561 = string
 /**
@@ -62,6 +62,7 @@ export interface ThinkWideContract {
 BrowseSnapshotRequest?: BrowseSnapshotRequest
 CancelRunRequest?: CancelRunRequest
 Capabilities?: Capabilities
+CommitRecord?: CommitRecord
 Composition?: Composition
 Decision?: Decision
 Evidence?: Evidence
@@ -131,6 +132,24 @@ githubApp: CapabilityStatus
 issuePublish: CapabilityStatus
 backendReasoning: CapabilityStatus
 outcomeIngestion: CapabilityStatus
+}
+/**
+ * An observed commit on the pinned snapshot's first-parent history. changedPaths is the exact bounded diff against comparedTo, or the empty tree for a root commit. Over-limit records reject rather than silently truncate.
+ */
+export interface CommitRecord {
+commit: CommitId
+hashAlgorithm: HashAlgorithm
+/**
+ * @maxItems 16
+ */
+parents: []|[CommitId]|[CommitId, CommitId]|[CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]|[CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId, CommitId]
+subject: string
+committedAt: TimestampMs
+comparedTo: (CommitId | null)
+/**
+ * @maxItems 100
+ */
+changedPaths: string[]
 }
 /**
  * Closed UI catalog. The server additionally enforces <=16 nodes, depth <=4, <=32 KiB serialized. No JSX, HTML, CSS, URLs, or handlers.

@@ -77,6 +77,9 @@ async function authorize(
 	ctx: AuthorizedCtx,
 	request: Requests[keyof Requests],
 ): Promise<void> {
+	if ("snapshotId" in request) {
+		await ctx.loadAuthorized("snapshot", request.snapshotId);
+	}
 	if ("snapshotIds" in request)
 		for (const snapshotId of request.snapshotIds)
 			await ctx.requireAccess("snapshot", snapshotId);

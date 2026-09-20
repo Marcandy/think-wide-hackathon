@@ -22,7 +22,7 @@ export const MCP_TOOLS = [
 		"description": "Authorized projects with compact snapshot and coverage records",
 		"operationId": "listProjects",
 		"effect": "read",
-		"handler": null,
+		"handler": "projects:listProjects",
 		"inputSchema": {
 			"title": "ListProjectsRequest",
 			"type": "object",
@@ -59,7 +59,7 @@ export const MCP_TOOLS = [
 		"description": "Direct children of a tree node with metadata and exact source handles",
 		"operationId": "browseSnapshot",
 		"effect": "read",
-		"handler": null,
+		"handler": "snapshots:browseSnapshot",
 		"inputSchema": {
 			"title": "BrowseSnapshotRequest",
 			"type": "object",
@@ -109,7 +109,7 @@ export const MCP_TOOLS = [
 		"description": "Exact bytes for an authorized source reference, with range and digest",
 		"operationId": "readSource",
 		"effect": "read",
-		"handler": null,
+		"handler": "sourceCache:readSource",
 		"inputSchema": {
 			"title": "ReadSourceRequest",
 			"type": "object",
@@ -332,7 +332,7 @@ export const MCP_TOOLS = [
 		"description": "Bounded commit records for a snapshot or verified path",
 		"operationId": "readHistory",
 		"effect": "read",
-		"handler": null,
+		"handler": "snapshots:readHistory",
 		"inputSchema": {
 			"title": "ReadHistoryRequest",
 			"type": "object",

@@ -54,6 +54,7 @@ export const OPERATIONS = [
 		"envelopeKind": "projects",
 		"entries": "project.schema.json",
 		"effect": "read",
+		"handler": "projects:listProjects",
 		"exposure": [
 			"http",
 			"mcp"
@@ -73,6 +74,7 @@ export const OPERATIONS = [
 		"envelopeKind": "tree",
 		"entries": "snapshot-entry.schema.json",
 		"effect": "read",
+		"handler": "snapshots:browseSnapshot",
 		"exposure": [
 			"http",
 			"mcp"
@@ -90,6 +92,7 @@ export const OPERATIONS = [
 		"request": "requests.schema.json#/$defs/ReadSourceRequest",
 		"response": "evidence.schema.json",
 		"effect": "read",
+		"handler": "sourceCache:readSource",
 		"exposure": [
 			"http",
 			"mcp"
@@ -126,7 +129,9 @@ export const OPERATIONS = [
 		"request": "requests.schema.json#/$defs/ReadHistoryRequest",
 		"response": "envelope.schema.json",
 		"envelopeKind": "history",
+		"entries": "commit-record.schema.json",
 		"effect": "read",
+		"handler": "snapshots:readHistory",
 		"exposure": [
 			"http",
 			"mcp"
@@ -136,7 +141,7 @@ export const OPERATIONS = [
 		"ticket": "T05",
 		"requestType": "ReadHistoryRequest",
 		"responseType": "ResultEnvelope",
-		"entriesType": null
+		"entriesType": "CommitRecord"
 	},
 	{
 		"operationId": "readGuidance",
@@ -369,6 +374,10 @@ export type ExternalOperationId = never;
 /** "<convexModule>:<exportName>" of the Convex function implementing each operation. */
 export const OPERATION_HANDLERS = {
 	"getCapabilities": "capabilities:getCapabilities",
+	"listProjects": "projects:listProjects",
+	"browseSnapshot": "snapshots:browseSnapshot",
+	"readSource": "sourceCache:readSource",
+	"readHistory": "snapshots:readHistory",
 	"openInvestigation": "investigations:openInvestigation",
 	"readInvestigation": "investigations:readInvestigation",
 	"recordDecision": "decisions:recordDecision",
@@ -380,11 +389,7 @@ export type ImplementedOperationId = keyof typeof OPERATION_HANDLERS;
 
 /** Registered operations with no handler binding yet. */
 export const UNIMPLEMENTED_OPERATIONS = [
-	"listProjects",
-	"browseSnapshot",
-	"readSource",
 	"searchSources",
-	"readHistory",
 	"readGuidance",
 	"submitProposal",
 	"prepareHandoff",

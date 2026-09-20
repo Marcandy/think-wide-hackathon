@@ -235,3 +235,27 @@ describe("generated validators (contract 0.2.0)", () => {
 			expect("envelopeKind" in o).toBe(false);
 	});
 });
+
+describe("T05 history entry contract", () => {
+	it("accepts observed roots and rejects branch ids, extra fields, and unbounded diffs", () => {
+		const record = {
+			commit: sha,
+			hashAlgorithm: "sha1",
+			parents: [],
+			subject: "Root",
+			committedAt: 0,
+			comparedTo: null,
+			changedPaths: ["src/a.ts"],
+		};
+		expect(v.CommitRecord(record)).toBe(true);
+		expect(v.CommitRecord({ ...record, commit: "main" })).toBe(false);
+		expect(v.CommitRecord({ ...record, actor: "injected" })).toBe(false);
+		expect(
+			v.CommitRecord({ ...record, changedPaths: Array(101).fill("file") }),
+		).toBe(false);
+		expect(
+			OPERATIONS.find((operation) => operation.operationId === "readHistory")
+				?.entriesType,
+		).toBe("CommitRecord");
+	});
+});

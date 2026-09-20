@@ -32,9 +32,9 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 | Item | Owner | Interim rule |
 |---|---|---|
 | `readHandoff` needs an exact ranged body read (brief up to 64K chars vs 16 KiB result cap) | T09 | `prepareHandoff` refuses an over-cap brief with `limit_exceeded`. Never truncate. |
-| Entry schema for `readHistory` | T05 | `entriesType: null` until the git reader defines the commit record |
+| Entry schema for `readHistory` | T05 | Implemented by `commit-record.schema.json`; first-parent metadata and bounded changed paths, enforced by the operation pipeline |
 | Reject inverted byte/line ranges | T05 `readSource` handler | JSON Schema cannot express end >= start |
-| Source refs are authorized by snapshot membership but not checked for existence (PR #12 review) | T05 integration (#11) | stored refs are *authorized, not verified*; findings stay `verification: "unverified"` |
+| Source ref existence (PR #12 review) | T05 integration (#11) | Resolve the indexed snapshot/entry and verify repository, commit, blob and byte bounds. Exact reads verify digests; metadata checks alone never promote findings to bytes_verified. |
 | `src/server/config.ts` (mode, refuse local-demo in production) | T02 part 2 | — |
 | `ScanEntry` (T07 search input) carries no `hashAlgorithm`; search derives it from the commit id length | T05, when it produces real entries | a ref whose `commit` and `blobId` lengths disagree is rejected by the validator |
 
@@ -44,3 +44,11 @@ The public contract is authored as JSON Schema 2020-12 files in `contracts/schem
 - [x] Optional `category` on `Decision`, `RecordDecisionRequest`, `HandoffConstraint` (issue #14 parts 1 and 2). UI (part 3) and end-to-end (part 4) remain with issue #14.
 - [x] Entry schema for `readGuidance` (T07, PR #15).
 - [x] `scripts/check-drift.ts` recurses.
+
+## T05 history entry behavior
+
+`readHistory` now validates every entry as generated `CommitRecord`. It reports pinned
+first-parent commits, all parent IDs, subject, timestamp, first-parent comparison ID
+(null for roots), and exact changed paths. Limits reject oversized records rather than
+shortening source-derived text; bounded prefixes remain explicitly partial. No request
+shape or decision category is changed. Contract review remains with @heyoub.

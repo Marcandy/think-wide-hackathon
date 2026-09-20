@@ -1,0 +1,39 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "commit-record.schema.json",
+	"title": "CommitRecord",
+	"description": "An observed commit on the pinned snapshot's first-parent history. changedPaths is the exact bounded diff against comparedTo, or the empty tree for a root commit. Over-limit records reject rather than silently truncate.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": [
+		"commit",
+		"hashAlgorithm",
+		"parents",
+		"subject",
+		"committedAt",
+		"comparedTo",
+		"changedPaths"
+	],
+	"properties": {
+		"commit": { "$ref": "common.schema.json#/$defs/CommitId" },
+		"hashAlgorithm": { "$ref": "common.schema.json#/$defs/HashAlgorithm" },
+		"parents": {
+			"type": "array",
+			"maxItems": 16,
+			"items": { "$ref": "common.schema.json#/$defs/CommitId" }
+		},
+		"subject": { "type": "string", "maxLength": 512 },
+		"committedAt": { "$ref": "common.schema.json#/$defs/TimestampMs" },
+		"comparedTo": {
+			"anyOf": [
+				{ "$ref": "common.schema.json#/$defs/CommitId" },
+				{ "type": "null" }
+			]
+		},
+		"changedPaths": {
+			"type": "array",
+			"maxItems": 100,
+			"items": { "type": "string", "minLength": 1, "maxLength": 4096 }
+		}
+	}
+}

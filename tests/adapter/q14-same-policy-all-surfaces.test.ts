@@ -90,8 +90,10 @@ describe("Q14: MCP and dispatch use real operation handlers", () => {
 			expect(await call("requestAnalysis", {})).toMatchObject({
 				code: "capability_disabled",
 			});
+			// An exposed operation with no handler binding. listProjects served this role
+			// until T05 bound it; readGuidance is still unbound and accepts {}.
 			const disabled = await client.callTool({
-				name: "listProjects",
+				name: "readGuidance",
 				arguments: {},
 			});
 			expect(disabled.isError).toBe(true);
