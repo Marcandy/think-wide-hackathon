@@ -277,10 +277,15 @@ describe("T09 deterministic private implementation brief", () => {
 		).rejects.toMatchObject({ code: "invalid_request" });
 	});
 
-	test("refuses over-cap UTF-8 output without clipping", async () => {
-		await expect(
-			freezeHandoff({ ...input(), objective: "界".repeat(4000) }, decisions),
-		).rejects.toMatchObject({ code: "limit_exceeded" });
+	test("retains larger UTF-8 briefs for ranged reads without clipping", async () => {
+		const result = await freezeHandoff(
+			{ ...input(), objective: "界".repeat(8000) },
+			decisions,
+		);
+		expect(
+			new TextEncoder().encode(result.bodyMarkdown).length,
+		).toBeGreaterThan(16384);
+		expect(result.objective).toBe("界".repeat(8000));
 	});
 
 	test("refuses more than 32 constraints without forgetting any decision", () => {

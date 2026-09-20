@@ -4550,15 +4550,15 @@ return errors === 0;
 }
 validate61.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const Handoff = validate64;
-const schema191 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff.schema.json","title":"Handoff","description":"Frozen implementation brief. Issue and download are representations of the same revision.","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","investigationId","investigationRevision","objective","targetRepository","constraints","evidence","acceptance","audience","bodyMarkdown","bodyHash","preparedAt","publication"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"investigationRevision":{"$ref":"common.schema.json#/$defs/Revision"},"objective":{"$ref":"common.schema.json#/$defs/LongText"},"targetRepository":{"title":"HandoffTarget","type":"object","additionalProperties":false,"required":["repositoryId","baseCommit"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"baseCommit":{"$ref":"common.schema.json#/$defs/CommitId"}}},"constraints":{"type":"array","maxItems":32,"items":{"title":"HandoffConstraint","type":"object","additionalProperties":false,"required":["statement","decisionId"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["constraint","rejected_approach","correction"]},"category":{"$ref":"common.schema.json#/$defs/DecisionCategory"}}}},"evidence":{"type":"array","maxItems":32,"items":{"title":"HandoffEvidence","type":"object","additionalProperties":false,"required":["ref","note"],"properties":{"ref":{"$ref":"source-ref.schema.json"},"note":{"$ref":"common.schema.json#/$defs/ShortText"}}}},"likelyFiles":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":1024},"description":"Suggestion only, not a verified dependency list."},"acceptance":{"type":"array","minItems":1,"maxItems":32,"items":{"title":"AcceptanceItem","type":"object","additionalProperties":false,"required":["behavior","status"],"properties":{"behavior":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["not_run","specialist_reported","ci_reported"]}}}},"allowedScope":{"$ref":"common.schema.json#/$defs/LongText"},"excludedChanges":{"$ref":"common.schema.json#/$defs/LongText"},"uncertainties":{"type":"array","maxItems":16,"items":{"$ref":"common.schema.json#/$defs/ShortText"}},"audience":{"enum":["private_download","private_issue","public_issue"]},"bodyMarkdown":{"type":"string","minLength":1,"maxLength":65536},"bodyHash":{"$ref":"common.schema.json#/$defs/Sha256"},"preparedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"publication":{"title":"Publication","type":"object","additionalProperties":false,"required":["status"],"properties":{"status":{"enum":["prepared","exported","approved","published","outcome_unknown"]},"issueUrl":{"type":"string","maxLength":512,"pattern":"^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"},"receiptId":{"$ref":"common.schema.json#/$defs/Id"}}}}};
+export const Handoff = validate65;
+const schema192 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff.schema.json","title":"Handoff","description":"Frozen implementation brief. Issue and download are representations of the same revision.","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","investigationId","investigationRevision","objective","targetRepository","constraints","evidence","acceptance","audience","bodyMarkdown","bodyHash","preparedAt","publication"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1},"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"investigationRevision":{"$ref":"common.schema.json#/$defs/Revision"},"objective":{"$ref":"common.schema.json#/$defs/LongText"},"targetRepository":{"title":"HandoffTarget","type":"object","additionalProperties":false,"required":["repositoryId","baseCommit"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"baseCommit":{"$ref":"common.schema.json#/$defs/CommitId"}}},"constraints":{"type":"array","maxItems":32,"items":{"title":"HandoffConstraint","type":"object","additionalProperties":false,"required":["statement","decisionId"],"properties":{"statement":{"$ref":"common.schema.json#/$defs/LongText"},"decisionId":{"$ref":"common.schema.json#/$defs/Id"},"kind":{"enum":["constraint","rejected_approach","correction"]},"category":{"$ref":"common.schema.json#/$defs/DecisionCategory"}}}},"evidence":{"type":"array","maxItems":32,"items":{"title":"HandoffEvidence","type":"object","additionalProperties":false,"required":["ref","note"],"properties":{"ref":{"$ref":"source-ref.schema.json"},"note":{"$ref":"common.schema.json#/$defs/ShortText"}}}},"likelyFiles":{"type":"array","maxItems":32,"items":{"type":"string","maxLength":1024},"description":"Suggestion only, not a verified dependency list."},"acceptance":{"type":"array","minItems":1,"maxItems":32,"items":{"title":"AcceptanceItem","type":"object","additionalProperties":false,"required":["behavior","status"],"properties":{"behavior":{"$ref":"common.schema.json#/$defs/ShortText"},"status":{"enum":["not_run","specialist_reported","ci_reported"]}}}},"allowedScope":{"$ref":"common.schema.json#/$defs/LongText"},"excludedChanges":{"$ref":"common.schema.json#/$defs/LongText"},"uncertainties":{"type":"array","maxItems":16,"items":{"$ref":"common.schema.json#/$defs/ShortText"}},"audience":{"enum":["private_download","private_issue","public_issue"]},"bodyMarkdown":{"type":"string","minLength":1,"maxLength":65536},"bodyHash":{"$ref":"common.schema.json#/$defs/Sha256"},"preparedAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"publication":{"title":"Publication","type":"object","additionalProperties":false,"required":["status"],"properties":{"status":{"enum":["prepared","exported","approved","published","outcome_unknown"]},"issueUrl":{"type":"string","maxLength":512,"pattern":"^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$"},"receiptId":{"$ref":"common.schema.json#/$defs/Id"}}}}};
 const pattern79 = new RegExp("^https://[^\\s/?#]+(?:[/?#][^\\s]*)?$", "u");
 
-function validate64(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate65(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="handoff.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate64.evaluated;
+const evaluated0 = validate65.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -4707,7 +4707,7 @@ vErrors.push(err13);
 errors++;
 }
 for(const key0 in data){
-if(!(func11.call(schema191.properties, key0))){
+if(!(func11.call(schema192.properties, key0))){
 const err14 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err14];
@@ -5142,7 +5142,7 @@ errors++;
 if(data9.kind !== undefined){
 let data12 = data9.kind;
 if(!(((data12 === "constraint") || (data12 === "rejected_approach")) || (data12 === "correction"))){
-const err51 = {instancePath:instancePath+"/constraints/" + i0+"/kind",schemaPath:"#/properties/constraints/items/properties/kind/enum",keyword:"enum",params:{allowedValues: schema191.properties.constraints.items.properties.kind.enum},message:"must be equal to one of the allowed values"};
+const err51 = {instancePath:instancePath+"/constraints/" + i0+"/kind",schemaPath:"#/properties/constraints/items/properties/kind/enum",keyword:"enum",params:{allowedValues: schema192.properties.constraints.items.properties.kind.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err51];
 }
@@ -5451,7 +5451,7 @@ errors++;
 if(data21.status !== undefined){
 let data23 = data21.status;
 if(!(((data23 === "not_run") || (data23 === "specialist_reported")) || (data23 === "ci_reported"))){
-const err76 = {instancePath:instancePath+"/acceptance/" + i3+"/status",schemaPath:"#/properties/acceptance/items/properties/status/enum",keyword:"enum",params:{allowedValues: schema191.properties.acceptance.items.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err76 = {instancePath:instancePath+"/acceptance/" + i3+"/status",schemaPath:"#/properties/acceptance/items/properties/status/enum",keyword:"enum",params:{allowedValues: schema192.properties.acceptance.items.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err76];
 }
@@ -5619,7 +5619,7 @@ errors++;
 if(data.audience !== undefined){
 let data28 = data.audience;
 if(!(((data28 === "private_download") || (data28 === "private_issue")) || (data28 === "public_issue"))){
-const err90 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema191.properties.audience.enum},message:"must be equal to one of the allowed values"};
+const err90 = {instancePath:instancePath+"/audience",schemaPath:"#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema192.properties.audience.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err90];
 }
@@ -5742,7 +5742,7 @@ errors++;
 if(data32.status !== undefined){
 let data33 = data32.status;
 if(!(((((data33 === "prepared") || (data33 === "exported")) || (data33 === "approved")) || (data33 === "published")) || (data33 === "outcome_unknown"))){
-const err100 = {instancePath:instancePath+"/publication/status",schemaPath:"#/properties/publication/properties/status/enum",keyword:"enum",params:{allowedValues: schema191.properties.publication.properties.status.enum},message:"must be equal to one of the allowed values"};
+const err100 = {instancePath:instancePath+"/publication/status",schemaPath:"#/properties/publication/properties/status/enum",keyword:"enum",params:{allowedValues: schema192.properties.publication.properties.status.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err100];
 }
@@ -5855,10 +5855,1127 @@ vErrors.push(err109);
 }
 errors++;
 }
+validate65.errors = vErrors;
+return errors === 0;
+}
+validate65.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+
+export const HandoffRead = validate70;
+const schema225 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff-read.schema.json","title":"HandoffRead","description":"Default full brief (bounded by the response cap), summary, or an exact UTF-8 body window. Every read reauthorizes the entire frozen brief.","oneOf":[{"$ref":"handoff.schema.json"},{"$ref":"handoff-summary.schema.json"},{"$ref":"#/$defs/HandoffBodyWindow"}],"$defs":{"HandoffBodyWindow":{"title":"HandoffBodyWindow","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","bodyHash","bodyByteLength","content","byteRange","nextRange"],"properties":{"handoffId":{"$ref":"handoff-summary.schema.json#/properties/handoffId"},"handoffRevision":{"$ref":"handoff-summary.schema.json#/properties/handoffRevision"},"bodyHash":{"$ref":"handoff-summary.schema.json#/properties/bodyHash"},"bodyByteLength":{"$ref":"handoff-summary.schema.json#/properties/bodyByteLength"},"content":{"type":"string","maxLength":2048},"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"},"nextRange":{"oneOf":[{"type":"null"},{"$ref":"source-ref.schema.json#/properties/byteRange"}]}}}}};
+const schema191 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"handoff-summary.schema.json","title":"HandoffSummary","description":"Immutable brief identity and exact UTF-8 body size. Read body windows with the pinned revision.","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","investigationId","investigationRevision","targetRepository","audience","bodyHash","preparedAt","bodyByteLength"],"properties":{"handoffId":{"$ref":"handoff.schema.json#/properties/handoffId"},"handoffRevision":{"$ref":"handoff.schema.json#/properties/handoffRevision"},"investigationId":{"$ref":"handoff.schema.json#/properties/investigationId"},"investigationRevision":{"$ref":"handoff.schema.json#/properties/investigationRevision"},"targetRepository":{"$ref":"handoff.schema.json#/properties/targetRepository"},"audience":{"$ref":"handoff.schema.json#/properties/audience"},"bodyHash":{"$ref":"handoff.schema.json#/properties/bodyHash"},"preparedAt":{"$ref":"handoff.schema.json#/properties/preparedAt"},"bodyByteLength":{"type":"integer","minimum":1,"maximum":262144}}};
+const schema211 = {"type":"integer","minimum":1};
+const schema217 = {"enum":["private_download","private_issue","public_issue"]};
+const schema214 = {"title":"HandoffTarget","type":"object","additionalProperties":false,"required":["repositoryId","baseCommit"],"properties":{"repositoryId":{"$ref":"common.schema.json#/$defs/Id"},"baseCommit":{"$ref":"common.schema.json#/$defs/CommitId"}}};
+
+function validate67(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+let vErrors = null;
+let errors = 0;
+const evaluated0 = validate67.evaluated;
+if(evaluated0.dynamicProps){
+evaluated0.props = undefined;
+}
+if(evaluated0.dynamicItems){
+evaluated0.items = undefined;
+}
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.repositoryId === undefined){
+const err0 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "repositoryId"},message:"must have required property '"+"repositoryId"+"'"};
+if(vErrors === null){
+vErrors = [err0];
+}
+else {
+vErrors.push(err0);
+}
+errors++;
+}
+if(data.baseCommit === undefined){
+const err1 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "baseCommit"},message:"must have required property '"+"baseCommit"+"'"};
+if(vErrors === null){
+vErrors = [err1];
+}
+else {
+vErrors.push(err1);
+}
+errors++;
+}
+for(const key0 in data){
+if(!((key0 === "repositoryId") || (key0 === "baseCommit"))){
+const err2 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err2];
+}
+else {
+vErrors.push(err2);
+}
+errors++;
+}
+}
+if(data.repositoryId !== undefined){
+let data0 = data.repositoryId;
+if(typeof data0 === "string"){
+if(func1(data0) > 128){
+const err3 = {instancePath:instancePath+"/repositoryId",schemaPath:"common.schema.json#/$defs/Id/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+if(vErrors === null){
+vErrors = [err3];
+}
+else {
+vErrors.push(err3);
+}
+errors++;
+}
+if(func1(data0) < 1){
+const err4 = {instancePath:instancePath+"/repositoryId",schemaPath:"common.schema.json#/$defs/Id/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err4];
+}
+else {
+vErrors.push(err4);
+}
+errors++;
+}
+if(!pattern5.test(data0)){
+const err5 = {instancePath:instancePath+"/repositoryId",schemaPath:"common.schema.json#/$defs/Id/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(vErrors === null){
+vErrors = [err5];
+}
+else {
+vErrors.push(err5);
+}
+errors++;
+}
+}
+else {
+const err6 = {instancePath:instancePath+"/repositoryId",schemaPath:"common.schema.json#/$defs/Id/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err6];
+}
+else {
+vErrors.push(err6);
+}
+errors++;
+}
+}
+if(data.baseCommit !== undefined){
+let data1 = data.baseCommit;
+if(typeof data1 === "string"){
+if(!pattern14.test(data1)){
+const err7 = {instancePath:instancePath+"/baseCommit",schemaPath:"common.schema.json#/$defs/CommitId/pattern",keyword:"pattern",params:{pattern: "^([0-9a-f]{40}|[0-9a-f]{64})$"},message:"must match pattern \""+"^([0-9a-f]{40}|[0-9a-f]{64})$"+"\""};
+if(vErrors === null){
+vErrors = [err7];
+}
+else {
+vErrors.push(err7);
+}
+errors++;
+}
+}
+else {
+const err8 = {instancePath:instancePath+"/baseCommit",schemaPath:"common.schema.json#/$defs/CommitId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err8];
+}
+else {
+vErrors.push(err8);
+}
+errors++;
+}
+}
+}
+else {
+const err9 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err9];
+}
+else {
+vErrors.push(err9);
+}
+errors++;
+}
+validate67.errors = vErrors;
+return errors === 0;
+}
+validate67.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+
+
+function validate64(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+/*# sourceURL="handoff-summary.schema.json" */;
+let vErrors = null;
+let errors = 0;
+const evaluated0 = validate64.evaluated;
+if(evaluated0.dynamicProps){
+evaluated0.props = undefined;
+}
+if(evaluated0.dynamicItems){
+evaluated0.items = undefined;
+}
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.handoffId === undefined){
+const err0 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffId"},message:"must have required property '"+"handoffId"+"'"};
+if(vErrors === null){
+vErrors = [err0];
+}
+else {
+vErrors.push(err0);
+}
+errors++;
+}
+if(data.handoffRevision === undefined){
+const err1 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffRevision"},message:"must have required property '"+"handoffRevision"+"'"};
+if(vErrors === null){
+vErrors = [err1];
+}
+else {
+vErrors.push(err1);
+}
+errors++;
+}
+if(data.investigationId === undefined){
+const err2 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "investigationId"},message:"must have required property '"+"investigationId"+"'"};
+if(vErrors === null){
+vErrors = [err2];
+}
+else {
+vErrors.push(err2);
+}
+errors++;
+}
+if(data.investigationRevision === undefined){
+const err3 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "investigationRevision"},message:"must have required property '"+"investigationRevision"+"'"};
+if(vErrors === null){
+vErrors = [err3];
+}
+else {
+vErrors.push(err3);
+}
+errors++;
+}
+if(data.targetRepository === undefined){
+const err4 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "targetRepository"},message:"must have required property '"+"targetRepository"+"'"};
+if(vErrors === null){
+vErrors = [err4];
+}
+else {
+vErrors.push(err4);
+}
+errors++;
+}
+if(data.audience === undefined){
+const err5 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "audience"},message:"must have required property '"+"audience"+"'"};
+if(vErrors === null){
+vErrors = [err5];
+}
+else {
+vErrors.push(err5);
+}
+errors++;
+}
+if(data.bodyHash === undefined){
+const err6 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "bodyHash"},message:"must have required property '"+"bodyHash"+"'"};
+if(vErrors === null){
+vErrors = [err6];
+}
+else {
+vErrors.push(err6);
+}
+errors++;
+}
+if(data.preparedAt === undefined){
+const err7 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "preparedAt"},message:"must have required property '"+"preparedAt"+"'"};
+if(vErrors === null){
+vErrors = [err7];
+}
+else {
+vErrors.push(err7);
+}
+errors++;
+}
+if(data.bodyByteLength === undefined){
+const err8 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "bodyByteLength"},message:"must have required property '"+"bodyByteLength"+"'"};
+if(vErrors === null){
+vErrors = [err8];
+}
+else {
+vErrors.push(err8);
+}
+errors++;
+}
+for(const key0 in data){
+if(!(func11.call(schema191.properties, key0))){
+const err9 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err9];
+}
+else {
+vErrors.push(err9);
+}
+errors++;
+}
+}
+if(data.handoffId !== undefined){
+let data0 = data.handoffId;
+if(typeof data0 === "string"){
+if(func1(data0) > 128){
+const err10 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff.schema.json#/properties/handoffId/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+if(vErrors === null){
+vErrors = [err10];
+}
+else {
+vErrors.push(err10);
+}
+errors++;
+}
+if(func1(data0) < 1){
+const err11 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff.schema.json#/properties/handoffId/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err11];
+}
+else {
+vErrors.push(err11);
+}
+errors++;
+}
+if(!pattern5.test(data0)){
+const err12 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff.schema.json#/properties/handoffId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(vErrors === null){
+vErrors = [err12];
+}
+else {
+vErrors.push(err12);
+}
+errors++;
+}
+}
+else {
+const err13 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff.schema.json#/properties/handoffId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err13];
+}
+else {
+vErrors.push(err13);
+}
+errors++;
+}
+}
+if(data.handoffRevision !== undefined){
+let data1 = data.handoffRevision;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+const err14 = {instancePath:instancePath+"/handoffRevision",schemaPath:"handoff.schema.json#/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err14];
+}
+else {
+vErrors.push(err14);
+}
+errors++;
+}
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 < 1 || isNaN(data1)){
+const err15 = {instancePath:instancePath+"/handoffRevision",schemaPath:"handoff.schema.json#/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err15];
+}
+else {
+vErrors.push(err15);
+}
+errors++;
+}
+}
+}
+if(data.investigationId !== undefined){
+let data2 = data.investigationId;
+if(typeof data2 === "string"){
+if(func1(data2) > 128){
+const err16 = {instancePath:instancePath+"/investigationId",schemaPath:"handoff.schema.json#/properties/investigationId/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+if(vErrors === null){
+vErrors = [err16];
+}
+else {
+vErrors.push(err16);
+}
+errors++;
+}
+if(func1(data2) < 1){
+const err17 = {instancePath:instancePath+"/investigationId",schemaPath:"handoff.schema.json#/properties/investigationId/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err17];
+}
+else {
+vErrors.push(err17);
+}
+errors++;
+}
+if(!pattern5.test(data2)){
+const err18 = {instancePath:instancePath+"/investigationId",schemaPath:"handoff.schema.json#/properties/investigationId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(vErrors === null){
+vErrors = [err18];
+}
+else {
+vErrors.push(err18);
+}
+errors++;
+}
+}
+else {
+const err19 = {instancePath:instancePath+"/investigationId",schemaPath:"handoff.schema.json#/properties/investigationId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err19];
+}
+else {
+vErrors.push(err19);
+}
+errors++;
+}
+}
+if(data.investigationRevision !== undefined){
+let data3 = data.investigationRevision;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+const err20 = {instancePath:instancePath+"/investigationRevision",schemaPath:"handoff.schema.json#/properties/investigationRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err20];
+}
+else {
+vErrors.push(err20);
+}
+errors++;
+}
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 0 || isNaN(data3)){
+const err21 = {instancePath:instancePath+"/investigationRevision",schemaPath:"handoff.schema.json#/properties/investigationRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err21];
+}
+else {
+vErrors.push(err21);
+}
+errors++;
+}
+}
+}
+if(data.targetRepository !== undefined){
+if(!(validate67(data.targetRepository, {instancePath:instancePath+"/targetRepository",parentData:data,parentDataProperty:"targetRepository",rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate67.errors : vErrors.concat(validate67.errors);
+errors = vErrors.length;
+}
+}
+if(data.audience !== undefined){
+let data5 = data.audience;
+if(!(((data5 === "private_download") || (data5 === "private_issue")) || (data5 === "public_issue"))){
+const err22 = {instancePath:instancePath+"/audience",schemaPath:"handoff.schema.json#/properties/audience/enum",keyword:"enum",params:{allowedValues: schema217.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err22];
+}
+else {
+vErrors.push(err22);
+}
+errors++;
+}
+}
+if(data.bodyHash !== undefined){
+let data6 = data.bodyHash;
+if(typeof data6 === "string"){
+if(!pattern11.test(data6)){
+const err23 = {instancePath:instancePath+"/bodyHash",schemaPath:"handoff.schema.json#/properties/bodyHash/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"},message:"must match pattern \""+"^[0-9a-f]{64}$"+"\""};
+if(vErrors === null){
+vErrors = [err23];
+}
+else {
+vErrors.push(err23);
+}
+errors++;
+}
+}
+else {
+const err24 = {instancePath:instancePath+"/bodyHash",schemaPath:"handoff.schema.json#/properties/bodyHash/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err24];
+}
+else {
+vErrors.push(err24);
+}
+errors++;
+}
+}
+if(data.preparedAt !== undefined){
+let data7 = data.preparedAt;
+if(!(((typeof data7 == "number") && (!(data7 % 1) && !isNaN(data7))) && (isFinite(data7)))){
+const err25 = {instancePath:instancePath+"/preparedAt",schemaPath:"handoff.schema.json#/properties/preparedAt/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err25];
+}
+else {
+vErrors.push(err25);
+}
+errors++;
+}
+if((typeof data7 == "number") && (isFinite(data7))){
+if(data7 < 0 || isNaN(data7)){
+const err26 = {instancePath:instancePath+"/preparedAt",schemaPath:"handoff.schema.json#/properties/preparedAt/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err26];
+}
+else {
+vErrors.push(err26);
+}
+errors++;
+}
+}
+}
+if(data.bodyByteLength !== undefined){
+let data8 = data.bodyByteLength;
+if(!(((typeof data8 == "number") && (!(data8 % 1) && !isNaN(data8))) && (isFinite(data8)))){
+const err27 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"#/properties/bodyByteLength/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err27];
+}
+else {
+vErrors.push(err27);
+}
+errors++;
+}
+if((typeof data8 == "number") && (isFinite(data8))){
+if(data8 > 262144 || isNaN(data8)){
+const err28 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"#/properties/bodyByteLength/maximum",keyword:"maximum",params:{comparison: "<=", limit: 262144},message:"must be <= 262144"};
+if(vErrors === null){
+vErrors = [err28];
+}
+else {
+vErrors.push(err28);
+}
+errors++;
+}
+if(data8 < 1 || isNaN(data8)){
+const err29 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"#/properties/bodyByteLength/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err29];
+}
+else {
+vErrors.push(err29);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err30 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err30];
+}
+else {
+vErrors.push(err30);
+}
+errors++;
+}
 validate64.errors = vErrors;
 return errors === 0;
 }
 validate64.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+
+const schema226 = {"title":"HandoffBodyWindow","type":"object","additionalProperties":false,"required":["handoffId","handoffRevision","bodyHash","bodyByteLength","content","byteRange","nextRange"],"properties":{"handoffId":{"$ref":"handoff-summary.schema.json#/properties/handoffId"},"handoffRevision":{"$ref":"handoff-summary.schema.json#/properties/handoffRevision"},"bodyHash":{"$ref":"handoff-summary.schema.json#/properties/bodyHash"},"bodyByteLength":{"$ref":"handoff-summary.schema.json#/properties/bodyByteLength"},"content":{"type":"string","maxLength":2048},"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"},"nextRange":{"oneOf":[{"type":"null"},{"$ref":"source-ref.schema.json#/properties/byteRange"}]}}};
+const schema230 = {"type":"integer","minimum":1,"maximum":262144};
+
+function validate73(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+let vErrors = null;
+let errors = 0;
+const evaluated0 = validate73.evaluated;
+if(evaluated0.dynamicProps){
+evaluated0.props = undefined;
+}
+if(evaluated0.dynamicItems){
+evaluated0.items = undefined;
+}
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.handoffId === undefined){
+const err0 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffId"},message:"must have required property '"+"handoffId"+"'"};
+if(vErrors === null){
+vErrors = [err0];
+}
+else {
+vErrors.push(err0);
+}
+errors++;
+}
+if(data.handoffRevision === undefined){
+const err1 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffRevision"},message:"must have required property '"+"handoffRevision"+"'"};
+if(vErrors === null){
+vErrors = [err1];
+}
+else {
+vErrors.push(err1);
+}
+errors++;
+}
+if(data.bodyHash === undefined){
+const err2 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "bodyHash"},message:"must have required property '"+"bodyHash"+"'"};
+if(vErrors === null){
+vErrors = [err2];
+}
+else {
+vErrors.push(err2);
+}
+errors++;
+}
+if(data.bodyByteLength === undefined){
+const err3 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "bodyByteLength"},message:"must have required property '"+"bodyByteLength"+"'"};
+if(vErrors === null){
+vErrors = [err3];
+}
+else {
+vErrors.push(err3);
+}
+errors++;
+}
+if(data.content === undefined){
+const err4 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "content"},message:"must have required property '"+"content"+"'"};
+if(vErrors === null){
+vErrors = [err4];
+}
+else {
+vErrors.push(err4);
+}
+errors++;
+}
+if(data.byteRange === undefined){
+const err5 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "byteRange"},message:"must have required property '"+"byteRange"+"'"};
+if(vErrors === null){
+vErrors = [err5];
+}
+else {
+vErrors.push(err5);
+}
+errors++;
+}
+if(data.nextRange === undefined){
+const err6 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "nextRange"},message:"must have required property '"+"nextRange"+"'"};
+if(vErrors === null){
+vErrors = [err6];
+}
+else {
+vErrors.push(err6);
+}
+errors++;
+}
+for(const key0 in data){
+if(!(((((((key0 === "handoffId") || (key0 === "handoffRevision")) || (key0 === "bodyHash")) || (key0 === "bodyByteLength")) || (key0 === "content")) || (key0 === "byteRange")) || (key0 === "nextRange"))){
+const err7 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err7];
+}
+else {
+vErrors.push(err7);
+}
+errors++;
+}
+}
+if(data.handoffId !== undefined){
+let data0 = data.handoffId;
+if(typeof data0 === "string"){
+if(func1(data0) > 128){
+const err8 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff-summary.schema.json#/properties/handoffId/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+if(vErrors === null){
+vErrors = [err8];
+}
+else {
+vErrors.push(err8);
+}
+errors++;
+}
+if(func1(data0) < 1){
+const err9 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff-summary.schema.json#/properties/handoffId/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err9];
+}
+else {
+vErrors.push(err9);
+}
+errors++;
+}
+if(!pattern5.test(data0)){
+const err10 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff-summary.schema.json#/properties/handoffId/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(vErrors === null){
+vErrors = [err10];
+}
+else {
+vErrors.push(err10);
+}
+errors++;
+}
+}
+else {
+const err11 = {instancePath:instancePath+"/handoffId",schemaPath:"handoff-summary.schema.json#/properties/handoffId/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err11];
+}
+else {
+vErrors.push(err11);
+}
+errors++;
+}
+}
+if(data.handoffRevision !== undefined){
+let data1 = data.handoffRevision;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+const err12 = {instancePath:instancePath+"/handoffRevision",schemaPath:"handoff-summary.schema.json#/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err12];
+}
+else {
+vErrors.push(err12);
+}
+errors++;
+}
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 < 1 || isNaN(data1)){
+const err13 = {instancePath:instancePath+"/handoffRevision",schemaPath:"handoff-summary.schema.json#/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err13];
+}
+else {
+vErrors.push(err13);
+}
+errors++;
+}
+}
+}
+if(data.bodyHash !== undefined){
+let data2 = data.bodyHash;
+if(typeof data2 === "string"){
+if(!pattern11.test(data2)){
+const err14 = {instancePath:instancePath+"/bodyHash",schemaPath:"handoff-summary.schema.json#/properties/bodyHash/pattern",keyword:"pattern",params:{pattern: "^[0-9a-f]{64}$"},message:"must match pattern \""+"^[0-9a-f]{64}$"+"\""};
+if(vErrors === null){
+vErrors = [err14];
+}
+else {
+vErrors.push(err14);
+}
+errors++;
+}
+}
+else {
+const err15 = {instancePath:instancePath+"/bodyHash",schemaPath:"handoff-summary.schema.json#/properties/bodyHash/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err15];
+}
+else {
+vErrors.push(err15);
+}
+errors++;
+}
+}
+if(data.bodyByteLength !== undefined){
+let data3 = data.bodyByteLength;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+const err16 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"handoff-summary.schema.json#/properties/bodyByteLength/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err16];
+}
+else {
+vErrors.push(err16);
+}
+errors++;
+}
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 > 262144 || isNaN(data3)){
+const err17 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"handoff-summary.schema.json#/properties/bodyByteLength/maximum",keyword:"maximum",params:{comparison: "<=", limit: 262144},message:"must be <= 262144"};
+if(vErrors === null){
+vErrors = [err17];
+}
+else {
+vErrors.push(err17);
+}
+errors++;
+}
+if(data3 < 1 || isNaN(data3)){
+const err18 = {instancePath:instancePath+"/bodyByteLength",schemaPath:"handoff-summary.schema.json#/properties/bodyByteLength/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err18];
+}
+else {
+vErrors.push(err18);
+}
+errors++;
+}
+}
+}
+if(data.content !== undefined){
+let data4 = data.content;
+if(typeof data4 === "string"){
+if(func1(data4) > 2048){
+const err19 = {instancePath:instancePath+"/content",schemaPath:"#/properties/content/maxLength",keyword:"maxLength",params:{limit: 2048},message:"must NOT have more than 2048 characters"};
+if(vErrors === null){
+vErrors = [err19];
+}
+else {
+vErrors.push(err19);
+}
+errors++;
+}
+}
+else {
+const err20 = {instancePath:instancePath+"/content",schemaPath:"#/properties/content/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err20];
+}
+else {
+vErrors.push(err20);
+}
+errors++;
+}
+}
+if(data.byteRange !== undefined){
+let data5 = data.byteRange;
+if(data5 && typeof data5 == "object" && !Array.isArray(data5)){
+if(data5.start === undefined){
+const err21 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "start"},message:"must have required property '"+"start"+"'"};
+if(vErrors === null){
+vErrors = [err21];
+}
+else {
+vErrors.push(err21);
+}
+errors++;
+}
+if(data5.end === undefined){
+const err22 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "end"},message:"must have required property '"+"end"+"'"};
+if(vErrors === null){
+vErrors = [err22];
+}
+else {
+vErrors.push(err22);
+}
+errors++;
+}
+for(const key1 in data5){
+if(!((key1 === "start") || (key1 === "end"))){
+const err23 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key1},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err23];
+}
+else {
+vErrors.push(err23);
+}
+errors++;
+}
+}
+if(data5.start !== undefined){
+let data6 = data5.start;
+if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
+const err24 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err24];
+}
+else {
+vErrors.push(err24);
+}
+errors++;
+}
+if((typeof data6 == "number") && (isFinite(data6))){
+if(data6 < 0 || isNaN(data6)){
+const err25 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err25];
+}
+else {
+vErrors.push(err25);
+}
+errors++;
+}
+}
+}
+if(data5.end !== undefined){
+let data7 = data5.end;
+if(!(((typeof data7 == "number") && (!(data7 % 1) && !isNaN(data7))) && (isFinite(data7)))){
+const err26 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err26];
+}
+else {
+vErrors.push(err26);
+}
+errors++;
+}
+if((typeof data7 == "number") && (isFinite(data7))){
+if(data7 < 0 || isNaN(data7)){
+const err27 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err27];
+}
+else {
+vErrors.push(err27);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err28 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err28];
+}
+else {
+vErrors.push(err28);
+}
+errors++;
+}
+}
+if(data.nextRange !== undefined){
+let data8 = data.nextRange;
+const _errs25 = errors;
+let valid7 = false;
+let passing0 = null;
+const _errs26 = errors;
+if(data8 !== null){
+const err29 = {instancePath:instancePath+"/nextRange",schemaPath:"#/properties/nextRange/oneOf/0/type",keyword:"type",params:{type: "null"},message:"must be null"};
+if(vErrors === null){
+vErrors = [err29];
+}
+else {
+vErrors.push(err29);
+}
+errors++;
+}
+var _valid0 = _errs26 === errors;
+if(_valid0){
+valid7 = true;
+passing0 = 0;
+}
+const _errs28 = errors;
+if(data8 && typeof data8 == "object" && !Array.isArray(data8)){
+if(data8.start === undefined){
+const err30 = {instancePath:instancePath+"/nextRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "start"},message:"must have required property '"+"start"+"'"};
+if(vErrors === null){
+vErrors = [err30];
+}
+else {
+vErrors.push(err30);
+}
+errors++;
+}
+if(data8.end === undefined){
+const err31 = {instancePath:instancePath+"/nextRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "end"},message:"must have required property '"+"end"+"'"};
+if(vErrors === null){
+vErrors = [err31];
+}
+else {
+vErrors.push(err31);
+}
+errors++;
+}
+for(const key2 in data8){
+if(!((key2 === "start") || (key2 === "end"))){
+const err32 = {instancePath:instancePath+"/nextRange",schemaPath:"source-ref.schema.json#/properties/byteRange/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err32];
+}
+else {
+vErrors.push(err32);
+}
+errors++;
+}
+}
+if(data8.start !== undefined){
+let data9 = data8.start;
+if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
+const err33 = {instancePath:instancePath+"/nextRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err33];
+}
+else {
+vErrors.push(err33);
+}
+errors++;
+}
+if((typeof data9 == "number") && (isFinite(data9))){
+if(data9 < 0 || isNaN(data9)){
+const err34 = {instancePath:instancePath+"/nextRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err34];
+}
+else {
+vErrors.push(err34);
+}
+errors++;
+}
+}
+}
+if(data8.end !== undefined){
+let data10 = data8.end;
+if(!(((typeof data10 == "number") && (!(data10 % 1) && !isNaN(data10))) && (isFinite(data10)))){
+const err35 = {instancePath:instancePath+"/nextRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err35];
+}
+else {
+vErrors.push(err35);
+}
+errors++;
+}
+if((typeof data10 == "number") && (isFinite(data10))){
+if(data10 < 0 || isNaN(data10)){
+const err36 = {instancePath:instancePath+"/nextRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err36];
+}
+else {
+vErrors.push(err36);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err37 = {instancePath:instancePath+"/nextRange",schemaPath:"source-ref.schema.json#/properties/byteRange/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err37];
+}
+else {
+vErrors.push(err37);
+}
+errors++;
+}
+var _valid0 = _errs28 === errors;
+if(_valid0 && valid7){
+valid7 = false;
+passing0 = [passing0, 1];
+}
+else {
+if(_valid0){
+valid7 = true;
+passing0 = 1;
+}
+}
+if(!valid7){
+const err38 = {instancePath:instancePath+"/nextRange",schemaPath:"#/properties/nextRange/oneOf",keyword:"oneOf",params:{passingSchemas: passing0},message:"must match exactly one schema in oneOf"};
+if(vErrors === null){
+vErrors = [err38];
+}
+else {
+vErrors.push(err38);
+}
+errors++;
+}
+else {
+errors = _errs25;
+if(vErrors !== null){
+if(_errs25){
+vErrors.length = _errs25;
+}
+else {
+vErrors = null;
+}
+}
+}
+}
+}
+else {
+const err39 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err39];
+}
+else {
+vErrors.push(err39);
+}
+errors++;
+}
+validate73.errors = vErrors;
+return errors === 0;
+}
+validate73.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+
+
+function validate70(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+/*# sourceURL="handoff-read.schema.json" */;
+let vErrors = null;
+let errors = 0;
+const evaluated0 = validate70.evaluated;
+if(evaluated0.dynamicProps){
+evaluated0.props = undefined;
+}
+if(evaluated0.dynamicItems){
+evaluated0.items = undefined;
+}
+const _errs0 = errors;
+let valid0 = false;
+let passing0 = null;
+const _errs1 = errors;
+if(!(validate65(data, {instancePath,parentData,parentDataProperty,rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate65.errors : vErrors.concat(validate65.errors);
+errors = vErrors.length;
+}
+var _valid0 = _errs1 === errors;
+if(_valid0){
+valid0 = true;
+passing0 = 0;
+var props0 = true;
+}
+const _errs2 = errors;
+if(!(validate64(data, {instancePath,parentData,parentDataProperty,rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate64.errors : vErrors.concat(validate64.errors);
+errors = vErrors.length;
+}
+var _valid0 = _errs2 === errors;
+if(_valid0 && valid0){
+valid0 = false;
+passing0 = [passing0, 1];
+}
+else {
+if(_valid0){
+valid0 = true;
+passing0 = 1;
+if(props0 !== true){
+props0 = true;
+}
+}
+const _errs3 = errors;
+if(!(validate73(data, {instancePath,parentData,parentDataProperty,rootData,dynamicAnchors}))){
+vErrors = vErrors === null ? validate73.errors : vErrors.concat(validate73.errors);
+errors = vErrors.length;
+}
+var _valid0 = _errs3 === errors;
+if(_valid0 && valid0){
+valid0 = false;
+passing0 = [passing0, 2];
+}
+else {
+if(_valid0){
+valid0 = true;
+passing0 = 2;
+if(props0 !== true){
+props0 = true;
+}
+}
+}
+}
+if(!valid0){
+const err0 = {instancePath,schemaPath:"#/oneOf",keyword:"oneOf",params:{passingSchemas: passing0},message:"must match exactly one schema in oneOf"};
+if(vErrors === null){
+vErrors = [err0];
+}
+else {
+vErrors.push(err0);
+}
+errors++;
+}
+else {
+errors = _errs0;
+if(vErrors !== null){
+if(_errs0){
+vErrors.length = _errs0;
+}
+else {
+vErrors = null;
+}
+}
+}
+validate70.errors = vErrors;
+evaluated0.props = props0;
+return errors === 0;
+}
+validate70.evaluated = {"dynamicProps":true,"dynamicItems":false};
+
+export const HandoffSummary = validate64;
 
 export const Investigation = validate41;
 const schema120 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"investigation.schema.json","title":"Investigation","type":"object","additionalProperties":false,"required":["investigationId","question","snapshotIds","revision","status","createdAt"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"question":{"$ref":"common.schema.json#/$defs/LongText"},"snapshotIds":{"type":"array","minItems":1,"maxItems":8,"uniqueItems":true,"items":{"$ref":"common.schema.json#/$defs/Id"}},"revision":{"$ref":"common.schema.json#/$defs/Revision"},"status":{"enum":["open","awaiting_human","closed","source_unavailable"]},"acceptedFindings":{"type":"array","maxItems":64,"items":{"$ref":"finding.schema.json"}},"decisions":{"type":"array","maxItems":64,"items":{"$ref":"decision.schema.json"}},"currentRunId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"latestHandoffId":{"anyOf":[{"$ref":"common.schema.json#/$defs/Id"},{"type":"null"}]},"createdAt":{"$ref":"common.schema.json#/$defs/TimestampMs"},"page":{"title":"InvestigationPage","description":"Present when findings or decisions were paged. Absent means the arrays are complete for this revision.","type":"object","additionalProperties":false,"required":["nextCursor","truncated"],"properties":{"nextCursor":{"anyOf":[{"$ref":"common.schema.json#/$defs/Cursor"},{"type":"null"}]},"truncated":{"$ref":"envelope.schema.json#/properties/truncated"}}}}};
@@ -6988,14 +8105,14 @@ return errors === 0;
 }
 validate40.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const OperationError = validate67;
-const schema211 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"error.schema.json","title":"OperationError","type":"object","additionalProperties":false,"required":["code","message"],"properties":{"code":{"enum":["invalid_request","unauthenticated","forbidden","not_found","revision_conflict","request_key_conflict","cursor_invalid","source_unavailable","unsupported","limit_exceeded","capability_disabled","external_outcome_unknown","internal"]},"message":{"type":"string","maxLength":512},"currentRevision":{"$ref":"common.schema.json#/$defs/Revision"},"details":{"type":"array","maxItems":16,"items":{"type":"object","additionalProperties":false,"required":["path","problem"],"properties":{"path":{"type":"string","maxLength":256},"problem":{"type":"string","maxLength":256}}}}},"description":"forbidden and not_found must be indistinguishable to a caller without a grant: never leak existence."};
+export const OperationError = validate75;
+const schema233 = {"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"error.schema.json","title":"OperationError","type":"object","additionalProperties":false,"required":["code","message"],"properties":{"code":{"enum":["invalid_request","unauthenticated","forbidden","not_found","revision_conflict","request_key_conflict","cursor_invalid","source_unavailable","unsupported","limit_exceeded","capability_disabled","external_outcome_unknown","internal"]},"message":{"type":"string","maxLength":512},"currentRevision":{"$ref":"common.schema.json#/$defs/Revision"},"details":{"type":"array","maxItems":16,"items":{"type":"object","additionalProperties":false,"required":["path","problem"],"properties":{"path":{"type":"string","maxLength":256},"problem":{"type":"string","maxLength":256}}}}},"description":"forbidden and not_found must be indistinguishable to a caller without a grant: never leak existence."};
 
-function validate67(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate75(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 /*# sourceURL="error.schema.json" */;
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate67.evaluated;
+const evaluated0 = validate75.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
@@ -7038,7 +8155,7 @@ errors++;
 if(data.code !== undefined){
 let data0 = data.code;
 if(!(((((((((((((data0 === "invalid_request") || (data0 === "unauthenticated")) || (data0 === "forbidden")) || (data0 === "not_found")) || (data0 === "revision_conflict")) || (data0 === "request_key_conflict")) || (data0 === "cursor_invalid")) || (data0 === "source_unavailable")) || (data0 === "unsupported")) || (data0 === "limit_exceeded")) || (data0 === "capability_disabled")) || (data0 === "external_outcome_unknown")) || (data0 === "internal"))){
-const err3 = {instancePath:instancePath+"/code",schemaPath:"#/properties/code/enum",keyword:"enum",params:{allowedValues: schema211.properties.code.enum},message:"must be equal to one of the allowed values"};
+const err3 = {instancePath:instancePath+"/code",schemaPath:"#/properties/code/enum",keyword:"enum",params:{allowedValues: schema233.properties.code.enum},message:"must be equal to one of the allowed values"};
 if(vErrors === null){
 vErrors = [err3];
 }
@@ -7232,10 +8349,10 @@ vErrors.push(err18);
 }
 errors++;
 }
-validate67.errors = vErrors;
+validate75.errors = vErrors;
 return errors === 0;
 }
-validate67.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate75.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const PrepareHandoffRequest = validate63;
 const schema186 = {"title":"PrepareHandoffRequest","type":"object","additionalProperties":false,"required":["investigationId","expectedRevision","targetRepositoryId","audience","requestKey"],"properties":{"investigationId":{"$ref":"common.schema.json#/$defs/Id"},"expectedRevision":{"$ref":"common.schema.json#/$defs/Revision"},"targetRepositoryId":{"$ref":"common.schema.json#/$defs/Id"},"audience":{"enum":["private_download","private_issue","public_issue"]},"requestKey":{"$ref":"common.schema.json#/$defs/RequestKey"}}};
@@ -8802,22 +9919,26 @@ return errors === 0;
 }
 validate38.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
-export const ReadHandoffRequest = validate66;
-const schema209 = {"title":"ReadHandoffRequest","type":"object","additionalProperties":false,"required":["handoffId"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1}}};
+export const ReadHandoffRequest = validate69;
+const schema220 = {"title":"ReadHandoffRequest","type":"object","additionalProperties":false,"required":["handoffId"],"properties":{"handoffId":{"$ref":"common.schema.json#/$defs/Id"},"handoffRevision":{"type":"integer","minimum":1},"detail":{"enum":["full","summary","body"]},"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"}},"allOf":[{"if":{"properties":{"detail":{"const":"body"}},"required":["detail"]},"then":{"required":["handoffRevision","byteRange"],"properties":{"handoffRevision":{"type":"integer","minimum":1},"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"}}}},{"if":{"required":["byteRange"],"properties":{"byteRange":{"$ref":"source-ref.schema.json#/properties/byteRange"}}},"then":{"properties":{"detail":{"const":"body"},"handoffRevision":{"type":"integer","minimum":1}},"required":["detail","handoffRevision"]}}]};
 
-function validate66(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
+function validate69(data, {instancePath="", parentData, parentDataProperty, rootData=data, dynamicAnchors={}}={}){
 let vErrors = null;
 let errors = 0;
-const evaluated0 = validate66.evaluated;
+const evaluated0 = validate69.evaluated;
 if(evaluated0.dynamicProps){
 evaluated0.props = undefined;
 }
 if(evaluated0.dynamicItems){
 evaluated0.items = undefined;
 }
+const _errs2 = errors;
+let valid1 = true;
+const _errs3 = errors;
 if(data && typeof data == "object" && !Array.isArray(data)){
-if(data.handoffId === undefined){
-const err0 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffId"},message:"must have required property '"+"handoffId"+"'"};
+let missing0;
+if((data.detail === undefined) && (missing0 = "detail")){
+const err0 = {};
 if(vErrors === null){
 vErrors = [err0];
 }
@@ -8826,9 +9947,10 @@ vErrors.push(err0);
 }
 errors++;
 }
-for(const key0 in data){
-if(!((key0 === "handoffId") || (key0 === "handoffRevision"))){
-const err1 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
+else {
+if(data.detail !== undefined){
+if("body" !== data.detail){
+const err1 = {};
 if(vErrors === null){
 vErrors = [err1];
 }
@@ -8838,11 +9960,23 @@ vErrors.push(err1);
 errors++;
 }
 }
-if(data.handoffId !== undefined){
-let data0 = data.handoffId;
-if(typeof data0 === "string"){
-if(func1(data0) > 128){
-const err2 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+}
+}
+var _valid0 = _errs3 === errors;
+errors = _errs2;
+if(vErrors !== null){
+if(_errs2){
+vErrors.length = _errs2;
+}
+else {
+vErrors = null;
+}
+}
+if(_valid0){
+const _errs5 = errors;
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.handoffRevision === undefined){
+const err2 = {instancePath,schemaPath:"#/allOf/0/then/required",keyword:"required",params:{missingProperty: "handoffRevision"},message:"must have required property '"+"handoffRevision"+"'"};
 if(vErrors === null){
 vErrors = [err2];
 }
@@ -8851,8 +9985,8 @@ vErrors.push(err2);
 }
 errors++;
 }
-if(func1(data0) < 1){
-const err3 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(data.byteRange === undefined){
+const err3 = {instancePath,schemaPath:"#/allOf/0/then/required",keyword:"required",params:{missingProperty: "byteRange"},message:"must have required property '"+"byteRange"+"'"};
 if(vErrors === null){
 vErrors = [err3];
 }
@@ -8861,8 +9995,10 @@ vErrors.push(err3);
 }
 errors++;
 }
-if(!pattern5.test(data0)){
-const err4 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(data.handoffRevision !== undefined){
+let data1 = data.handoffRevision;
+if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
+const err4 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/allOf/0/then/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
 if(vErrors === null){
 vErrors = [err4];
 }
@@ -8871,9 +10007,9 @@ vErrors.push(err4);
 }
 errors++;
 }
-}
-else {
-const err5 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if((typeof data1 == "number") && (isFinite(data1))){
+if(data1 < 1 || isNaN(data1)){
+const err5 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/allOf/0/then/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
 if(vErrors === null){
 vErrors = [err5];
 }
@@ -8883,10 +10019,12 @@ vErrors.push(err5);
 errors++;
 }
 }
-if(data.handoffRevision !== undefined){
-let data1 = data.handoffRevision;
-if(!(((typeof data1 == "number") && (!(data1 % 1) && !isNaN(data1))) && (isFinite(data1)))){
-const err6 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+}
+if(data.byteRange !== undefined){
+let data2 = data.byteRange;
+if(data2 && typeof data2 == "object" && !Array.isArray(data2)){
+if(data2.start === undefined){
+const err6 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "start"},message:"must have required property '"+"start"+"'"};
 if(vErrors === null){
 vErrors = [err6];
 }
@@ -8895,9 +10033,8 @@ vErrors.push(err6);
 }
 errors++;
 }
-if((typeof data1 == "number") && (isFinite(data1))){
-if(data1 < 1 || isNaN(data1)){
-const err7 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(data2.end === undefined){
+const err7 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "end"},message:"must have required property '"+"end"+"'"};
 if(vErrors === null){
 vErrors = [err7];
 }
@@ -8906,11 +10043,9 @@ vErrors.push(err7);
 }
 errors++;
 }
-}
-}
-}
-else {
-const err8 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+for(const key0 in data2){
+if(!((key0 === "start") || (key0 === "end"))){
+const err8 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key0},message:"must NOT have additional properties"};
 if(vErrors === null){
 vErrors = [err8];
 }
@@ -8919,10 +10054,537 @@ vErrors.push(err8);
 }
 errors++;
 }
-validate66.errors = vErrors;
+}
+if(data2.start !== undefined){
+let data3 = data2.start;
+if(!(((typeof data3 == "number") && (!(data3 % 1) && !isNaN(data3))) && (isFinite(data3)))){
+const err9 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err9];
+}
+else {
+vErrors.push(err9);
+}
+errors++;
+}
+if((typeof data3 == "number") && (isFinite(data3))){
+if(data3 < 0 || isNaN(data3)){
+const err10 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err10];
+}
+else {
+vErrors.push(err10);
+}
+errors++;
+}
+}
+}
+if(data2.end !== undefined){
+let data4 = data2.end;
+if(!(((typeof data4 == "number") && (!(data4 % 1) && !isNaN(data4))) && (isFinite(data4)))){
+const err11 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err11];
+}
+else {
+vErrors.push(err11);
+}
+errors++;
+}
+if((typeof data4 == "number") && (isFinite(data4))){
+if(data4 < 0 || isNaN(data4)){
+const err12 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err12];
+}
+else {
+vErrors.push(err12);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err13 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err13];
+}
+else {
+vErrors.push(err13);
+}
+errors++;
+}
+}
+}
+var _valid0 = _errs5 === errors;
+valid1 = _valid0;
+if(valid1){
+var props0 = {};
+props0.handoffRevision = true;
+props0.byteRange = true;
+props0.detail = true;
+}
+}
+if(!valid1){
+const err14 = {instancePath,schemaPath:"#/allOf/0/if",keyword:"if",params:{failingKeyword: "then"},message:"must match \"then\" schema"};
+if(vErrors === null){
+vErrors = [err14];
+}
+else {
+vErrors.push(err14);
+}
+errors++;
+}
+const _errs17 = errors;
+let valid6 = true;
+const _errs18 = errors;
+if(data && typeof data == "object" && !Array.isArray(data)){
+let missing1;
+if((data.byteRange === undefined) && (missing1 = "byteRange")){
+const err15 = {};
+if(vErrors === null){
+vErrors = [err15];
+}
+else {
+vErrors.push(err15);
+}
+errors++;
+}
+else {
+if(data.byteRange !== undefined){
+let data5 = data.byteRange;
+const _errs20 = errors;
+if(errors === _errs20){
+if(data5 && typeof data5 == "object" && !Array.isArray(data5)){
+let missing2;
+if(((data5.start === undefined) && (missing2 = "start")) || ((data5.end === undefined) && (missing2 = "end"))){
+const err16 = {};
+if(vErrors === null){
+vErrors = [err16];
+}
+else {
+vErrors.push(err16);
+}
+errors++;
+}
+else {
+const _errs22 = errors;
+for(const key1 in data5){
+if(!((key1 === "start") || (key1 === "end"))){
+const err17 = {};
+if(vErrors === null){
+vErrors = [err17];
+}
+else {
+vErrors.push(err17);
+}
+errors++;
+break;
+}
+}
+if(_errs22 === errors){
+if(data5.start !== undefined){
+let data6 = data5.start;
+const _errs23 = errors;
+if(!(((typeof data6 == "number") && (!(data6 % 1) && !isNaN(data6))) && (isFinite(data6)))){
+const err18 = {};
+if(vErrors === null){
+vErrors = [err18];
+}
+else {
+vErrors.push(err18);
+}
+errors++;
+}
+if(errors === _errs23){
+if((typeof data6 == "number") && (isFinite(data6))){
+if(data6 < 0 || isNaN(data6)){
+const err19 = {};
+if(vErrors === null){
+vErrors = [err19];
+}
+else {
+vErrors.push(err19);
+}
+errors++;
+}
+}
+}
+var valid9 = _errs23 === errors;
+}
+else {
+var valid9 = true;
+}
+if(valid9){
+if(data5.end !== undefined){
+let data7 = data5.end;
+const _errs25 = errors;
+if(!(((typeof data7 == "number") && (!(data7 % 1) && !isNaN(data7))) && (isFinite(data7)))){
+const err20 = {};
+if(vErrors === null){
+vErrors = [err20];
+}
+else {
+vErrors.push(err20);
+}
+errors++;
+}
+if(errors === _errs25){
+if((typeof data7 == "number") && (isFinite(data7))){
+if(data7 < 0 || isNaN(data7)){
+const err21 = {};
+if(vErrors === null){
+vErrors = [err21];
+}
+else {
+vErrors.push(err21);
+}
+errors++;
+}
+}
+}
+var valid9 = _errs25 === errors;
+}
+else {
+var valid9 = true;
+}
+}
+}
+}
+}
+else {
+const err22 = {};
+if(vErrors === null){
+vErrors = [err22];
+}
+else {
+vErrors.push(err22);
+}
+errors++;
+}
+}
+}
+}
+}
+var _valid1 = _errs18 === errors;
+errors = _errs17;
+if(vErrors !== null){
+if(_errs17){
+vErrors.length = _errs17;
+}
+else {
+vErrors = null;
+}
+}
+if(_valid1){
+const _errs27 = errors;
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.detail === undefined){
+const err23 = {instancePath,schemaPath:"#/allOf/1/then/required",keyword:"required",params:{missingProperty: "detail"},message:"must have required property '"+"detail"+"'"};
+if(vErrors === null){
+vErrors = [err23];
+}
+else {
+vErrors.push(err23);
+}
+errors++;
+}
+if(data.handoffRevision === undefined){
+const err24 = {instancePath,schemaPath:"#/allOf/1/then/required",keyword:"required",params:{missingProperty: "handoffRevision"},message:"must have required property '"+"handoffRevision"+"'"};
+if(vErrors === null){
+vErrors = [err24];
+}
+else {
+vErrors.push(err24);
+}
+errors++;
+}
+if(data.detail !== undefined){
+if("body" !== data.detail){
+const err25 = {instancePath:instancePath+"/detail",schemaPath:"#/allOf/1/then/properties/detail/const",keyword:"const",params:{allowedValue: "body"},message:"must be equal to constant"};
+if(vErrors === null){
+vErrors = [err25];
+}
+else {
+vErrors.push(err25);
+}
+errors++;
+}
+}
+if(data.handoffRevision !== undefined){
+let data9 = data.handoffRevision;
+if(!(((typeof data9 == "number") && (!(data9 % 1) && !isNaN(data9))) && (isFinite(data9)))){
+const err26 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/allOf/1/then/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err26];
+}
+else {
+vErrors.push(err26);
+}
+errors++;
+}
+if((typeof data9 == "number") && (isFinite(data9))){
+if(data9 < 1 || isNaN(data9)){
+const err27 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/allOf/1/then/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err27];
+}
+else {
+vErrors.push(err27);
+}
+errors++;
+}
+}
+}
+}
+var _valid1 = _errs27 === errors;
+valid6 = _valid1;
+if(valid6){
+var props1 = {};
+props1.detail = true;
+props1.handoffRevision = true;
+props1.byteRange = true;
+}
+}
+if(!valid6){
+const err28 = {instancePath,schemaPath:"#/allOf/1/if",keyword:"if",params:{failingKeyword: "then"},message:"must match \"then\" schema"};
+if(vErrors === null){
+vErrors = [err28];
+}
+else {
+vErrors.push(err28);
+}
+errors++;
+}
+if(props0 !== true && props1 !== undefined){
+if(props1 === true){
+props0 = true;
+}
+else {
+props0 = props0 || {};
+Object.assign(props0, props1);
+}
+}
+if(data && typeof data == "object" && !Array.isArray(data)){
+if(data.handoffId === undefined){
+const err29 = {instancePath,schemaPath:"#/required",keyword:"required",params:{missingProperty: "handoffId"},message:"must have required property '"+"handoffId"+"'"};
+if(vErrors === null){
+vErrors = [err29];
+}
+else {
+vErrors.push(err29);
+}
+errors++;
+}
+for(const key2 in data){
+if(!((((key2 === "handoffId") || (key2 === "handoffRevision")) || (key2 === "detail")) || (key2 === "byteRange"))){
+const err30 = {instancePath,schemaPath:"#/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key2},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err30];
+}
+else {
+vErrors.push(err30);
+}
+errors++;
+}
+}
+if(data.handoffId !== undefined){
+let data10 = data.handoffId;
+if(typeof data10 === "string"){
+if(func1(data10) > 128){
+const err31 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/maxLength",keyword:"maxLength",params:{limit: 128},message:"must NOT have more than 128 characters"};
+if(vErrors === null){
+vErrors = [err31];
+}
+else {
+vErrors.push(err31);
+}
+errors++;
+}
+if(func1(data10) < 1){
+const err32 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/minLength",keyword:"minLength",params:{limit: 1},message:"must NOT have fewer than 1 characters"};
+if(vErrors === null){
+vErrors = [err32];
+}
+else {
+vErrors.push(err32);
+}
+errors++;
+}
+if(!pattern5.test(data10)){
+const err33 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/pattern",keyword:"pattern",params:{pattern: "^[A-Za-z0-9_:.-]+$"},message:"must match pattern \""+"^[A-Za-z0-9_:.-]+$"+"\""};
+if(vErrors === null){
+vErrors = [err33];
+}
+else {
+vErrors.push(err33);
+}
+errors++;
+}
+}
+else {
+const err34 = {instancePath:instancePath+"/handoffId",schemaPath:"common.schema.json#/$defs/Id/type",keyword:"type",params:{type: "string"},message:"must be string"};
+if(vErrors === null){
+vErrors = [err34];
+}
+else {
+vErrors.push(err34);
+}
+errors++;
+}
+}
+if(data.handoffRevision !== undefined){
+let data11 = data.handoffRevision;
+if(!(((typeof data11 == "number") && (!(data11 % 1) && !isNaN(data11))) && (isFinite(data11)))){
+const err35 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/properties/handoffRevision/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err35];
+}
+else {
+vErrors.push(err35);
+}
+errors++;
+}
+if((typeof data11 == "number") && (isFinite(data11))){
+if(data11 < 1 || isNaN(data11)){
+const err36 = {instancePath:instancePath+"/handoffRevision",schemaPath:"#/properties/handoffRevision/minimum",keyword:"minimum",params:{comparison: ">=", limit: 1},message:"must be >= 1"};
+if(vErrors === null){
+vErrors = [err36];
+}
+else {
+vErrors.push(err36);
+}
+errors++;
+}
+}
+}
+if(data.detail !== undefined){
+let data12 = data.detail;
+if(!(((data12 === "full") || (data12 === "summary")) || (data12 === "body"))){
+const err37 = {instancePath:instancePath+"/detail",schemaPath:"#/properties/detail/enum",keyword:"enum",params:{allowedValues: schema220.properties.detail.enum},message:"must be equal to one of the allowed values"};
+if(vErrors === null){
+vErrors = [err37];
+}
+else {
+vErrors.push(err37);
+}
+errors++;
+}
+}
+if(data.byteRange !== undefined){
+let data13 = data.byteRange;
+if(data13 && typeof data13 == "object" && !Array.isArray(data13)){
+if(data13.start === undefined){
+const err38 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "start"},message:"must have required property '"+"start"+"'"};
+if(vErrors === null){
+vErrors = [err38];
+}
+else {
+vErrors.push(err38);
+}
+errors++;
+}
+if(data13.end === undefined){
+const err39 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/required",keyword:"required",params:{missingProperty: "end"},message:"must have required property '"+"end"+"'"};
+if(vErrors === null){
+vErrors = [err39];
+}
+else {
+vErrors.push(err39);
+}
+errors++;
+}
+for(const key3 in data13){
+if(!((key3 === "start") || (key3 === "end"))){
+const err40 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/additionalProperties",keyword:"additionalProperties",params:{additionalProperty: key3},message:"must NOT have additional properties"};
+if(vErrors === null){
+vErrors = [err40];
+}
+else {
+vErrors.push(err40);
+}
+errors++;
+}
+}
+if(data13.start !== undefined){
+let data14 = data13.start;
+if(!(((typeof data14 == "number") && (!(data14 % 1) && !isNaN(data14))) && (isFinite(data14)))){
+const err41 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err41];
+}
+else {
+vErrors.push(err41);
+}
+errors++;
+}
+if((typeof data14 == "number") && (isFinite(data14))){
+if(data14 < 0 || isNaN(data14)){
+const err42 = {instancePath:instancePath+"/byteRange/start",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/start/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err42];
+}
+else {
+vErrors.push(err42);
+}
+errors++;
+}
+}
+}
+if(data13.end !== undefined){
+let data15 = data13.end;
+if(!(((typeof data15 == "number") && (!(data15 % 1) && !isNaN(data15))) && (isFinite(data15)))){
+const err43 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/type",keyword:"type",params:{type: "integer"},message:"must be integer"};
+if(vErrors === null){
+vErrors = [err43];
+}
+else {
+vErrors.push(err43);
+}
+errors++;
+}
+if((typeof data15 == "number") && (isFinite(data15))){
+if(data15 < 0 || isNaN(data15)){
+const err44 = {instancePath:instancePath+"/byteRange/end",schemaPath:"source-ref.schema.json#/properties/byteRange/properties/end/minimum",keyword:"minimum",params:{comparison: ">=", limit: 0},message:"must be >= 0"};
+if(vErrors === null){
+vErrors = [err44];
+}
+else {
+vErrors.push(err44);
+}
+errors++;
+}
+}
+}
+}
+else {
+const err45 = {instancePath:instancePath+"/byteRange",schemaPath:"source-ref.schema.json#/properties/byteRange/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err45];
+}
+else {
+vErrors.push(err45);
+}
+errors++;
+}
+}
+}
+else {
+const err46 = {instancePath,schemaPath:"#/type",keyword:"type",params:{type: "object"},message:"must be object"};
+if(vErrors === null){
+vErrors = [err46];
+}
+else {
+vErrors.push(err46);
+}
+errors++;
+}
+validate69.errors = vErrors;
 return errors === 0;
 }
-validate66.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
+validate69.evaluated = {"props":true,"dynamicProps":false,"dynamicItems":false};
 
 export const ReadHistoryRequest = validate36;
 const schema97 = {"title":"ReadHistoryRequest","type":"object","additionalProperties":false,"required":["snapshotId"],"properties":{"snapshotId":{"$ref":"common.schema.json#/$defs/Id"},"entryId":{"$ref":"common.schema.json#/$defs/Id"},"maxCommits":{"type":"integer","minimum":1,"maximum":20},"cursor":{"$ref":"common.schema.json#/$defs/Cursor"}}};

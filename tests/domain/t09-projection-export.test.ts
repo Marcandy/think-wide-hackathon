@@ -217,8 +217,8 @@ describe("T09 exact export adapter (fixture reader, no authorization claim)", ()
 		const first = await readHandoffExport(saved, read);
 		const second = await readHandoffExport(saved, read);
 		expect(reads).toEqual([
-			{ handoffId: saved.handoffId, handoffRevision: 1 },
-			{ handoffId: saved.handoffId, handoffRevision: 1 },
+			{ handoffId: saved.handoffId, handoffRevision: 1, detail: "summary" },
+			{ handoffId: saved.handoffId, handoffRevision: 1, detail: "summary" },
 		]);
 		expect(first).toEqual(second);
 		expect(first.bodyMarkdown).toBe(saved.bodyMarkdown);
@@ -269,4 +269,39 @@ describe("T09 exact export adapter (fixture reader, no authorization claim)", ()
 			"exactly as UTF-8",
 		);
 	});
+});
+
+test("ranged export verifies every window and rejects discontinuity or tampering", async () => {
+	const { handoffSummary, handoffBodyWindow } = await import(
+		"../../core/handoff-read"
+	);
+	const saved = await savedBrief();
+	const summary = handoffSummary(saved);
+	const read = async (
+		request: import("../../generated/types").ReadHandoffRequest,
+	) =>
+		request.detail === "summary" ? summary : handoffBodyWindow(saved, request);
+	expect((await readHandoffExport(summary, read)).bodyMarkdown).toBe(
+		saved.bodyMarkdown,
+	);
+	for (const mutation of ["content", "range", "cursor", "identity"] as const) {
+		await expect(
+			readHandoffExport(summary, async (request) => {
+				if (request.detail === "summary") {
+					return summary;
+				}
+				const page = handoffBodyWindow(saved, request);
+				if (mutation === "content") {
+					return { ...page, content: `X${page.content.slice(1)}` };
+				}
+				if (mutation === "range") {
+					return { ...page, byteRange: { ...page.byteRange, start: 1 } };
+				}
+				if (mutation === "cursor") {
+					return { ...page, nextRange: null };
+				}
+				return { ...page, handoffId: "foreign" };
+			}),
+		).rejects.toThrow();
+	}
 });

@@ -130,7 +130,7 @@ export function projectHandoffDecisions(
  * publish a handoff. The eventual prepareHandoff transaction supplies validated
  * metadata, exact refs, and all decisions at its checked expectedRevision.
  * bodyHash is SHA-256 of the exact UTF-8 body; it is stored beside the body to
- * avoid a circular hash. Contract 0.2.0 cannot return a ranged body yet.
+ * avoid a circular hash. Bounded body reads let callers export larger briefs.
  */
 export async function freezeHandoff(
 	input: HandoffInput,
@@ -248,10 +248,5 @@ export async function freezeHandoff(
 	handoff.bodyHash = await handoffBodyHash(handoff.bodyMarkdown);
 	if (!isHandoff(handoff))
 		throw new HandoffError("invalid_request", "Invalid prepared handoff");
-	if (new TextEncoder().encode(JSON.stringify(handoff)).length > 16384)
-		throw new HandoffError(
-			"limit_exceeded",
-			"Brief exceeds the 16 KiB response cap; ranged handoff reads are required",
-		);
 	return handoff;
 }
