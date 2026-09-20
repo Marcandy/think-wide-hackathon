@@ -2,6 +2,9 @@
 import { describe, expect, it } from "vitest";
 import { CONTRACT_VERSION } from "../../generated/operations";
 import * as v from "../../generated/validators.js";
+import type { ScanEntry } from "../../src/server/search/caps.ts";
+import { literalFinding } from "../../src/server/search/literal.ts";
+import { structuralFinding } from "../../src/server/search/structural.ts";
 
 const id40 = "a".repeat(40);
 const id64 = "c".repeat(64);
@@ -287,5 +290,53 @@ describe("contract 0.2.0: decision categories (decision 0003)", () => {
 		});
 		expect(v.Composition(composition({}))).toBe(true);
 		expect(v.Composition(composition({ category: "security" }))).toBe(false);
+	});
+});
+
+describe("contract 0.2.0: search findings name the Git object hash algorithm of their ids", () => {
+	// Pure constructors, no analyzer binary: this runs even where the ast-grep tests skip.
+	const entry = (commit: string, blobId: string): ScanEntry => ({
+		repositoryId: "repo.alpha",
+		snapshotId: "snap.alpha.1",
+		commit,
+		entryId: "entry.alpha.src_alpha.ts",
+		blobId,
+		path: "src/alpha.ts",
+		kind: "blob",
+		bytes: Buffer.from("export const alphaMarker = 1\n", "utf8"),
+	});
+	const rule = {
+		ruleId: "r1",
+		language: "typescript",
+		yaml: "id: r1",
+		ruleHash: digest,
+	};
+	const probe = {
+		available: true,
+		version: "0.0.0",
+		isolation: { mode: "none", reason: "constructor test, nothing is run" },
+	} as const;
+	const findings = (e: ScanEntry) => [
+		literalFinding(e, 13, 24, 1700000000000),
+		structuralFinding(e, 13, 24, rule, probe, 1700000000000),
+	];
+
+	it("40-hex ids produce sha1 refs the contract accepts", () => {
+		for (const finding of findings(entry(id40, id40))) {
+			expect(finding.refs[0]?.hashAlgorithm).toBe("sha1");
+			expect(v.Finding(finding)).toBe(true);
+		}
+	});
+
+	it("64-hex ids produce sha256 refs the contract accepts", () => {
+		for (const finding of findings(entry(id64, id64))) {
+			expect(finding.refs[0]?.hashAlgorithm).toBe("sha256");
+			expect(v.Finding(finding)).toBe(true);
+		}
+	});
+
+	it("an entry whose commit and blob ids disagree yields a ref the contract rejects", () => {
+		for (const finding of findings(entry(id40, id64)))
+			expect(v.Finding(finding)).toBe(false);
 	});
 });
