@@ -426,7 +426,12 @@ function sandboxArgv(
 }
 
 /**
- * Runs the analyzer under the isolation profile with an explicit timeout.
+ * Runs the analyzer under the isolation profile within one absolute deadline.
+ *
+ * `timeoutMs` is the budget for EVERYTHING this call does, not for the subprocess
+ * alone. Follow-up review measured a 1,500 ms budget taking 2,510 ms and returning
+ * success, because detection got the full budget and then execution got it again. The
+ * deadline is computed once on entry and every step is charged against it.
  *
  * Never throws for an analyzer problem: it classifies. Callers must branch on
  * `failure`, because "no stdout" and "no matches" are different facts.
@@ -437,14 +442,16 @@ export function runAnalyzer(
 	timeoutMs: number,
 ): RunResult {
 	assertNoMutatingArgs(args);
+	const deadline = Date.now() + timeoutMs;
+	const remaining = () => deadline - Date.now();
 	if (timeoutMs <= 0)
 		return { stdout: "", failure: "timed_out", exitCode: null };
 
 	const image = resolveAnalyzerImage();
 	if (!image) return { stdout: "", failure: "not_found", exitCode: null };
 
-	// Detection shares this call's budget rather than holding a timeout of its own.
-	const isolation = detectIsolation({ budgetMs: timeoutMs });
+	// Detection spends this call's budget; it does not hold a timeout of its own.
+	const isolation = detectIsolation({ budgetMs: remaining() });
 	let argv: string[];
 	if (isolation.mode === "bwrap") {
 		argv = sandboxArgv(image, args, scanDir);
@@ -454,6 +461,10 @@ export function runAnalyzer(
 		return { stdout: "", failure: "isolation_unavailable", exitCode: null };
 	}
 
+	// Whatever setup cost, the subprocess only gets what is left.
+	const budget = remaining();
+	if (budget <= 0) return { stdout: "", failure: "timed_out", exitCode: null };
+
 	try {
 		const stdout = execFileSync(argv[0] as string, argv.slice(1), {
 			cwd: scanDir,
@@ -462,7 +473,7 @@ export function runAnalyzer(
 				HOME: scanDir,
 				LANG: "C",
 			},
-			timeout: timeoutMs,
+			timeout: budget,
 			killSignal: "SIGKILL",
 			maxBuffer: SEARCH_CAPS.maxResultTextBytes * 64,
 			encoding: "utf8",
@@ -524,9 +535,11 @@ export function getRule(ruleId: string): Rule {
 }
 
 export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
-	// Detection runs inside the same budget as the probe it precedes, so a cold start
-	// cannot spend the request's whole deadline before the first real subprocess.
-	const isolation = detectIsolation({ budgetMs });
+	// One deadline for detection and the version run together: a cold start cannot
+	// spend the budget on detection and then start the subprocess with a fresh copy.
+	const deadline = Date.now() + budgetMs;
+	const remaining = () => deadline - Date.now();
+	const isolation = detectIsolation({ budgetMs: remaining() });
 	if (isolation.mode === "none" && !allowUnisolated())
 		return {
 			available: false,
@@ -536,7 +549,7 @@ export function probeAnalyzer(budgetMs = 2_000): AnalyzerProbe {
 		};
 	const home = mkdtempSync(join(tmpdir(), "twh-sg-probe-"));
 	try {
-		const out = runAnalyzer(["--version"], home, budgetMs);
+		const out = runAnalyzer(["--version"], home, remaining());
 		if (out.failure !== "ok")
 			return {
 				available: false,

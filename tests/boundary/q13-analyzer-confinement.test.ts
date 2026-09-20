@@ -196,6 +196,34 @@ describe("Q13 isolation profile", () => {
 			}
 		},
 	);
+
+	it.runIf(confined)(
+		"charges isolation setup to the same budget as the run that follows it",
+		() => {
+			// Review measured a 1,500 ms budget taking 2,510 ms and returning success:
+			// detection got the whole budget, then execution got it again. Here detection
+			// succeeds just under the budget and the analyzer must get only the remainder,
+			// so the call comes back timed out inside the budget rather than succeeding
+			// after twice it.
+			const budgetMs = 1_500;
+			const started = Date.now();
+			const out = withInstrumentedAnalyzer(
+				'const end = Date.now() + 1200; while (Date.now() < end) {} ; console.log("ast-grep 0.45.3")',
+				(scanDir) => {
+					resetIsolationCache();
+					return runAnalyzer(["--version"], scanDir, budgetMs);
+				},
+				{ slowBwrapMs: 1_200 },
+			);
+			const elapsed = Date.now() - started;
+			try {
+				expect(out.failure).toBe("timed_out");
+				expect(elapsed).toBeLessThan(budgetMs + 900);
+			} finally {
+				detectIsolation({ force: true });
+			}
+		},
+	);
 });
 
 describe.runIf(confined)(
