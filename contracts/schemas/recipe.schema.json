@@ -1,0 +1,32 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "recipe.schema.json",
+	"title": "Recipe",
+	"description": "One trusted guidance recipe: when to use a capability, what it does not do, its limits and how to read its results. Entry schema for readGuidance (decisions/0001). Recipes are operator-authored and reviewed; a recipe is never derived from ingested source, and reading one has no effect on any repository.",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["recipeId", "title", "appliesTo", "summary", "contentHash"],
+	"properties": {
+		"recipeId": {
+			"$ref": "common.schema.json#/$defs/Id"
+		},
+		"title": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"appliesTo": {
+			"$ref": "common.schema.json#/$defs/ShortText",
+			"description": "Which operation and mode this recipe covers, as written by the reviewer."
+		},
+		"summary": {
+			"$ref": "common.schema.json#/$defs/ShortText"
+		},
+		"body": {
+			"$ref": "common.schema.json#/$defs/LongText",
+			"description": "Full Markdown guidance. Omitted from catalog listings, present when one recipe is requested."
+		},
+		"contentHash": {
+			"$ref": "common.schema.json#/$defs/Sha256",
+			"description": "sha256 of the exact recipe file bytes, so guidance quoted in a brief stays attributable to the reviewed revision."
+		}
+	}
+}

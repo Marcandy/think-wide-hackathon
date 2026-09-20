@@ -253,8 +253,9 @@ describe("Q05 structural search", () => {
 				expect(ref.digest).toBe(sha256(window));
 				expect(Buffer.from(window).toString("utf8")).toContain("function");
 			}
-			const { analyzer: _analyzer, ...envelope } = result;
+			const { analyzer: _analyzer, failure: _failure, ...envelope } = result;
 			expect(v.ResultEnvelope(envelope)).toBe(true);
+			expect(result.failure).toBe("ok");
 		},
 	);
 
@@ -278,5 +279,107 @@ describe("Q05 structural search", () => {
 		expect(result.entries).toHaveLength(0);
 		expect(result.coverage.status).toBe("not_indexed");
 		expect(result.analyzer.available).toBe(false);
+	});
+
+	it("enforces the same two-snapshot cap literal search enforces", () => {
+		// Review found structural silently scanning three snapshots while its own caps
+		// module said two. A documented limit that the code does not apply is worse
+		// than no limit, because the envelope still looks authoritative.
+		const three = [
+			{ ...CORPUS[0], snapshotId: "snap.one" },
+			{ ...CORPUS[1], snapshotId: "snap.two" },
+			{ ...CORPUS[7], snapshotId: "snap.three" },
+		];
+		expect(() =>
+			structuralSearch(three, "exported-function-declaration"),
+		).toThrowError(/at most 2 snapshots/);
+		expect(() => literalSearch(three, { text: "alphaMarker" })).toThrowError(
+			/at most 2 snapshots/,
+		);
+	});
+
+	it("rejects an unknown ruleId instead of scanning with nothing", () => {
+		expect(() => structuralSearch(CORPUS, "no-such-rule")).toThrowError(
+			/unknown ruleId/,
+		);
+	});
+});
+
+describe("Q05 scan caps", () => {
+	/** Builds `count` small entries in one snapshot. */
+	function manyEntries(count: number, text: string) {
+		return Array.from({ length: count }, (_, i) => ({
+			...(CORPUS[0] as (typeof CORPUS)[number]),
+			entryId: `entry.bulk.${i}`,
+			path: `src/bulk-${i}.ts`,
+			bytes: Buffer.from(text, "utf8"),
+		}));
+	}
+
+	it("stops at the file cap and reports the files it never opened", () => {
+		// A query with no hits, so the page cap cannot end the walk before the file cap.
+		const entries = manyEntries(SEARCH_CAPS.maxFiles + 5, "const TOKEN = 1\n");
+		const result = literalSearch(entries, { text: "zzzz-absent" });
+		expect(result.coverage.filesScanned).toBe(SEARCH_CAPS.maxFiles);
+		expect(result.coverage.notIndexed).toBe(5);
+		expect(result.coverage.byteLimited).toBe(true);
+		expect(result.coverage.status).toBe("partial");
+	});
+
+	it("stops at the scanned-byte cap", () => {
+		// Each entry is 1 MiB, so the 20 MiB ceiling is reached before the file cap.
+		const big = "x".repeat(1024 * 1024);
+		const entries = manyEntries(25, `${big}\n`);
+		const result = literalSearch(entries, { text: "zzzz-absent" });
+		expect(result.coverage.bytesScanned).toBeLessThanOrEqual(
+			SEARCH_CAPS.maxScanBytes,
+		);
+		expect(result.coverage.notIndexed).toBeGreaterThan(0);
+		expect(result.coverage.byteLimited).toBe(true);
+		expect(result.coverage.status).toBe("partial");
+	});
+
+	it("rejects a cursor whose position is outside the scope it names", () => {
+		const entries = manyEntries(3, "TOKEN ".repeat(10) + "\n");
+		const first = literalSearch(entries, { text: "TOKEN" });
+		const state = JSON.parse(
+			Buffer.from(first.nextCursor ?? "", "base64url").toString("utf8"),
+		);
+		for (const forged of [
+			{ ...state, e: 999_999 },
+			{ ...state, e: -1 },
+			{ ...state, o: -5 },
+		]) {
+			expect(() =>
+				literalSearch(
+					entries,
+					{ text: "TOKEN" },
+					{
+						cursor: Buffer.from(JSON.stringify(forged), "utf8").toString(
+							"base64url",
+						),
+					},
+				),
+			).toThrowError(/cursor/);
+		}
+	});
+
+	it("rejects a cursor replayed under a different path filter or entry set", () => {
+		const entries = manyEntries(3, "TOKEN ".repeat(10) + "\n");
+		const first = literalSearch(entries, { text: "TOKEN" });
+		expect(() =>
+			literalSearch(
+				entries,
+				{ text: "TOKEN" },
+				{ cursor: first.nextCursor, pathPrefix: "src/bulk-1" },
+			),
+		).toThrowError(/does not belong to this query or scope/);
+		expect(() =>
+			literalSearch(
+				entries.slice(1),
+				{ text: "TOKEN" },
+				{ cursor: first.nextCursor },
+			),
+		).toThrowError(/does not belong to this query or scope/);
 	});
 });

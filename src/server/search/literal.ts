@@ -98,10 +98,24 @@ function foldAscii(bytes: Uint8Array): Uint8Array {
 	return out;
 }
 
-/** Binds a cursor to the exact query and scope it was issued for. */
+/**
+ * Binds a cursor to the EFFECTIVE scope it was issued for, not just the query text.
+ *
+ * Review of 200487c found the first version binding only query plus snapshot ids: a
+ * cursor issued for one `pathPrefix` was happily resumed under another, and a page
+ * position from one entry ordering meant something else after the ordering changed.
+ * Both produce a page that looks authoritative and is not. Everything that changes
+ * what "position 7" means therefore goes into the binding, including the ordered entry
+ * ids themselves.
+ *
+ * This is result integrity, not authorization. A cursor is an address; the operation
+ * boundary still re-authorizes the principal and every referenced object on each page.
+ */
 function queryBinding(
 	query: LiteralQuery,
 	snapshotIds: readonly string[],
+	entries: readonly ScanEntry[],
+	pathPrefix: string | undefined,
 ): string {
 	return sha256Hex(
 		Buffer.from(
@@ -109,7 +123,12 @@ function queryBinding(
 				mode: "literal",
 				text: query.text,
 				caseSensitive: query.caseSensitive !== false,
+				pathPrefix: pathPrefix ?? null,
 				snapshotIds: [...snapshotIds].sort(),
+				// Ordering, not just membership: paging walks entries by index.
+				entryOrder: sha256Hex(
+					Buffer.from(entries.map((e) => e.entryId).join("|"), "utf8"),
+				),
 			}),
 			"utf8",
 		),
@@ -122,7 +141,11 @@ function encodeCursor(state: CursorState): string {
 	return Buffer.from(JSON.stringify(state), "utf8").toString("base64url");
 }
 
-function decodeCursor(cursor: string, binding: string): CursorState {
+function decodeCursor(
+	cursor: string,
+	binding: string,
+	entries: readonly ScanEntry[],
+): CursorState {
 	let parsed: CursorState;
 	try {
 		parsed = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8"));
@@ -135,11 +158,18 @@ function decodeCursor(cursor: string, binding: string): CursorState {
 		!Number.isInteger(parsed?.o)
 	)
 		throw new CursorConflictError("cursor is malformed");
-	// A changed query, or a changed snapshot set, invalidates the page position.
+	// A changed query, filter, snapshot set or entry ordering invalidates the position.
 	if (parsed.b !== binding)
 		throw new CursorConflictError(
 			"cursor does not belong to this query or scope",
 		);
+	// A position outside the scope is a conflict. Accepting it returns zero hits with
+	// complete coverage, which reads as "nothing here" and is a lie.
+	if (parsed.e < 0 || parsed.e >= entries.length)
+		throw new CursorConflictError("cursor entry position is out of range");
+	const entry = entries[parsed.e] as ScanEntry;
+	if (parsed.o < 0 || parsed.o > entry.bytes.byteLength)
+		throw new CursorConflictError("cursor byte position is out of range");
 	return parsed;
 }
 
@@ -171,8 +201,10 @@ export function literalSearch(
 			`at most ${SEARCH_CAPS.maxSnapshots} snapshots per search`,
 		);
 
-	const binding = queryBinding(query, snapshotIds);
-	const resume = options.cursor ? decodeCursor(options.cursor, binding) : null;
+	const binding = queryBinding(query, snapshotIds, entries, options.pathPrefix);
+	const resume = options.cursor
+		? decodeCursor(options.cursor, binding, entries)
+		: null;
 
 	const needle = caseSensitive ? needleRaw : Buffer.from(foldAscii(needleRaw));
 	const coverage: Coverage = emptyCoverage();

@@ -38,6 +38,18 @@ export type TimestampMs = number
 export type EvidenceClass = ("observed_literal" | "observed_structural" | "observed_history" | "source_reported" | "model_hypothesis" | "human_decision" | "specialist_reported")
 export type Sha2561 = string
 /**
+ * Which operation and mode this recipe covers, as written by the reviewer.
+ */
+export type ShortText1 = string
+/**
+ * Full Markdown guidance. Omitted from catalog listings, present when one recipe is requested.
+ */
+export type LongText1 = string
+/**
+ * sha256 of the exact recipe file bytes, so guidance quoted in a brief stays attributable to the reviewed revision.
+ */
+export type Sha2562 = string
+/**
  * Discriminated on mode: the query shape must match the mode.
  */
 export type SearchSourcesRequest = (LiteralSearchRequest | StructuralSearchRequest)
@@ -65,6 +77,7 @@ ReadHandoffRequest?: ReadHandoffRequest
 ReadHistoryRequest?: ReadHistoryRequest
 ReadInvestigationRequest?: ReadInvestigationRequest
 ReadSourceRequest?: ReadSourceRequest
+Recipe?: Recipe
 RecordDecisionRequest?: RecordDecisionRequest
 RequestAnalysisRequest?: RequestAnalysisRequest
 ResultEnvelope?: ResultEnvelope
@@ -866,6 +879,17 @@ entryId: Id
 byteRange?: ByteRange
 lineRange?: LineRange
 maxBytes?: number
+}
+/**
+ * One trusted guidance recipe: when to use a capability, what it does not do, its limits and how to read its results. Entry schema for readGuidance (decisions/0001). Recipes are operator-authored and reviewed; a recipe is never derived from ingested source, and reading one has no effect on any repository.
+ */
+export interface Recipe {
+recipeId: Id
+title: ShortText
+appliesTo: ShortText1
+summary: ShortText
+body?: LongText1
+contentHash: Sha2562
 }
 export interface RecordDecisionRequest {
 investigationId: Id
